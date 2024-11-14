@@ -26,11 +26,11 @@ class StudentsController extends Controller {
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'carnet' => 'required|string',
-            'email' => 'required|email',
+            'carnet' => 'required|string|unique:students,carnet',
+            'email' => 'required|email|unique:students,email',
             'phone_number' => 'required|string',
-            'password' => 'required|string|confirmed',
-            'career_id' => 'required|integer',
+            'password' => 'required|string|confirmed|min:6',
+            'career_id' => 'required|integer|exists:careers,id',
         ]);
 
         if ($validator->fails()) {
@@ -41,32 +41,38 @@ class StudentsController extends Controller {
             ], 422);
         }
 
-        $student = Students::create([
-            "name" => $request->name,
-            "carnet" => $request->carnet,
-            "email" => $request->email,
-            "phone_number" => $request->phone_number,
-            "password" => Hash::make($request->password),
-            "career_id" => $request->career_id,
-            "enabled" => true
-        ]);
+        try {
+            $student = Students::create([
+                "name" => $request->name,
+                "carnet" => $request->carnet,
+                "email" => $request->email,
+                "phone_number" => $request->phone_number,
+                "password" => Hash::make($request->password),
+                "career_id" => $request->career_id,
+                "enabled" => true
+            ]);
 
-        if (!$student) {
+            // Generar el token antes del login
+            $token = $student->createToken("AuthToken")->accessToken;
+
+            // Login del estudiante
+            Auth::guard('web')->login($student);
+
+            return response()->json([
+                "success" => true,
+                "token" => $token,
+                "token_type" => "Bearer",
+                "student" => $student->only(['id', 'name', 'email', 'carnet']),
+                "redirect_to" => url("/"),
+            ], 201);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Student not created'
+                'message' => 'Error al crear el estudiante',
+                'error' => $e->getMessage()
             ], 500);
         }
-
-        Auth::login($student);
-        $token = $student->createToken("token")->accessToken;
-
-        return response()->json([
-            "token" => $token,
-            "token_type" => "Bearer",
-            "redirect_to" => url("/"),
-            "success" => true,
-        ], 201);
     }
 
     public function show($id) {
