@@ -12,9 +12,12 @@ class Students extends Model {
 
     protected $fillable = [
         'name',
+        'carnet',
         'email',
-        'password',
         'phone_number',
+        'password',
         'career_id',
     ];
+
+    protected $table = 'students';
 }
