@@ -7,10 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class StudentsController extends Controller
-{
-    public function index(): JsonResponse
-    {
+class StudentsController extends Controller {
+    public function index(): JsonResponse {
         $students = Students::all();
         if ($students->isEmpty()) {
             $data = [
@@ -22,8 +20,7 @@ class StudentsController extends Controller
         return response()->json($students);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'carnet' => 'required|string',
@@ -35,7 +32,7 @@ class StudentsController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-               'success' => false,
+                'success' => false,
                 'message' => $validator->errors()
             ], 422);
         }
@@ -55,8 +52,7 @@ class StudentsController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
+    public function show($id) {
         $student = Students::find($id);
         if (!$student) {
             return response()->json([
@@ -67,8 +63,7 @@ class StudentsController extends Controller
         return response()->json($student);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $student = Students::find($id);
 
         if ($student) {
@@ -102,8 +97,7 @@ class StudentsController extends Controller
         ], 404);
     }
 
-    public function partial(Request $request, $id)
-    {
+    public function partial(Request $request, $id) {
         $student = Students::find($id);
 
         if ($student) {
@@ -161,8 +155,7 @@ class StudentsController extends Controller
         ], 404);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $student = Students::find($id);
 
         if ($student) {
