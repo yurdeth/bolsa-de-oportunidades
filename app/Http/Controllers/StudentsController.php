@@ -62,7 +62,6 @@ class StudentsController extends Controller {
                 "success" => true,
                 "token" => $token,
                 "token_type" => "Bearer",
-                "student" => $student->only(['id', 'name', 'email', 'carnet']),
                 "redirect_to" => url("/"),
             ], 201);
 
