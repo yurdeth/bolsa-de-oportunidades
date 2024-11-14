@@ -20,6 +20,7 @@ class MainSeeder extends Seeder {
             ClasificationSeeder::class,
             SectorSeeder::class,
             BrandSeeder::class,
+            MainManagerSeeder::class,
         ]);
     }
 }
