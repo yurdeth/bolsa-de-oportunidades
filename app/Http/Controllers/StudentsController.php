@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Students;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller {
@@ -26,18 +29,27 @@ class StudentsController extends Controller {
             'carnet' => 'required|string',
             'email' => 'required|email',
             'phone_number' => 'required|string',
-            'password' => 'required|string',
+            'password' => 'required|string|confirmed',
             'career_id' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()
+                'message' => 'Error al registrarte',
+                'error' => $validator->errors()
             ], 422);
         }
 
-        $student = Students::create($request->all());
+        $student = Students::create([
+            "name" => $request->name,
+            "carnet" => $request->carnet,
+            "email" => $request->email,
+            "phone_number" => $request->phone_number,
+            "password" => Hash::make($request->password),
+            "career_id" => $request->career_id,
+            "enabled" => true
+        ]);
 
         if (!$student) {
             return response()->json([
@@ -46,9 +58,14 @@ class StudentsController extends Controller {
             ], 500);
         }
 
+        Auth::login($student);
+        $token = $student->createToken("token")->accessToken;
+
         return response()->json([
-            'success' => true,
-            'data' => $student
+            "token" => $token,
+            "token_type" => "Bearer",
+            "redirect_to" => url("/"),
+            "success" => true,
         ], 201);
     }
 

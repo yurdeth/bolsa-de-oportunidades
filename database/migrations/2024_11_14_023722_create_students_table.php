@@ -20,6 +20,7 @@ return new class extends Migration {
                 ->constrained('careers')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->boolean('enabled');
             $table->timestamps();
         });
     }

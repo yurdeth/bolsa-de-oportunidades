@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
-class Students extends Model {
+class Students extends Authenticatable {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
@@ -17,6 +17,7 @@ class Students extends Model {
         'phone_number',
         'password',
         'career_id',
+        'enabled'
     ];
 
     protected $table = 'students';
