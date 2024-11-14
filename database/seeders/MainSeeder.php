@@ -18,6 +18,8 @@ class MainSeeder extends Seeder {
             SvMunicipalitiesSeeder::class,
             SvDistrictsSeeder::class,
             ClasificationSeeder::class,
+            SectorSeeder::class,
+            BrandSeeder::class,
         ]);
     }
 }
