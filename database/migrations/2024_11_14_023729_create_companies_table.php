@@ -36,10 +36,6 @@ return new class extends Migration {
                 ->constrained('sector')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('user_type_id')
-                ->constrained('user_type')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

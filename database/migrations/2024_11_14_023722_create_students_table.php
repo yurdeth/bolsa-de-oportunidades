@@ -12,14 +12,12 @@ return new class extends Migration {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('carnet')->unique();
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
+            $table->string('password');
             $table->foreignId('career_id')
                 ->constrained('careers')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table->foreignId('user_type_id')
-                ->constrained('user_type')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->timestamps();
