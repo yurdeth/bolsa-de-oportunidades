@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Middleware\NoBrowserCache;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/students/new', [StudentsController::class, 'store']);
 Route::post('/companies/new', [CompanyController::class, 'store']);
+Route::post('/managers/new', [ManagerController::class, 'store']);
 Route::post('/auth', [AuthController::class, 'login']);
 
 Route::middleware(['auth:api', NoBrowserCache::class])->group(function () {
@@ -29,4 +31,11 @@ Route::middleware(['auth:api', NoBrowserCache::class])->group(function () {
     Route::delete('/companies/delete/{id}', [CompanyController::class, 'destroy']);
     Route::put('/companies/update/{id}', [CompanyController::class, 'update']);
     Route::patch('/companies/edit/{id}', [CompanyController::class, 'partial']);
+
+    // Rutas para acceder a la información de los coordinadores.
+    Route::get('/managers/view/', [ManagerController::class, 'index']);
+    Route::get('/managers/view/{id}', [ManagerController::class, 'show']);
+    Route::delete('/managers/delete/{id}', [ManagerController::class, 'destroy']);
+    Route::put('/managers/update/{id}', [ManagerController::class, 'update']);
+    Route::patch('/managers/edit/{id}', [ManagerController::class, 'partial']);
 });

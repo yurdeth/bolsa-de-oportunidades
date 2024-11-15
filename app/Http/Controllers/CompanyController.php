@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Companies;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller {
@@ -42,6 +43,7 @@ class CompanyController extends Controller {
             'commercial_name' => 'required|string',
             'email' => 'required|string|unique:companies,email',
             'nit' => 'required|string|unique:companies,nit',
+            'password' => 'required|string',
             'phone_number' => 'required|string|unique:companies,phone_number',
             'entity_name_id' => 'required|string',
             'address' => 'required|string',
@@ -66,6 +68,7 @@ class CompanyController extends Controller {
                 'commercial_name' => $request->commercial_name,
                 'email' => $request->email,
                 'nit' => $request->nit,
+                'password' => Hash::make($request->password),
                 'phone_number' => $request->phone_number,
                 'entity_name_id' => $request->entity_name_id,
                 'address' => $request->address,
@@ -119,6 +122,7 @@ class CompanyController extends Controller {
             $validator = Validator::make($request->all(), [
                 'commercial_name' => 'required|string',
                 'nit' => 'required|string|unique:companies,nit,'.$company->id,
+                'password' => 'required|string',
                 'personality_type' => 'required|string',
                 'address' => 'required|string',
                 'department_id' => 'required|integer|exists:sv_departments,id',
@@ -159,6 +163,7 @@ class CompanyController extends Controller {
             $validator = Validator::make($request->all(), [
                 'commercial_name' => 'string',
                 'nit' => 'string|unique:companies,nit,'.$company->id,
+                'password' => 'required|string',
                 'personality_type' => 'string',
                 'address' => 'string',
                 'department_id' => 'integer|exists:sv_departments,id',
@@ -239,17 +244,25 @@ class CompanyController extends Controller {
     public function destroy(string $id) {
         $company = Companies::find($id);
 
-        if ($company) {
+        if(!$company){
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa no encontrada'
+            ], 404);
+        }
+
+        try {
             $company->delete();
             return response()->json([
                 'success' => true,
                 'message' => 'Empresa eliminada exitosamente'
             ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar la empresa',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Empresa no encontrada'
-        ], 404);
     }
 }
