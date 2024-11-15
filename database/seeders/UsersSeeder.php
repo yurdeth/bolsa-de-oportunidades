@@ -7,12 +7,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 
-class UsersSeeder extends Seeder
-{
-    public function run(): void
-    {
+class UsersSeeder extends Seeder {
+    public function run(): void {
         $users = [
-            'name' => 'Main Manager',
+            'name' => 'Admin',
             'email' => env('MANAGER_EMAIL'),
             'phone_number' => '911',
             'password' => Hash::make(env('MANAGER_PASSWORD')),
