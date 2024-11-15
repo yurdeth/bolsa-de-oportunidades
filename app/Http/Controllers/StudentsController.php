@@ -44,7 +44,7 @@ class StudentsController extends Controller {
         }
 
         try {
-            $user = (new UsersController)->store($request);
+            $user = (new UsersController)->store($request, 3);
 
             $student = Students::create([
                 "carnet" => $request->carnet,

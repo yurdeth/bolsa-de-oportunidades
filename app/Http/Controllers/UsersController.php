@@ -20,7 +20,7 @@ class UsersController extends Controller {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request, $userRolId) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -37,13 +37,16 @@ class UsersController extends Controller {
         }
 
         try {
+            Log::info($request);
+            Log::info($userRolId);
+
             $user = User::create([
                 "name" => $request->name,
                 "email" => $request->email,
                 "phone_number" => $request->phone_number,
                 "password" => Hash::make($request->password),
                 "enabled" => true,
-                "rol_id" => 3,
+                "rol_id" => $userRolId,
             ]);
 
             return $user;

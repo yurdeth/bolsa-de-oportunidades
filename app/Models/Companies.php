@@ -13,17 +13,13 @@ class Companies extends Authenticatable {
 
     protected $fillable = [
         'commercial_name',
-        'email',
         'nit',
-        'password',
-        'phone_number',
         'entity_name_id',
         'address',
         'district_id',
         'clasification_id',
         'sector_id',
         'brand_id',
-        'rol_id',
-        'enabled',
+        'user_id'
     ];
 }

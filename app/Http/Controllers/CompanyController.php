@@ -43,11 +43,11 @@ class CompanyController extends Controller {
         Sector*/
 
         $validator = Validator::make($request->all(), [
-            'commercial_name' => 'required|string',
-            'email' => 'required|string|unique:companies,email',
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users,email',
             'nit' => 'required|string|unique:companies,nit',
             'password' => 'required|string',
-            'phone_number' => 'required|string|unique:companies,phone_number',
+            'phone_number' => 'required|string|unique:users,phone_number',
             'entity_name_id' => 'required|string',
             'address' => 'required|string',
             'department_id' => 'required|integer|exists:sv_departments,id',
@@ -67,12 +67,11 @@ class CompanyController extends Controller {
         }
 
         try {
+            $user = (new UsersController)->store($request, 2);
+
             $company = Companies::create([
-                'commercial_name' => $request->commercial_name,
-                'email' => $request->email,
+                'name' => $request->name,
                 'nit' => $request->nit,
-                'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
                 'entity_name_id' => $request->entity_name_id,
                 'address' => $request->address,
                 'department_id' => $request->department_id,
@@ -81,12 +80,11 @@ class CompanyController extends Controller {
                 'clasification_id' => $request->clasification_id,
                 'sector_id' => $request->sector_id,
                 'brand_id' => $request->brand_id,
-                'rol_id' => 2,
-                'enabled' => true,
+                'user_id' => $user->id
             ]);
 
-            $token = $company->createToken("AuthToken")->accessToken;
-            Auth::guard('web')->login($company);
+            Auth::login($user);
+            $token = $user->createToken("token")->accessToken;
 
             return response()->json([
                 'success' => true,
@@ -128,7 +126,7 @@ class CompanyController extends Controller {
 
         if ($company) {
             $validator = Validator::make($request->all(), [
-                'commercial_name' => 'required|string',
+                'name' => 'required|string',
                 'email' => 'required|string|unique:companies,email,'.$company->id,
                 'nit' => 'required|string|unique:companies,nit,'.$company->id,
                 'password' => 'required|string',
@@ -172,7 +170,7 @@ class CompanyController extends Controller {
 
         if ($company) {
             $validator = Validator::make($request->all(), [
-                'commercial_name' => 'string',
+                'name' => 'string',
                 'email' => 'string|unique:companies,email,'.$company->id,
                 'nit' => 'string|unique:companies,nit,'.$company->id,
                 'password' => 'required|string',
@@ -194,8 +192,8 @@ class CompanyController extends Controller {
                 ], 422);
             }
 
-            if($request->has('commercial_name')) {
-                $company->commercial_name = $request->commercial_name;
+            if($request->has('name')) {
+                $company->name = $request->name;
             }
 
             if($request->has('email')) {
