@@ -24,6 +24,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('districts');
+        Schema::dropIfExists('sv_districts');
     }
 };

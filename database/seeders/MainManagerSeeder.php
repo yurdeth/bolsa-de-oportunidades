@@ -17,6 +17,7 @@ class MainManagerSeeder extends Seeder {
             'phone_number' => '911',
             'password' => Hash::make(env('MANAGER_PASSWORD')),
             'career_id' => 1,
+            'rol_id' => 1,
             'enabled' => true,
         ];
 

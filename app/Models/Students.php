@@ -17,7 +17,8 @@ class Students extends Authenticatable {
         'phone_number',
         'password',
         'career_id',
-        'enabled'
+        'enabled',
+        'rol_id'
     ];
 
     protected $table = 'students';

@@ -19,6 +19,10 @@ return new class extends Migration {
                 ->constrained('careers')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->foreignId('rol_id')
+                ->constrained('roles')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->boolean('enabled'); // <- Para permitir desactivar o no el inicio de sesión del usuario 👍🏼
             $table->timestamps();
         });

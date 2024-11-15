@@ -36,6 +36,10 @@ return new class extends Migration {
                 ->constrained('sector')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->foreignId('rol_id')
+                ->constrained('roles')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }
