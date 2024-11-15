@@ -11,19 +11,14 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('managers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone_number')->unique();
-            $table->string('password');
             $table->foreignId('career_id')
                 ->constrained('careers')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('rol_id')
-                ->constrained('roles')
+            $table->foreignId('user_id')
+                ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->boolean('enabled')->default(true); // <- Para permitir desactivar o no el inicio de sesión del usuario 👍🏼
             $table->timestamps();
         });
     }

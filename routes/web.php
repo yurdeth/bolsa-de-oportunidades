@@ -13,7 +13,7 @@ Route::get('/', function () {
 
 Route::get('/inicio', function (){
     return 'Hola mundo';
-});
+})->name('inicio');
 
 Route::get('/login', function (){
     return 'login';

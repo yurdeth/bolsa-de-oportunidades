@@ -12,13 +12,8 @@ class MainManagerSeeder extends Seeder {
      */
     public function run(): void {
         $mainManager = [
-            'name' => 'Main Manager',
-            'email' => env('MANAGER_EMAIL'),
-            'phone_number' => '911',
-            'password' => Hash::make(env('MANAGER_PASSWORD')),
             'career_id' => 1,
-            'rol_id' => 1,
-            'enabled' => true,
+            'user_id' => 1
         ];
 
         DB::table('managers')->insert($mainManager);

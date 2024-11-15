@@ -11,11 +11,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('commercial_name');
-            $table->string('email')->unique();
-            $table->string('phone_number')->unique();
             $table->string('nit')->unique();
-            $table->string('password');
             $table->foreignId('entity_name_id')
                 ->constrained('entity_type')
                 ->cascadeOnDelete()
@@ -37,11 +33,10 @@ return new class extends Migration {
                 ->constrained('sectors')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('rol_id')
-                ->constrained('roles')
+            $table->foreignId('user_id')
+                ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->boolean('enabled')->default(true);
             $table->timestamps();
         });
     }

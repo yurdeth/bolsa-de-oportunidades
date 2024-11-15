@@ -23,7 +23,21 @@ class AuthController extends Controller {
         $credentials = $request->only('email', 'password');
 
         if (!$request->email && !$request->password) {
-            return redirect()->route("iniciarSesion");
+            return redirect()->route("inicio");
+        }
+
+        if (!$request->email) {
+            return response()->json([
+                "message" => "Por favor, ingrese su correo",
+                "success" => false,
+            ]);
+        }
+
+        if (!$request->password) {
+            return response()->json([
+                "message" => "Por favor, ingrese su contraseña",
+                "success" => false,
+            ]);
         }
 
         if (Auth::attempt($credentials)) {
@@ -47,20 +61,6 @@ class AuthController extends Controller {
                 "success" => true,
             ], 201);
 
-        }
-
-        if (!$request->email) {
-            return response()->json([
-                "message" => "Por favor, ingrese su correo",
-                "success" => false,
-            ]);
-        }
-
-        if (!$request->password) {
-            return response()->json([
-                "message" => "Por favor, ingrese su contraseña",
-                "success" => false,
-            ]);
         }
 
         return response()->json([
