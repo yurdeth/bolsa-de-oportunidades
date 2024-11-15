@@ -11,14 +11,9 @@ class Students extends Authenticatable {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name',
         'carnet',
-        'email',
-        'phone_number',
-        'password',
         'career_id',
-        'enabled',
-        'rol_id'
+        'user_id'
     ];
 
     protected $table = 'students';

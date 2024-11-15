@@ -8,11 +8,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class StudentsController extends Controller {
     public function index(): JsonResponse {
-        $students = Students::all();
+        $students = User::all();
         if ($students->isEmpty()) {
             $data = [
                 'success' => false,
@@ -27,7 +29,7 @@ class StudentsController extends Controller {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'carnet' => 'required|string|unique:students,carnet',
-            'email' => 'required|email|unique:students,email',
+            'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|string',
             'password' => 'required|string|confirmed|min:6',
             'career_id' => 'required|integer|exists:careers,id',
@@ -42,22 +44,19 @@ class StudentsController extends Controller {
         }
 
         try {
+            $user = (new UsersController)->store($request);
+
             $student = Students::create([
-                "name" => $request->name,
                 "carnet" => $request->carnet,
-                "email" => $request->email,
-                "phone_number" => $request->phone_number,
-                "password" => Hash::make($request->password),
                 "career_id" => $request->career_id,
-                "rol_id" => 3,
-                "enabled" => true,
+                "user_id" => $user->id,
             ]);
 
-            // Generar el token antes del login
-            $token = $student->createToken("AuthToken")->accessToken;
+            Auth::login($user);
+            $token = $user->createToken("token")->accessToken;
 
-            // Login del estudiante
-            Auth::guard('web')->login($student);
+            // Registrar el token generado en los logs
+            Log::info('Token generado: ' . $token);
 
             return response()->json([
                 "success" => true,
@@ -65,7 +64,6 @@ class StudentsController extends Controller {
                 "token_type" => "Bearer",
                 "redirect_to" => url("/"),
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -195,3 +193,4 @@ class StudentsController extends Controller {
         ], 404);
     }
 }
+
