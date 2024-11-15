@@ -7,22 +7,25 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class StudentsController extends Controller {
-    public function index(): JsonResponse {
-        $students = User::all();
+    public function index() {
+        if(Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $students = (new User())->getStudentsInfo();
+
         if ($students->isEmpty()) {
-            $data = [
+            return response()->json([
                 'success' => false,
                 'message' => 'No hay estudiantes registrados'
-            ];
-            return response()->json($data, 404);
+            ], 404);
         }
-        return response()->json($students, 200);
+
+        return response()->json($students, 201);
     }
 
     public function store(Request $request) {
@@ -74,18 +77,39 @@ class StudentsController extends Controller {
     }
 
     public function show($id) {
-        $student = Students::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+            3. El coordinador ('2')
+        */
+        if(Auth::user()->rol_id != $id &&
+            Auth::user()->rol_id != '1' &&
+            Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $student = (new User())->getStudentsInfoById($id);
+
         if (!$student) {
             return response()->json([
                 'success' => false,
-                'message' => 'Student not found'
+                'message' => 'Estudiante no encontrado'
             ], 404);
         }
         return response()->json($student);
     }
 
     public function update(Request $request, $id) {
-        $student = Students::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+        */
+        if (Auth::user()->id != $id &&
+            Auth::user()->roles_id != 1) {
+            return redirect()->route('inicio');
+        }
+
+        $student = User::find($id);
 
         if ($student) {
             $validator = Validator::make($request->all(), [
@@ -119,7 +143,16 @@ class StudentsController extends Controller {
     }
 
     public function partial(Request $request, $id) {
-        $student = Students::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+        */
+        if (Auth::user()->id != $id &&
+            Auth::user()->roles_id != 1) {
+            return redirect()->route('inicio');
+        }
+
+        $student = User::find($id);
 
         if ($student) {
             $validator = Validator::make($request->all(), [
@@ -177,14 +210,26 @@ class StudentsController extends Controller {
     }
 
     public function destroy($id) {
-        $student = Students::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+            3. El coordinador ('2')
+        */
+        if(Auth::user()->rol_id != $id &&
+            Auth::user()->rol_id != '1' &&
+            Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
 
-        if ($student) {
-            $student->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Student deleted'
-            ]);
+        if ($id != 1) {
+            $user = User::find($id);
+            if ($user) {
+                $user->delete();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Estudiante eliminado'
+                ]);
+            }
         }
 
         return response()->json([
@@ -193,4 +238,3 @@ class StudentsController extends Controller {
         ], 404);
     }
 }
-

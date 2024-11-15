@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Companies;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,11 @@ class CompanyController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        $companies = Companies::all();
+        if(Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $companies = (new User())->getCompaniesInfo();
 
         if ($companies->isEmpty()){
             $data = [
@@ -106,7 +111,13 @@ class CompanyController extends Controller {
      * Display the specified resource.
      */
     public function show(string $id) {
-        $company = Companies::find($id);
+        if(Auth::user()->rol_id != $id &&
+            Auth::user()->rol_id != '1' &&
+            Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $company = (new User())->getCompaniesInfoById($id);
 
         if (!$company) {
             return response()->json([

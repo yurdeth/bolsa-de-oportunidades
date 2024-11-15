@@ -37,9 +37,6 @@ class UsersController extends Controller {
         }
 
         try {
-            Log::info($request);
-            Log::info($userRolId);
-
             $user = User::create([
                 "name" => $request->name,
                 "email" => $request->email,

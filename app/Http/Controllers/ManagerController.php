@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Managers;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +14,11 @@ class ManagerController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        $managers = Managers::all();
+        if(Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $managers = (new User())->getManagersInfo();
 
         if ($managers->isEmpty()) {
             $data = [
@@ -76,7 +81,13 @@ class ManagerController extends Controller {
      * Display the specified resource.
      */
     public function show(string $id) {
-        $manager = Managers::find($id);
+        if(Auth::user()->rol_id != $id &&
+            Auth::user()->rol_id != '1' &&
+            Auth::user()->rol_id != '2'){
+            return redirect()->route('inicio');
+        }
+
+        $manager = (new User())->getManagersInfoById($id);
 
         if (!$manager) {
             $data = [
