@@ -52,7 +52,7 @@ class ManagerController extends Controller {
                 "phone_number" => $request->phone_number,
                 "password" => Hash::make($request->password),
                 "career_id" => $request->career_id,
-                "rol_id" => 2,
+                "rol_id" => 1,
                 "enabled" => true,
             ]);
 
