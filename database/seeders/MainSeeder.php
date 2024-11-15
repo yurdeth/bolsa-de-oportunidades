@@ -12,6 +12,7 @@ class MainSeeder extends Seeder {
     public function run(): void {
         // Llamar a todos los seeders:
         $this->call([
+            EntityTypeSeeder::class,
             RolesSeeder::class,
             DepartmentsSeeder::class,
             CareersSeeder::class,

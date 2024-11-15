@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('district_name');
             $table->foreignId('municipality_id')
-                ->constrained('sv_municipality')
+                ->constrained('sv_municipalities')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->timestamps();

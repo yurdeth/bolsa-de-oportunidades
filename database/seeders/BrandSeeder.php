@@ -35,6 +35,6 @@ class BrandSeeder extends Seeder {
             ['section' => 'U', 'description' => "ACTIVIDADES DE ORGANIZACIONES Y ÓRGANOS EXTRATERRITORIALES"],
         ];
 
-        DB::table('brand')->insert($brand);
+        DB::table('brands')->insert($brand);
     }
 }

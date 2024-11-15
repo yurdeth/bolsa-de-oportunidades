@@ -11,15 +11,17 @@ class Companies extends Model {
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name',
+        'commercial_name',
         'email',
-        'phone_number',
         'nit',
+        'phone_number',
         'entity_name_id',
         'address',
         'district_id',
         'clasification_id',
-        'brand_id',
         'sector_id',
+        'brand_id',
+        'rol_id',
+        'enabled',
     ];
 }

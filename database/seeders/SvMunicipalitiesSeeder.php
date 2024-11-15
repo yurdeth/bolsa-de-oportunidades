@@ -62,6 +62,6 @@ class SvMunicipalitiesSeeder extends Seeder
         ];
 
         // Insert all municipalities at once
-        DB::table('sv_municipality')->insert($municipalities);
+        DB::table('sv_municipalities')->insert($municipalities);
     }
 }

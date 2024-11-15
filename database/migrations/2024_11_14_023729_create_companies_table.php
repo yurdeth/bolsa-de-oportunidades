@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('commercial_name');
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->string('nit')->unique();
@@ -25,21 +25,22 @@ return new class extends Migration {
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('clasification_id')
-                ->constrained('clasification')
+                ->constrained('clasifications')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('brand_id')
-                ->constrained('brand')
+                ->constrained('brands')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('sector_id')
-                ->constrained('sector')
+                ->constrained('sectors')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('rol_id')
                 ->constrained('roles')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->boolean('enabled')->default(true);
             $table->timestamps();
         });
     }

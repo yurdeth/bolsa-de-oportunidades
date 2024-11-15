@@ -16,11 +16,11 @@ class StudentsController extends Controller {
         if ($students->isEmpty()) {
             $data = [
                 'success' => false,
-                'message' => 'No students found'
+                'message' => 'No hay estudiantes registrados'
             ];
             return response()->json($data, 404);
         }
-        return response()->json($students);
+        return response()->json($students, 200);
     }
 
     public function store(Request $request) {
@@ -169,7 +169,7 @@ class StudentsController extends Controller {
             return response()->json([
                 'success' => true,
                 'data' => $student
-            ]);
+            ], 201);
         }
 
         return response()->json([

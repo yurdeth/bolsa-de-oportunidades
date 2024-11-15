@@ -21,6 +21,6 @@ class SectorSeeder extends Seeder {
             ['sector_name' => 'Agricultura'],
         ];
 
-        DB::table('sector')->insert($sectors);
+        DB::table('sectors')->insert($sectors);
     }
 }

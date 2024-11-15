@@ -23,7 +23,7 @@ return new class extends Migration {
                 ->constrained('roles')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->boolean('enabled'); // <- Para permitir desactivar o no el inicio de sesión del usuario 👍🏼
+            $table->boolean('enabled')->default(true); // <- Para permitir desactivar o no el inicio de sesión del usuario 👍🏼
             $table->timestamps();
         });
     }
