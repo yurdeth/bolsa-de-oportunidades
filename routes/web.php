@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::fallback(function () {
+//    return redirect()->route('iniciarSesion');
+    return 'No se encontró la ruta';
+});
+
 Route::get('/', function () {
     return view('welcome');
 });

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Companies;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller {
@@ -82,9 +85,14 @@ class CompanyController extends Controller {
                 'enabled' => true,
             ]);
 
+            $token = $company->createToken("AuthToken")->accessToken;
+            Auth::guard('web')->login($company);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Empresa registrada exitosamente',
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'redirect_to' => url('/'),
             ], 201);
 
         } catch (\Exception $e) {
@@ -115,12 +123,13 @@ class CompanyController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {
+    public function update(Request $request, string $id): JsonResponse {
         $company = Companies::find($id);
 
         if ($company) {
             $validator = Validator::make($request->all(), [
                 'commercial_name' => 'required|string',
+                'email' => 'required|string|unique:companies,email,'.$company->id,
                 'nit' => 'required|string|unique:companies,nit,'.$company->id,
                 'password' => 'required|string',
                 'personality_type' => 'required|string',
@@ -156,12 +165,15 @@ class CompanyController extends Controller {
         ], 404);
     }
 
-    public function partial(Request $request, $id) {
+    public function partial(Request $request, $id): JsonResponse {
+        Log::info('info', (array)$request);
+
         $company = Companies::find($id);
 
         if ($company) {
             $validator = Validator::make($request->all(), [
                 'commercial_name' => 'string',
+                'email' => 'string|unique:companies,email,'.$company->id,
                 'nit' => 'string|unique:companies,nit,'.$company->id,
                 'password' => 'required|string',
                 'personality_type' => 'string',
@@ -184,6 +196,10 @@ class CompanyController extends Controller {
 
             if($request->has('commercial_name')) {
                 $company->commercial_name = $request->commercial_name;
+            }
+
+            if($request->has('email')) {
+                $company->email = $request->email;
             }
 
             if($request->has('nit')) {

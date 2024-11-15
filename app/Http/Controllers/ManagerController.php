@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Managers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -56,9 +57,14 @@ class ManagerController extends Controller {
                 "enabled" => true,
             ]);
 
+            $token = $manager->createToken("AuthToken")->accessToken;
+            Auth::guard('web')->login($manager);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Coordinador registrado exitosamente',
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'redirect_to' => url('/'),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
