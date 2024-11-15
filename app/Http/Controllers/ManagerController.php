@@ -32,8 +32,8 @@ class ManagerController extends Controller {
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|email|unique:managers,email',
-            'phone_number' => 'required|string|unique:managers,phone_number',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'required|string|unique:users,phone_number',
             'password' => 'required|string|confirmed|min:6',
             'career_id' => 'required|integer|exists:careers,id',
         ]);
@@ -47,14 +47,11 @@ class ManagerController extends Controller {
         }
 
         try {
+            $user = (new UsersController)->store($request, 2);
+
             $manager = Managers::create([
-                "name" => $request->name,
-                "email" => $request->email,
-                "phone_number" => $request->phone_number,
-                "password" => Hash::make($request->password),
                 "career_id" => $request->career_id,
-                "rol_id" => 1,
-                "enabled" => true,
+                "user_id" => $user->id,
             ]);
 
             $token = $manager->createToken("AuthToken")->accessToken;

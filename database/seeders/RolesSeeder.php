@@ -12,9 +12,10 @@ class RolesSeeder extends Seeder {
      */
     public function run(): void {
         $roles = [
-            ['id' => '1', 'role_name' => 'Manager'],
-            ['id' => '2', 'role_name' => 'Company'],
-            ['id' => '3', 'role_name' => 'Student'],
+            ['id' => '1', 'role_name' => 'Admin'],
+            ['id' => '2', 'role_name' => 'Manager'],
+            ['id' => '3', 'role_name' => 'Company'],
+            ['id' => '4', 'role_name' => 'Student'],
         ];
 
         DB::table('roles')->insert($roles);

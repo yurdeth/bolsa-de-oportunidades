@@ -11,12 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Managers extends Authenticatable {
     use HasFactory, Notifiable, HasApiTokens;
     protected $fillable = [
-        'name',
-        'email',
-        'phone_number',
-        'password',
         'career_id',
-        'rol_id',
-        'enabled',
+        'user_id'
     ];
 }

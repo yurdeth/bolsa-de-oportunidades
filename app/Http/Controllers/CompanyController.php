@@ -67,7 +67,7 @@ class CompanyController extends Controller {
         }
 
         try {
-            $user = (new UsersController)->store($request, 2);
+            $user = (new UsersController)->store($request, 3);
 
             $company = Companies::create([
                 'name' => $request->name,
