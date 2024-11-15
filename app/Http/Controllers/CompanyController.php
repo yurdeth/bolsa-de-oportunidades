@@ -82,7 +82,6 @@ class CompanyController extends Controller {
             return response()->json([
                 'success' => true,
                 'message' => 'Empresa registrada exitosamente',
-                'data' => $company
             ], 201);
 
         } catch (\Exception $e) {
@@ -143,7 +142,6 @@ class CompanyController extends Controller {
             return response()->json([
                 'success' => true,
                 'message' => 'Empresa actualizada exitosamente',
-                'data' => $company
             ], 201);
 
         }
