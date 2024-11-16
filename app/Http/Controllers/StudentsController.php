@@ -7,12 +7,13 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller {
     public function index() {
-        if(Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2'){
+        if (Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
         }
 
@@ -34,7 +35,7 @@ class StudentsController extends Controller {
             'carnet' => 'required|string|unique:students,carnet',
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|string',
-            'password' => 'required|string|confirmed|min:6',
+            'password' => 'required|string|confirmed|min:8',
             'career_id' => 'required|integer|exists:careers,id',
         ]);
 
@@ -58,9 +59,6 @@ class StudentsController extends Controller {
             Auth::login($user);
             $token = $user->createToken("token")->accessToken;
 
-            // Registrar el token generado en los logs
-            Log::info('Token generado: ' . $token);
-
             return response()->json([
                 "success" => true,
                 "token" => $token,
@@ -82,9 +80,9 @@ class StudentsController extends Controller {
             2. El admin principal ('1')
             3. El coordinador ('2')
         */
-        if(Auth::user()->rol_id != $id &&
+        if (Auth::user()->rol_id != $id &&
             Auth::user()->rol_id != '1' &&
-            Auth::user()->rol_id != '2'){
+            Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
         }
 
@@ -147,12 +145,12 @@ class StudentsController extends Controller {
             1. El usuario mismo
             2. El admin principal ('1')
         */
-        if (Auth::user()->id != $id &&
-            Auth::user()->roles_id != 1) {
+        if (Auth::user()->id != $id && Auth::user()->roles_id != 1) {
             return redirect()->route('inicio');
         }
 
-        $student = User::find($id);
+        $user = User::find($id);
+        $student = Students::where('user_id', '=', $id)->first();
 
         if ($student) {
             $validator = Validator::make($request->all(), [
@@ -172,7 +170,7 @@ class StudentsController extends Controller {
             }
 
             if ($request->has('name')) {
-                $student->name = $request->name;
+                $user->name = $request->name;
             }
 
             if ($request->has('carnet')) {
@@ -180,26 +178,26 @@ class StudentsController extends Controller {
             }
 
             if ($request->has('email')) {
-                $student->email = $request->email;
+                $user->email = $request->email;
             }
 
             if ($request->has('phone_number')) {
-                $student->phone_number = $request->phone_number;
+                $user->phone_number = $request->phone_number;
             }
 
             if ($request->has('password')) {
-                $student->password = $request->password;
+                $user->password = bcrypt($request->password);
             }
 
             if ($request->has('career_id')) {
                 $student->career_id = $request->career_id;
             }
 
+            $user->save();
             $student->save();
 
             return response()->json([
                 'success' => true,
-                'data' => $student
             ], 201);
         }
 
@@ -215,9 +213,9 @@ class StudentsController extends Controller {
             2. El admin principal ('1')
             3. El coordinador ('2')
         */
-        if(Auth::user()->rol_id != $id &&
+        if (Auth::user()->rol_id != $id &&
             Auth::user()->rol_id != '1' &&
-            Auth::user()->rol_id != '2'){
+            Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
         }
 
