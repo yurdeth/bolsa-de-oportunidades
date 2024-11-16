@@ -8,12 +8,20 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ManagerController extends Controller {
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de todos los coordinadores registrados.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para ver la lista de coordinadores.
+     * Los permisos se limitan al administrador principal ('1') y al coordinador ('2'). Si el usuario
+     * no tiene permiso, devuelve una respuesta JSON con un mensaje de error y un código de estado 403.
+     * Luego, obtiene la información de los coordinadores utilizando el método `getManagersInfo` del modelo `User`.
+     * Si no hay coordinadores registrados, devuelve una respuesta JSON con un mensaje de error y un código de estado 404.
+     * Si hay coordinadores registrados, devuelve una respuesta JSON con la información de los coordinadores y un código de estado 201.
+     *
+     * @return JsonResponse Respuesta JSON con la lista de coordinadores o un mensaje de error.
      */
     public function index(): JsonResponse {
         if (Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2') {
@@ -40,9 +48,17 @@ class ManagerController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Registra un nuevo coordinador en el sistema.
+     *
+     * Este método valida los datos de la solicitud para registrar un nuevo coordinador. Si la validación falla,
+     * devuelve una respuesta JSON con los errores de validación y un código de estado 422. Si la validación es exitosa,
+     * crea un nuevo usuario y un nuevo coordinador en la base de datos. Luego, autentica al usuario y genera un token de acceso.
+     * Si ocurre un error durante el proceso, devuelve una respuesta JSON con un mensaje de error y un código de estado 500.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos del coordinador.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -86,9 +102,19 @@ class ManagerController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Muestra la información de un coordinador específico.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para ver la información de un coordinador específico.
+     * Los permisos se limitan al administrador principal ('1'), al coordinador ('2') y al coordinador cuyo ID coincide con el ID de la solicitud.
+     * Si el usuario no tiene permiso, devuelve una respuesta JSON con un mensaje de error y un código de estado 403.
+     * Luego, obtiene la información del coordinador utilizando el método `getManagersInfoById` del modelo `User`.
+     * Si el coordinador no existe, devuelve una respuesta JSON con un mensaje de error y un código de estado 404.
+     * Si el coordinador existe, devuelve una respuesta JSON con la información del coordinador y un código de estado 201.
+     *
+     * @param string $id El ID del coordinador.
+     * @return JsonResponse Respuesta JSON con la información del coordinador o un mensaje de error.
      */
-    public function show(string $id) {
+    public function show(string $id): JsonResponse {
         if (Auth::user()->rol_id != $id &&
             Auth::user()->rol_id != '1' &&
             Auth::user()->rol_id != '2') {
@@ -112,9 +138,19 @@ class ManagerController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la información de un coordinador específico.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para actualizar la información de un coordinador específico.
+     * Los permisos se limitan al coordinador cuyo ID coincide con el ID de la solicitud. Si el usuario no tiene permiso,
+     * devuelve una respuesta JSON con un mensaje de error y un código de estado 404. Luego, obtiene la información del coordinador
+     * y la actualiza con los datos de la solicitud. Si ocurre un error durante el proceso, devuelve una respuesta JSON con un mensaje de error
+     * y un código de estado 500. Si la actualización es exitosa, devuelve una respuesta JSON con un mensaje de éxito y un código de estado 201.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos del coordinador.
+     * @param string $id El ID del coordinador.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
-    public function update(Request $request, string $id) {
+    public function update(Request $request, string $id): JsonResponse {
         /* Limitar visualizacion:
             1. El usuario mismo
         */
@@ -176,7 +212,20 @@ class ManagerController extends Controller {
         }
     }
 
-    public function partial(Request $request, $id) {
+    /**
+     * Actualiza parcialmente la información de un coordinador específico.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para actualizar parcialmente la información de un coordinador específico.
+     * Los permisos se limitan al coordinador cuyo ID coincide con el ID de la solicitud. Si el usuario no tiene permiso,
+     * devuelve una respuesta JSON con un mensaje de error y un código de estado 404. Luego, obtiene la información del coordinador
+     * y actualiza los campos especificados en la solicitud. Si ocurre un error durante el proceso, devuelve una respuesta JSON con un mensaje de error
+     * y un código de estado 500. Si la actualización es exitosa, devuelve una respuesta JSON con un mensaje de éxito y un código de estado 201.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos del coordinador.
+     * @param string $id El ID del coordinador.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
+     */
+    public function partial(Request $request, string $id): JsonResponse {
         /* Limitar visualizacion:
             1. El usuario mismo
         */
@@ -244,9 +293,18 @@ class ManagerController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un coordinador específico.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para eliminar un coordinador específico.
+     * Los permisos se limitan al administrador principal ('1') y al coordinador cuyo ID coincide con el ID de la solicitud.
+     * Si el usuario no tiene permiso, devuelve una respuesta JSON con un mensaje de error y un código de estado 404.
+     * Luego, elimina el coordinador de la base de datos. Si el coordinador no existe, devuelve una respuesta JSON con un mensaje de error y un código de estado 404.
+     * Si el coordinador es eliminado exitosamente, devuelve una respuesta JSON con un mensaje de éxito y un código de estado 200.
+     *
+     * @param string $id El ID del coordinador.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
-    public function destroy(string $id) {
+    public function destroy(string $id): JsonResponse {
         /* Limitar visualizacion:
             1. El usuario mismo
             2. El admin principal ('1')
