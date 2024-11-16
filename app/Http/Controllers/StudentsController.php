@@ -102,14 +102,14 @@ class StudentsController extends Controller {
             1. El usuario mismo
             2. El admin principal ('1')
         */
-        if (Auth::user()->id != $id &&
-            Auth::user()->roles_id != 1) {
+        if (Auth::user()->id != $id && Auth::user()->roles_id != 1) {
             return redirect()->route('inicio');
         }
 
-        $student = User::find($id);
+        $user = User::find($id);
+        $student = Students::where('user_id', '=', $id)->first();
 
-        if ($student) {
+        if ($user && $student) {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'carnet' => 'required|string',
@@ -126,7 +126,15 @@ class StudentsController extends Controller {
                 ], 422);
             }
 
-            $student->update($request->all());
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone_number = $request->phone_number;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            $student->carnet = $request->carnet;
+            $student->career_id = $request->career_id;
+            $student->save();
 
             return response()->json([
                 'success' => true,
