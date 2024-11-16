@@ -288,6 +288,7 @@ class CompanyController extends Controller {
                 'email' => 'string|unique:companies,email,' . $company->id,
                 'nit' => 'string|unique:companies,nit,' . $company->id,
                 'password' => 'string',
+                'phone_number' => 'string|unique:users,phone_number',
                 'entity_name_id' => 'string',
                 'address' => 'string',
                 'department_id' => 'integer|exists:sv_departments,id',

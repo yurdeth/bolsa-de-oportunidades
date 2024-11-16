@@ -342,7 +342,7 @@ class StudentsController extends Controller {
 
         return response()->json([
             'success' => false,
-            'message' => 'Student not found'
+            'message' => 'Estudiante no encontrado'
         ], 404);
     }
 }
