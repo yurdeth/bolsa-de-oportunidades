@@ -7,16 +7,27 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller {
     /**
-     * Display a listing of the resource.
+     * Muestra una lista de todas las empresas registradas.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para ver la lista de empresas.
+     * Los permisos se limitan al administrador principal ('1') y al coordinador ('2'). Si el usuario
+     * no tiene permiso, se redirige a la página de inicio. Luego, obtiene la información de las empresas
+     * utilizando el método `getCompaniesInfo` del modelo `User`. Si no hay empresas registradas, devuelve
+     * una respuesta JSON con un mensaje de error y un código de estado 404. Si hay empresas registradas,
+     * devuelve una respuesta JSON con la información de las empresas y un código de estado 201.
+     *
+     * @return JsonResponse Respuesta JSON con la lista de empresas o un mensaje de error.
      */
-    public function index() {
+    public function index(): JsonResponse {
         if (Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2') {
-            return redirect()->route('inicio');
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
+            ], 404);
         }
 
         $companies = (new User())->getCompaniesInfo();
@@ -35,9 +46,17 @@ class CompanyController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Registra una nueva empresa en el sistema.
+     *
+     * Este método valida los datos de la solicitud para registrar una nueva empresa. Si la validación falla,
+     * devuelve una respuesta JSON con los errores de validación y un código de estado 422. Si la validación es exitosa,
+     * crea un nuevo usuario y una nueva empresa en la base de datos. Luego, autentica al usuario y genera un token de acceso.
+     * Si ocurre un error durante el proceso, devuelve una respuesta JSON con un mensaje de error y un código de estado 500.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos de la empresa.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
         /*Nombre comercial
         Nit
         Tipo de personalidad (natural o jurídica)
@@ -110,13 +129,26 @@ class CompanyController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Muestra la información de una empresa específica.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para ver la información de la empresa.
+     * Los permisos se limitan al propio usuario, al administrador principal ('1') y al coordinador ('2').
+     * Si el usuario no tiene permiso, se redirige a la página de inicio. Luego, obtiene la información de la empresa
+     * utilizando el método `getCompaniesInfoById` del modelo `User`. Si la empresa no se encuentra, devuelve una respuesta
+     * JSON con un mensaje de error y un código de estado 404. Si la empresa se encuentra, devuelve una respuesta JSON
+     * con la información de la empresa y un código de estado 201.
+     *
+     * @param string $id El ID de la empresa.
+     * @return JsonResponse Respuesta JSON con la información de la empresa o un mensaje de error.
      */
-    public function show(string $id) {
+    public function show(string $id): JsonResponse {
         if (Auth::user()->rol_id != $id &&
             Auth::user()->rol_id != '1' &&
             Auth::user()->rol_id != '2') {
-            return redirect()->route('inicio');
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
+            ], 404);
         }
 
         $company = (new User())->getCompaniesInfoById($id);
@@ -135,7 +167,20 @@ class CompanyController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la información de una empresa específica.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para actualizar la información de la empresa.
+     * Los permisos se limitan al propio usuario y al administrador principal ('1'). Si el usuario no tiene permiso,
+     * se devuelve una respuesta JSON con un mensaje de error y un código de estado 404. Luego, busca al usuario y
+     * a la empresa en la base de datos. Si la empresa existe, valida los datos de la solicitud. Si la validación
+     * falla, devuelve una respuesta JSON con los errores de validación y un código de estado 422. Si la validación
+     * es exitosa, actualiza los campos proporcionados del usuario y de la empresa en la base de datos y devuelve
+     * una respuesta JSON con un mensaje de éxito y un código de estado 201. Si la empresa no se encuentra, devuelve
+     * una respuesta JSON con un mensaje de error y un código de estado 404.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos de la empresa.
+     * @param string $id El ID de la empresa.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
     public function update(Request $request, string $id): JsonResponse {
         /* Limitar visualizacion:
@@ -205,7 +250,23 @@ class CompanyController extends Controller {
         ], 404);
     }
 
-    public function partial(Request $request, $id): JsonResponse {
+    /**
+     * Actualiza parcialmente la información de una empresa específica.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para actualizar parcialmente la información de la empresa.
+     * Los permisos se limitan al propio usuario y al administrador principal ('1'). Si el usuario no tiene permiso,
+     * se devuelve una respuesta JSON con un mensaje de error y un código de estado 404. Luego, busca al usuario y
+     * a la empresa en la base de datos. Si la empresa existe, valida los datos de la solicitud. Si la validación
+     * falla, devuelve una respuesta JSON con los errores de validación y un código de estado 422. Si la validación
+     * es exitosa, actualiza los campos proporcionados del usuario y de la empresa en la base de datos y devuelve
+     * una respuesta JSON con un mensaje de éxito y un código de estado 201. Si la empresa no se encuentra, devuelve
+     * una respuesta JSON con un mensaje de error y un código de estado 404.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos de la empresa.
+     * @param string $id El ID de la empresa.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
+     */
+    public function partial(Request $request, string $id): JsonResponse {
         /* Limitar visualizacion:
             1. El usuario mismo
             2. El admin principal ('1')
@@ -313,9 +374,19 @@ class CompanyController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina una empresa específica.
+     *
+     * Este método verifica si el usuario autenticado tiene permiso para eliminar la empresa.
+     * Los permisos se limitan al propio usuario y al administrador principal ('1'). Si el usuario no tiene permiso,
+     * se devuelve una respuesta JSON con un mensaje de error y un código de estado 404. Luego, busca la empresa en la
+     * base de datos. Si la empresa existe, la elimina de la base de datos y devuelve una respuesta JSON con un mensaje
+     * de éxito y un código de estado 201. Si la empresa no se encuentra, devuelve una respuesta JSON con un mensaje de
+     * error y un código de estado 404.
+     *
+     * @param string $id El ID de la empresa.
+     * @return JsonResponse Respuesta JSON con el resultado de la operación.
      */
-    public function destroy(string $id) {
+    public function destroy(string $id): JsonResponse {
         /* Limitar visualizacion:
             1. El usuario mismo
             2. El admin principal ('1')
