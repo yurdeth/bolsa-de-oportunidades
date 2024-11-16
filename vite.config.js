@@ -8,9 +8,16 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ["resources/js/app.js"],
+            input: ["resources/js/app.js", "resources/css/app.css"],
             refresh: true,
         }),
         vue(),
     ],
+    server: {
+        host: "localhost", // Asegúrate de usar localhost en lugar de ::1
+        port: 5173, // Asegúrate de que el puerto sea correcto
+    },
+    build: {
+        base: "/build/",
+    },
 });
