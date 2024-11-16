@@ -80,7 +80,7 @@ class StudentsController extends Controller {
             2. El admin principal ('1')
             3. El coordinador ('2')
         */
-        if (Auth::user()->rol_id != $id &&
+        if (Auth::user()->id != $id &&
             Auth::user()->rol_id != '1' &&
             Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
@@ -219,7 +219,6 @@ class StudentsController extends Controller {
         /* Limitar visualizacion:
             1. El usuario mismo
             2. El admin principal ('1')
-            3. El coordinador ('2')
         */
         if (Auth::user()->id != $id &&
             Auth::user()->rol_id != '1') {
