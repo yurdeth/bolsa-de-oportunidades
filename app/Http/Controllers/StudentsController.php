@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller {
@@ -168,7 +169,7 @@ class StudentsController extends Controller {
             1. El usuario mismo
             2. El admin principal ('1')
         */
-        if (Auth::user()->id != $id && Auth::user()->roles_id != 1) {
+        if (Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
@@ -198,7 +199,7 @@ class StudentsController extends Controller {
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone_number = $request->phone_number;
-            $user->password = bcrypt($request->password);
+            $user->password = Hash::make($request->password);
             $user->save();
 
             $student->carnet = $request->carnet;
@@ -238,7 +239,7 @@ class StudentsController extends Controller {
             1. El usuario mismo
             2. El admin principal ('1')
         */
-        if (Auth::user()->id != $id && Auth::user()->roles_id != 1) {
+        if (Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
@@ -282,7 +283,7 @@ class StudentsController extends Controller {
             }
 
             if ($request->has('password')) {
-                $user->password = bcrypt($request->password);
+                $user->password = Hash::make($request->password);
             }
 
             if ($request->has('career_id')) {
@@ -299,7 +300,7 @@ class StudentsController extends Controller {
 
         return response()->json([
             'success' => false,
-            'message' => 'Student not found'
+            'message' => 'Estudiante no encontrado'
         ], 404);
     }
 

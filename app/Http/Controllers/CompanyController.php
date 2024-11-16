@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,20 +15,23 @@ class CompanyController extends Controller {
      * Display a listing of the resource.
      */
     public function index() {
-        if(Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2'){
+        if (Auth::user()->rol_id != '1' && Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
         }
 
         $companies = (new User())->getCompaniesInfo();
 
-        if ($companies->isEmpty()){
+        if ($companies->isEmpty()) {
             $data = [
                 'success' => false,
                 'message' => 'No hay empresas registradas'
             ];
             return response()->json($data, 404);
         }
-        return response()->json($companies, 201);
+        return response()->json([
+            'success' => true,
+            'companies' => $companies
+        ], 201);
     }
 
     /**
@@ -111,9 +113,9 @@ class CompanyController extends Controller {
      * Display the specified resource.
      */
     public function show(string $id) {
-        if(Auth::user()->rol_id != $id &&
+        if (Auth::user()->rol_id != $id &&
             Auth::user()->rol_id != '1' &&
-            Auth::user()->rol_id != '2'){
+            Auth::user()->rol_id != '2') {
             return redirect()->route('inicio');
         }
 
@@ -126,22 +128,38 @@ class CompanyController extends Controller {
             ], 404);
         }
 
-        return response()->json($company, 200);
+        return response()->json([
+            'success' => true,
+            'company' => $company
+        ], 201);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id): JsonResponse {
-        $company = Companies::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+        */
+        if (Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
+            ], 404);
+        }
+
+        $user = User::find($id);
+        $company = Companies::where('user_id', '=', $id)->first();
 
         if ($company) {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
-                'email' => 'required|string|unique:companies,email,'.$company->id,
-                'nit' => 'required|string|unique:companies,nit,'.$company->id,
+                'email' => 'required|string|unique:users,email',
+                'nit' => 'required|string|unique:companies,nit',
                 'password' => 'required|string',
-                'personality_type' => 'required|string',
+                'phone_number' => 'required|string|unique:users,phone_number',
+                'entity_name_id' => 'required|string',
                 'address' => 'required|string',
                 'department_id' => 'required|integer|exists:sv_departments,id',
                 'municipality_id' => 'required|integer|exists:sv_municipalities,id',
@@ -159,7 +177,20 @@ class CompanyController extends Controller {
                 ], 422);
             }
 
-            $company->update($request->all());
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone_number = $request->phone_number;
+            $user->password = $request->password;
+            $user->save();
+
+            $company->nit = $request->nit;
+            $company->entity_name_id = $request->entity_name_id;
+            $company->address = $request->address;
+            $company->district_id = $request->district_id;
+            $company->clasification_id = $request->clasification_id;
+            $company->sector_id = $request->sector_id;
+            $company->brand_id = $request->brand_id;
+            $company->save();
 
             return response()->json([
                 'success' => true,
@@ -175,17 +206,28 @@ class CompanyController extends Controller {
     }
 
     public function partial(Request $request, $id): JsonResponse {
-        Log::info('info', (array)$request);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+        */
 
-        $company = Companies::find($id);
+        if (Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
+            ], 404);
+        }
+
+        $user = User::find($id);
+        $company = Companies::where('user_id', '=', $id)->first();
 
         if ($company) {
             $validator = Validator::make($request->all(), [
                 'name' => 'string',
-                'email' => 'string|unique:companies,email,'.$company->id,
-                'nit' => 'string|unique:companies,nit,'.$company->id,
-                'password' => 'required|string',
-                'personality_type' => 'string',
+                'email' => 'string|unique:companies,email,' . $company->id,
+                'nit' => 'string|unique:companies,nit,' . $company->id,
+                'password' => 'string',
+                'entity_name_id' => 'string',
                 'address' => 'string',
                 'department_id' => 'integer|exists:sv_departments,id',
                 'municipality_id' => 'integer|exists:sv_municipality,id',
@@ -203,56 +245,63 @@ class CompanyController extends Controller {
                 ], 422);
             }
 
-            if($request->has('name')) {
-                $company->name = $request->name;
+            if ($request->has('name')) {
+                $user->name = $request->name;
             }
 
-            if($request->has('email')) {
-                $company->email = $request->email;
+            if ($request->has('email')) {
+                $user->email = $request->email;
             }
 
-            if($request->has('nit')) {
+            if ($request->has('nit')) {
                 $company->nit = $request->nit;
             }
 
-            if($request->has('personality_type')) {
-                $company->personality_type = $request->personality_type;
+            if ($request->has('password')) {
+                $user->password = $request->password;
             }
 
-            if($request->has('address')) {
+            if ($request->has('phone_number')) {
+                $user->phone_number = $request->phone_number;
+            }
+
+            if ($request->has('entity_name_id')) {
+                $company->entity_name_id = $request->entity_name_id;
+            }
+
+            if ($request->has('address')) {
                 $company->address = $request->address;
             }
 
-            if($request->has('department_id')) {
+            if ($request->has('department_id')) {
                 $company->department_id = $request->department_id;
             }
 
-            if($request->has('municipality_id')) {
+            if ($request->has('municipality_id')) {
                 $company->municipality_id = $request->municipality_id;
             }
 
-            if($request->has('district_id')) {
+            if ($request->has('district_id')) {
                 $company->district_id = $request->district_id;
             }
 
-            if($request->has('clasification_id')) {
+            if ($request->has('clasification_id')) {
                 $company->clasification_id = $request->clasification_id;
             }
 
-            if($request->has('sector_id')) {
+            if ($request->has('sector_id')) {
                 $company->sector_id = $request->sector_id;
             }
 
-            if($request->has('brand_id')) {
+            if ($request->has('brand_id')) {
                 $company->brand_id = $request->brand_id;
             }
 
+            $user->save();
             $company->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Empresa actualizada exitosamente',
-                'data' => $company
             ], 201);
 
         }
@@ -267,9 +316,21 @@ class CompanyController extends Controller {
      * Remove the specified resource from storage.
      */
     public function destroy(string $id) {
-        $company = Companies::find($id);
+        /* Limitar visualizacion:
+            1. El usuario mismo
+            2. El admin principal ('1')
+        */
 
-        if(!$company){
+        if (Auth::user()->id != $id && Auth::user()->rol_id != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta ruta no existe' // <- Para no dar la pista de que la ruta es verdadera y evitar fallas de seguridad
+            ], 404);
+        }
+
+        $company = Companies::where('user_id', '=', $id)->first();
+
+        if (!$company) {
             return response()->json([
                 'success' => false,
                 'message' => 'Empresa no encontrada'
