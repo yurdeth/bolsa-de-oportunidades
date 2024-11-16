@@ -221,9 +221,8 @@ class StudentsController extends Controller {
             2. El admin principal ('1')
             3. El coordinador ('2')
         */
-        if (Auth::user()->rol_id != $id &&
-            Auth::user()->rol_id != '1' &&
-            Auth::user()->rol_id != '2') {
+        if (Auth::user()->id != $id &&
+            Auth::user()->rol_id != '1') {
             return redirect()->route('inicio');
         }
 
