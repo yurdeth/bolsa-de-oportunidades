@@ -26,7 +26,10 @@ class StudentsController extends Controller {
             ], 404);
         }
 
-        return response()->json($students, 201);
+        return response()->json([
+            'success]' => true,
+            'students' => $students,
+            ], 201);
     }
 
     public function store(Request $request) {
@@ -94,7 +97,10 @@ class StudentsController extends Controller {
                 'message' => 'Estudiante no encontrado'
             ], 404);
         }
-        return response()->json($student);
+        return response()->json([
+            'success' => true,
+            'student' => $student
+        ]);
     }
 
     public function update(Request $request, $id) {
