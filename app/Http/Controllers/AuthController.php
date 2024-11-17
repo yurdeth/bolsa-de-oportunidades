@@ -18,6 +18,20 @@ use App\Rules\OnlyUesMail;
 
 class AuthController extends Controller {
 
+    public function index () {
+        return view('auth.login');
+    }
+
+    public function register () {
+        return view('auth.register');
+    }
+
+    public function requestPasswordReset () {
+        return view('auth.request');
+    }
+
+
+
     public function login(Request $request): JsonResponse|RedirectResponse {
         // Campos esperados en la petición
         $credentials = $request->only('email', 'password');
