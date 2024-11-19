@@ -100,8 +100,28 @@ h2 {
         />
         <h2 class="text-center mb-4">Bienvenido a Bolsa de Oportunidades</h2>
 
+        <div
+            class="loader login-card"
+            v-if="loading"
+            style="
+                width: 100%;
+                height: 300px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            "
+        >
+            <div
+                class="spinner-border text-danger"
+                role="status"
+                style="width: 100px; height: 100px"
+            >
+                <span class="sr-only">Cargando...</span>
+            </div>
+        </div>
+
         <!-- Formulario -->
-        <form class="login-card" @submit.prevent="login">
+        <form class="login-card" @submit.prevent="login" v-if="!loading">
             <div class="form-group mb-4">
                 <label for="email" class="form-label">Correo Electrónico</label>
                 <div class="input-group">
@@ -204,6 +224,7 @@ export default {
     data() {
         return {
             showPassword: false,
+            loading: false,
             form: {
                 email: "",
                 password: "",
@@ -213,6 +234,7 @@ export default {
     },
     async mounted() {
         // Verificar si el usuario ya está autenticado
+        this.loading = true;
         if (localStorage.getItem("token")) {
             try {
                 let response = await api.post("/access_token", {
@@ -228,10 +250,14 @@ export default {
                     JSON.stringify(response.data.data.user)
                 );
                 this.$router.push("/dashboard");
+                this.loading = false;
             } catch (error) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                this.loading = false;
             }
+        } else {
+            this.loading = false;
         }
     },
     methods: {
@@ -239,6 +265,7 @@ export default {
             this.showPassword = !this.showPassword;
         },
         async login() {
+            this.loading = true;
             try {
                 const response = await api.post("/login", this.form);
                 console.log(response);
@@ -264,6 +291,8 @@ export default {
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
                 }
+            } finally {
+                this.loading = false;
             }
         },
     },
