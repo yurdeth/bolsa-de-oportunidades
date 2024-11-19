@@ -13,6 +13,10 @@ const routes = [
         ],
     },
     {
+        path: "/login",
+        component: () => import("../pages/auth/MainLogin.vue"),
+    },
+    {
         path: "/dashboard",
         component: () => import("../pages/dashboard/MainDashboard.vue"),
     },
