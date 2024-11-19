@@ -4,26 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/*
- * -- auto-generated definition
-create table coordinadores
-(
-    id_coordinador  serial
-        primary key,
-    id_usuario      integer
-        references usuarios,
-    nombres         varchar(100) not null,
-    apellidos       varchar(100) not null,
-    id_departamento integer
-        references departamento,
-    telefono        varchar(20)
-);
-
-alter table coordinadores
-    owner to postgres;
-
-*/
-
 return new class extends Migration {
     public function up(): void
     {
