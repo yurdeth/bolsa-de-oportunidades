@@ -39,10 +39,6 @@ class CoordinadoresController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
-//        Log::info(Auth::user()->id_tipo_usuario);
-        Log::info($request);
-        Log::info($request->id_carrera);
-
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
                 'message' => 'Ruta no encontrada en este servidor',

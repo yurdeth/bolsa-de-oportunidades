@@ -5,7 +5,6 @@ use App\Http\Controllers\CoordinadoresController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstudiantesController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -18,6 +17,8 @@ Route::get('/', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
+Route::post('/empresas', [EmpresasController::class, 'store'])->name('empresas.store');
 
 //Route::resource('/departamentos', 'App\Http\Controllers\DepartamentosController', ['except' => ['edit', 'create']]);
 Route::get('/departamentos', [DepartamentosController::class, 'index'])->name('departamentos.index');
@@ -63,14 +64,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     //-------------------------------------------------------------------------
     Route::get('/empresas', [EmpresasController::class, 'index'])->name('empresas.index');
     Route::get('/empresas/{id}', [EmpresasController::class, 'show'])->name('empresas.show');
-    Route::post('/empresas', [EmpresasController::class, 'store'])->name('empresas.store');
     Route::put('/empresas/{id}', [EmpresasController::class, 'update'])->name('empresas.update');
     Route::delete('/empresas/{id}', [EmpresasController::class, 'destroy'])->name('empresas.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/estudiantes', [EstudiantesController::class, 'index'])->name('estudiantes.index');
     Route::get('/estudiantes/{id}', [EstudiantesController::class, 'show'])->name('estudiantes.show');
-    Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
     Route::put('/estudiantes/{id}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
     Route::delete('/estudiantes/{id}', [EstudiantesController::class, 'destroy'])->name('estudiantes.destroy');
 });
