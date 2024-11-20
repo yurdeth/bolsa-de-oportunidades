@@ -225,5 +225,7 @@ class AuthController extends Controller {
             DB::rollBack();
             return response(['message' => $th->getMessage(), 'status' => false], 500);
         }*/
+
+        return response(['message' => 'Tipo de usuario no válido', 'status' => false], 400);
     }
 }

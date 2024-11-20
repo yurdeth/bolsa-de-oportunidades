@@ -1,10 +1,16 @@
 <?php
 
+use App\Http\Controllers\AplicacionesController;
 use App\Http\Controllers\CarrerasController;
 use App\Http\Controllers\CoordinadoresController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstudiantesController;
+use App\Http\Controllers\ModalidadesTrabajoController;
+use App\Http\Controllers\ProyectosController;
+use App\Http\Controllers\SectoresIndustriaController;
+use App\Http\Controllers\TiposProyectoController;
+use App\Http\Middleware\NoBrowserCache;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -15,30 +21,38 @@ Route::get('/', function () {
     ]);
 });
 
+//-------------------------------------------------------------------------
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-//Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
-//Route::post('/empresas', [EmpresasController::class, 'store'])->name('empresas.store');
 
-//Route::resource('/departamentos', 'App\Http\Controllers\DepartamentosController', ['except' => ['edit', 'create']]);
+//-------------------------------------------------------------------------
 Route::get('/departamentos', [DepartamentosController::class, 'index'])->name('departamentos.index');
 Route::get('/departamentos/{id}', [DepartamentosController::class, 'show'])->name('departamentos.show');
 
-//Route::resource('/carreras', 'App\Http\Controllers\CarrerasController', ['except' => ['edit', 'create']]);
+//-------------------------------------------------------------------------
 Route::get('/carreras', [CarrerasController::class, 'index'])->name('carreras.index');
 Route::get('/carreras/{id}', [CarrerasController::class, 'show'])->name('carreras.show');
 
-//Route::resource('/empresas', 'App\Http\Controllers\EmpresasController', ['except' => ['edit', 'create']]);
-Route::resource('/sectores_industria', 'App\Http\Controllers\SectoresIndustriaController', ['except' => ['edit', 'create']]);
-//Route::resource('coordinadores', 'App\Http\Controllers\CoordinadoresController', ['except' => ['edit', 'create']]);
-Route::resource('modalidades_trabajo', 'App\Http\Controllers\ModalidadesTrabajoController', ['except' => ['edit', 'create']]);
-Route::resource('tipos_proyecto', 'App\Http\Controllers\TiposProyectoController', ['except' => ['edit', 'create']]);
-Route::resource('estados_oferta', 'App\Http\Controllers\EstadosOfertaController', ['except' => ['edit', 'create']]);
-//Route::resource('estudiantes', 'App\Http\Controllers\EstudiantesController', ['except' => ['edit', 'create']]);
-Route::resource('proyectos', 'App\Http\Controllers\ProyectosController', ['except' => ['edit', 'create']]);
-Route::resource('aplicaciones', 'App\Http\Controllers\AplicacionesController', ['except' => ['edit', 'create']]);
+//-------------------------------------------------------------------------
+Route::get('/sectores-industria', [SectoresIndustriaController::class, 'index'])->name('sectores.index');
+Route::get('/sectores-industria/{id}', [SectoresIndustriaController::class, 'show'])->name('sectores.show');
 
-Route::group(['middleware' => 'auth:api'], function () {
+//-------------------------------------------------------------------------
+Route::get('/modalidades-trabajo', [ModalidadesTrabajoController::class, 'index'])->name('modalidades.index');
+Route::get('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'show'])->name('modalidades.show');
+
+//-------------------------------------------------------------------------
+Route::get('/tipos-proyecto', [TiposProyectoController::class, 'index'])->name('tipos.proyectos.index');
+Route::get('/tipos-proyecto/{id}', [TiposProyectoController::class, 'show'])->name('tipos.proyectos.show');
+
+//-------------------------------------------------------------------------
+Route::get('/estado-oferta', [ModalidadesTrabajoController::class, 'index'])->name('estado.oferta.index');
+Route::get('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'show'])->name('estado.oferta.show');
+
+/*Route::resource('proyectos', 'App\Http\Controllers\ProyectosController', ['except' => ['edit', 'create']]);
+Route::resource('aplicaciones', 'App\Http\Controllers\AplicacionesController', ['except' => ['edit', 'create']]);*/
+
+Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     //-------------------------------------------------------------------------
     Route::post('/access_token', [AuthController::class, 'access_token']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -72,4 +86,38 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/estudiantes/{id}', [EstudiantesController::class, 'show'])->name('estudiantes.show');
     Route::put('/estudiantes/{id}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
     Route::delete('/estudiantes/{id}', [EstudiantesController::class, 'destroy'])->name('estudiantes.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::post('/sectores-industria/{id}', [SectoresIndustriaController::class, 'store'])->name('sectores.store');
+    Route::put('/sectores-industria/{id}', [SectoresIndustriaController::class, 'update'])->name('sectores.update');
+    Route::delete('/sectores-industria/{id}', [SectoresIndustriaController::class, 'destroy'])->name('sectores.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::post('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'store'])->name('modalidades.store');
+    Route::put('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'update'])->name('modalidades.update');
+    Route::delete('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'destroy'])->name('modalidades.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::post('/tipos-proyecto/{id}', [TiposProyectoController::class, 'store'])->name('tipos.proyectos.store');
+    Route::put('/tipos-proyecto/{id}', [TiposProyectoController::class, 'update'])->name('tipos.proyectos.update');
+    Route::delete('/tipos-proyecto/{id}', [TiposProyectoController::class, 'destroy'])->name('tipos.proyectos.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::post('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'store'])->name('estado.oferta.store');
+    Route::put('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'update'])->name('estado.oferta.update');
+    Route::delete('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'destroy'])->name('estado.oferta.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::get('/proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
+    Route::get('/proyectos/{id}', [ProyectosController::class, 'show'])->name('proyectos.show');
+    Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
+    Route::put('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
+    Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
+
+    //-------------------------------------------------------------------------
+    Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');
+    Route::get('/aplicaciones/{id}', [AplicacionesController::class, 'show'])->name('aplicaciones.show');
+    Route::post('/aplicaciones', [AplicacionesController::class, 'store'])->name('aplicaciones.store');
+    Route::put('/aplicaciones/{id}', [AplicacionesController::class, 'update'])->name('aplicaciones.update');
+    Route::delete('/aplicaciones/{id}', [AplicacionesController::class, 'destroy'])->name('aplicaciones.destroy');
 });
