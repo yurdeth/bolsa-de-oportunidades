@@ -13,7 +13,8 @@ return new class extends Migration {
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->string('nombres', 100);
             $table->string('apellidos', 100);
-            $table->foreignId('id_departamento')->constrained('departamento')
+//            $table->foreignId('id_departamento')->constrained('departamento')
+            $table->foreignId('id_carrera')->constrained('carreras')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->string('telefono', 20)->nullable();
             $table->timestamps();

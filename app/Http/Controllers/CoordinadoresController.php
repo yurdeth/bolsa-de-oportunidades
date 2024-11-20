@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coordinadores;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CoordinadoresController extends Controller {
@@ -34,21 +38,25 @@ class CoordinadoresController extends Controller {
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
+//        Log::info(Auth::user()->id_tipo_usuario);
+        Log::info($request);
+        Log::info($request->id_carrera);
+
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
-//                'message' => 'No tienes permisos para realizar esta acción',
                 'message' => 'Ruta no encontrada en este servidor',
                 'status' => false
             ]);
         }
 
         $rules = [
-            'id_usuario' => 'required|integer|exists:usuarios,id',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'id_departamento' => 'required|integer|exists:departamento,id',
-            'telefono' => 'string|max:20|unique:coordinadores'
+            'id_carrera' => 'required|integer|exists:carreras,id',
+            'telefono' => 'string|max:20|unique:coordinadores',
+            'email' => 'required|email|unique:usuarios',
+            'password' => 'required|string|min:8'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -60,6 +68,30 @@ class CoordinadoresController extends Controller {
                 'errors' => $validator->errors()
             ], 400);
         }
+
+        $user = User::create([
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'id_tipo_usuario' => 2,
+            'estado_usuario' => true,
+            'fecha_registro' => Carbon::now(),
+        ]);
+
+        $id_usuario = $user->id;
+
+        $coordinador = Coordinadores::create([
+            'id_usuario' => $id_usuario,
+            'nombres' => $request->nombres,
+            'apellidos' => $request->apellidos,
+            'id_carrera' => $request->id_carrera,
+            'telefono' => $request->telefono
+        ]);
+
+        return response()->json([
+            'message' => 'Coordinador creado correctamente',
+            'status' => true,
+            'data' => $coordinador
+        ], 201);
     }
 
     public function show($id): JsonResponse {
