@@ -3,13 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresas;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class EmpresasController extends Controller
-{
-    public function index()
-    {
+class EmpresasController extends Controller {
+    public function index(): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
         $empresas = Empresas::all();
 
         if ($empresas->isEmpty()) {
@@ -26,8 +33,7 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request): JsonResponse {
         $rules = [
             'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
@@ -59,8 +65,13 @@ class EmpresasController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
+    public function show($id): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
 
         $empresa = Empresas::find($id);
 
@@ -79,8 +90,13 @@ class EmpresasController extends Controller
 
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id): JsonResponse {
+        if (Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
 
         $empresa = Empresas::find($id);
 
@@ -135,8 +151,13 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
 
         $empresa = Empresas::find($id);
 

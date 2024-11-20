@@ -15,3 +15,7 @@ Route::get('/{any}', function () {
 Route::middleware(['auth', NoBrowserCache::class])->group(function () {
     // *****************************************************************************************************
 });
+
+Route::get('/login', function () {
+    return 'login';
+})->name('login');

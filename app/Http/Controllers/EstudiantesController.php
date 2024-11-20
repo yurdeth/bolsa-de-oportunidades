@@ -3,13 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiantes;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class EstudiantesController extends Controller
-{
-    public function index()
-    {
+class EstudiantesController extends Controller {
+    public function index(): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
         $estudiantes = Estudiantes::all();
 
         if ($estudiantes->isEmpty()) {
@@ -25,8 +32,7 @@ class EstudiantesController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request): JsonResponse {
         $rules = [
             'id_usuario' => 'required|integer|exists:users,id',
             'id_carrera' => 'required|integer|exists:carreras,id',
@@ -55,8 +61,14 @@ class EstudiantesController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
+    public function show($id): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
         $estudiante = Estudiantes::find($id);
 
         if (is_null($estudiante)) {
@@ -72,8 +84,14 @@ class EstudiantesController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id): JsonResponse {
+        if (Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
         $estudiante = Estudiantes::find($id);
 
         if (is_null($estudiante)) {
@@ -122,8 +140,14 @@ class EstudiantesController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
         $estudiante = Estudiantes::find($id);
 
         if (is_null($estudiante)) {

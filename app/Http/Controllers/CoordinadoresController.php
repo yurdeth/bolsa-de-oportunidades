@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coordinadores;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class CoordinadoresController extends Controller
-{
-    public function index()
-    {
+class CoordinadoresController extends Controller {
+    public function index(): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1) {
+            return response()->json([
+//                'message' => 'No tienes permisos para realizar esta acción',
+                'message' => 'Ruta no encontrada en este servidor',
+                'status' => false
+            ]);
+        }
+
         $coordinadores = Coordinadores::all();
 
         if ($coordinadores->isEmpty()) {
@@ -26,8 +34,15 @@ class CoordinadoresController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+        if (Auth::user()->id_tipo_usuario != 1) {
+            return response()->json([
+//                'message' => 'No tienes permisos para realizar esta acción',
+                'message' => 'Ruta no encontrada en este servidor',
+                'status' => false
+            ]);
+        }
+
         $rules = [
             'id_usuario' => 'required|integer|exists:usuarios,id',
             'nombres' => 'required|string|max:100',
@@ -47,8 +62,15 @@ class CoordinadoresController extends Controller
         }
     }
 
-    public function show($id)
-    {
+    public function show($id): JsonResponse {
+        if (Auth::user()->id_tipo_usuario != 1) {
+            return response()->json([
+//                'message' => 'No tienes permisos para realizar esta acción',
+                'message' => 'Ruta no encontrada en este servidor',
+                'status' => false
+            ]);
+        }
+
         $coordinador = Coordinadores::find($id);
 
         if (is_null($coordinador)) {
@@ -65,8 +87,15 @@ class CoordinadoresController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id): JsonResponse {
+        if (Auth::user()->id != $id) {
+            return response()->json([
+//                'message' => 'No tienes permisos para realizar esta acción',
+                'message' => 'Ruta no encontrada en este servidor',
+                'status' => false
+            ]);
+        }
+
         $coordinador = Coordinadores::find($id);
 
         if (is_null($coordinador)) {
@@ -85,7 +114,7 @@ class CoordinadoresController extends Controller
             'telefono' => 'string|max:20|unique:coordinadores,telefono,' . $id
         ];
 
-        foreach($rules as $key => $value) {
+        foreach ($rules as $key => $value) {
             if (!$request->has($key)) {
                 $validations[$key] = $value;
             }
@@ -114,8 +143,15 @@ class CoordinadoresController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id): JsonResponse {
+        if (Auth::user()->id != $id && Auth::user()->id_tipo_usuario != 1) {
+            return response()->json([
+//                'message' => 'No tienes permisos para realizar esta acción',
+                'message' => 'Ruta no encontrada en este servidor',
+                'status' => false
+            ]);
+        }
+
         $coordinador = Coordinadores::find($id);
 
         if (is_null($coordinador)) {
