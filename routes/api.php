@@ -21,6 +21,7 @@ Route::resource('coordinadores', 'App\Http\Controllers\CoordinadoresController',
 Route::resource('modalidades_trabajo', 'App\Http\Controllers\ModalidadesTrabajoController', ['except' => ['edit', 'create']]);
 Route::resource('tipos_proyecto', 'App\Http\Controllers\TiposProyectoController', ['except' => ['edit', 'create']]);
 Route::resource('estados_oferta', 'App\Http\Controllers\EstadosOfertaController', ['except' => ['edit', 'create']]);
+Route::resource('estudiantes', 'App\Http\Controllers\EstudiantesController', ['except' => ['edit', 'create']]);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/access_token', [AuthController::class, 'access_token']);
