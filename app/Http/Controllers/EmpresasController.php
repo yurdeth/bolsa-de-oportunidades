@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresas;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class EmpresasController extends Controller {
@@ -35,7 +38,7 @@ class EmpresasController extends Controller {
 
     public function store(Request $request): JsonResponse {
         $rules = [
-            'id_usuario' => 'required|integer|exists:usuarios,id',
+//            'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
             'nombre' => 'required|string|max:200',
             'direccion' => 'string',
@@ -55,8 +58,27 @@ class EmpresasController extends Controller {
                 'errors' => $validator->errors()
             ], 400);
         }
+        $user = User::create([
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'id_tipo_usuario' => 2,
+            'estado_usuario' => true,
+            'fecha_registro' => Carbon::now(),
+        ]);
 
-        $empresa = Empresas::create($request->all());
+        $id_usuario = $user->id;
+
+        $empresa = Empresas::create([
+            'id_usuario' => $id_usuario,
+            'id_sector' => $request->id_sector,
+            'nombre' => $request->nombre,
+            'direccion' => $request->direccion,
+            'telefono' => $request->telefono,
+            'sitio_web' => $request->sitio_web,
+            'descripcion' => $request->descripcion,
+            'logo_url' => $request->logo_url,
+            'verificada' => $request->verificada
+        ]);
 
         return response()->json([
             'message' => 'Empresa creada correctamente',
