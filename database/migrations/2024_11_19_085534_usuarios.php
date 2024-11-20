@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 
@@ -22,8 +23,8 @@ return new class extends Migration {
         });
 
         User::create([
-            'email' => 'admin@admin.com',
-            'password' => password_hash('admin', PASSWORD_DEFAULT),
+            'email' => env('MANAGER_EMAIL'),
+            'password' => Hash::make(env('MANAGER_PASSWORD')),
             'id_tipo_usuario' => 1,
             'estado_usuario' => true,
         ]);
