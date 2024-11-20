@@ -16,10 +16,6 @@ return new class extends Migration {
             $table->foreignId('id_estado_aplicacion')->constrained('estados_aplicacion')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->text('comentarios_empresa')->nullable();
-            $table->text('comentarios_estudiante')->nullable();
-            $table->date('fecha_inicio')->nullable();
-            $table->date('fecha_fin')->nullable();
-            $table->integer('horas_completadas')->default(0);
             $table->timestamps();
         });
     }
