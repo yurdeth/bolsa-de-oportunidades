@@ -36,7 +36,7 @@ class AuthController extends Controller
             $tokenResult = Auth::user()->createToken('personal Access Token');
             $data['user'] = $user_current;
 
-            if ($user_current->estado_usuario == 0) {
+            if (!$user_current->estado_usuario) {
                 return response()->json([
                     'errors' => [
                         'email' => ['Usuario deshabilitado']

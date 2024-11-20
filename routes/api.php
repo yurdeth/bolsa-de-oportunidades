@@ -13,8 +13,9 @@ Route::get('/', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-Route::resource('/departamentos', 'App\Http\Controllers\DepartamentosController');
-Route::resource('/carreras', 'App\Http\Controllers\CarrerasController');
+Route::resource('/departamentos', 'App\Http\Controllers\DepartamentosController', ['except' => ['edit', 'create']]);
+Route::resource('/carreras', 'App\Http\Controllers\CarrerasController', ['except' => ['edit', 'create']]);
+Route::resource('/empresas', 'App\Http\Controllers\EmpresasController', ['except' => ['edit', 'create']]);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/access_token', [AuthController::class, 'access_token']);
