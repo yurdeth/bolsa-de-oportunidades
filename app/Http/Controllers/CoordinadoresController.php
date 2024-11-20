@@ -55,7 +55,28 @@ class CoordinadoresController extends Controller {
             'password' => 'required|string|min:8'
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'nombres.required' => 'El campo nombres es obligatorio',
+            'nombres.string' => 'El campo nombres debe ser una cadena de texto',
+            'nombres.max' => 'El campo nombres debe tener un máximo de 100 caracteres',
+            'apellidos.required' => 'El campo apellidos es obligatorio',
+            'apellidos.string' => 'El campo apellidos debe ser una cadena de texto',
+            'apellidos.max' => 'El campo apellidos debe tener un máximo de 100 caracteres',
+            'id_carrera.required' => 'El campo carrera es obligatorio',
+            'id_carrera.integer' => 'El campo carrera debe ser un número entero',
+            'id_carrera.exists' => 'La carrera seleccionada no existe',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está registrado',
+            'email.required' => 'El campo correo electrónico es obligatorio',
+            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
+            'email.unique' => 'El correo electrónico ingresado ya está registrado',
+            'password.required' => 'El campo contraseña es obligatorio',
+            'password.string' => 'El campo contraseña debe ser una cadena de texto',
+            'password.min' => 'El campo contraseña debe tener un mínimo de 8 caracteres'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([

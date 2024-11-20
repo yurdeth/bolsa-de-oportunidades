@@ -15,10 +15,10 @@ Route::get('/', function () {
     ]);
 });
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
-Route::post('/empresas', [EmpresasController::class, 'store'])->name('empresas.store');
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+//Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
+//Route::post('/empresas', [EmpresasController::class, 'store'])->name('empresas.store');
 
 //Route::resource('/departamentos', 'App\Http\Controllers\DepartamentosController', ['except' => ['edit', 'create']]);
 Route::get('/departamentos', [DepartamentosController::class, 'index'])->name('departamentos.index');

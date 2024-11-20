@@ -15,10 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 
-class AuthController extends Controller
-{
-    public function login(Request $r)
-    {
+class AuthController extends Controller {
+    public function login(Request $r) {
         $user = $r->email;
         $pass = $r->password;
 
@@ -60,8 +58,7 @@ class AuthController extends Controller
         }
     }
 
-    public function access_token(Request $r)
-    {
+    public function access_token(Request $r) {
         // Obtener el usuario autenticado
         $user = $r->user();
 
@@ -84,25 +81,22 @@ class AuthController extends Controller
         return response()->json(['data' => $data, 'status' => true], 200);
     }
 
-    public function logout(Request $r)
-    {
+    public function logout(Request $r) {
         $r->user()->token()->revoke();
         return response()->json(['message' => 'Sesión finalizada', 'status' => true], 200);
     }
 
-    public function me(Request $r)
-    {
+    public function me(Request $r) {
         return response()->json(['user' => $r->user(), 'status' => true], 200);
     }
 
-    public function register(Request $r)
-    {
-        $rules = [];
-        $messages = [];
+    public function register(Request $r) {
 
-        if ($r->has('user_type') && $r->user_type == 'estudiante') {
-            $rules = [
-                'email' => 'required|email|unique:users',
+        if ($r->has('user_type') && $r->user_type == 'estudiante' || $r->has('id_tipo_usuario') && $r->id_tipo_usuario == '3') {
+            return (new EstudiantesController)->store($r);
+
+            /*$rules = [
+                'email' => 'required|email|unique:usuarios',
                 'password' => 'required',
                 'id_tipo_usuario' => 'required',
                 'estado_usuario' => 'required',
@@ -137,11 +131,14 @@ class AuthController extends Controller
                 'telefono.required' => 'El telefono es requerido',
                 'direccion.required' => 'La direccion es requerida',
             ];
+            */
         }
 
-        if ($r->has('user_type') && $r->user_type == 'empresa') {
-            $rules = [
-                'email' => 'required|email|unique:users',
+        if ($r->has('user_type') && $r->user_type == 'empresa'  || $r->has('id_tipo_usuario') && $r->id_tipo_usuario == '4') {
+            return (new EmpresasController())->store($r);
+
+            /*$rules = [
+                'email' => 'required|email|unique:usuarios',
                 'password' => 'required',
                 'id_tipo_usuario' => 'required',
                 'estado_usuario' => 'required',
@@ -174,10 +171,10 @@ class AuthController extends Controller
                 'sitio_web.required' => 'El sitio web es requerido',
                 'descripcion.required' => 'La descripcion es requerida',
                 'logo_url.required' => 'El logo es requerido',
-            ];
+            ];*/
         }
 
-        $r->validate($rules, $messages);
+        /*$r->validate($rules, $messages);
 
         try {
             DB::beginTransaction();
@@ -227,6 +224,6 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response(['message' => $th->getMessage(), 'status' => false], 500);
-        }
+        }*/
     }
 }

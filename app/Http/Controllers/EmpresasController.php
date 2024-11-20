@@ -36,7 +36,7 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request) {
         $rules = [
 //            'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
@@ -49,19 +49,39 @@ class EmpresasController extends Controller {
             'verificada' => 'boolean'
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'id_sector.required' => 'El campo sector es obligatorio',
+            'id_sector.integer' => 'El campo sector debe ser un número entero',
+            'id_sector.exists' => 'El sector seleccionado no existe',
+            'nombre.required' => 'El campo nombre es obligatorio',
+            'nombre.string' => 'El campo nombre debe ser una cadena de texto',
+            'nombre.max' => 'El campo nombre debe tener un máximo de 200 caracteres',
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está en uso',
+            'sitio_web.string' => 'El campo sitio web debe ser una cadena de texto',
+            'sitio_web.max' => 'El campo sitio web debe tener un máximo de 255 caracteres',
+            'descripcion.string' => 'El campo descripción debe ser una cadena de texto',
+            'logo_url.string' => 'El campo logo debe ser una cadena de texto',
+            'logo_url.max' => 'El campo logo debe tener un máximo de 255 caracteres',
+            'verificada.boolean' => 'El campo verificada debe ser un valor booleano'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return response()->json([
+            return response([
                 'message' => 'Error de validación',
                 'status' => false,
                 'errors' => $validator->errors()
             ], 400);
         }
+
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'id_tipo_usuario' => 2,
+            'id_tipo_usuario' => 4,
             'estado_usuario' => true,
             'fecha_registro' => Carbon::now(),
         ]);
@@ -79,11 +99,24 @@ class EmpresasController extends Controller {
             'logo_url' => $request->logo_url,
             'verificada' => $request->verificada
         ]);
+        $tokenResult = $user->createToken('Personal Access Token');
 
-        return response()->json([
-            'message' => 'Empresa creada correctamente',
+        // Configurar la expiración del token
+        $token = $tokenResult->token;
+        $token->expires_at = Carbon::now()->addWeeks(1);
+        $token->save();
+
+        $data = [
+            'user' => $user,
+            'token' => $tokenResult->accessToken, // Token de acceso
+            'token_type' => 'Bearer',
+            'expires_at' => $token->expires_at, // Fecha de expiración
+        ];
+
+        return response([
+            'message' => 'Empresa registrada correctamente',
+            'data' => $data,
             'status' => true,
-            'data' => $empresa
         ], 201);
     }
 

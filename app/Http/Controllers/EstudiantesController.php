@@ -35,7 +35,7 @@ class EstudiantesController extends Controller {
         ]);
     }
 
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request) {
         $rules = [
 //            'id_usuario' => 'required|integer|exists:users,id',
             'id_carrera' => 'required|integer|exists:carreras,id',
@@ -47,7 +47,30 @@ class EstudiantesController extends Controller {
             'direccion' => 'required|string'
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'id_carrera.required' => 'El campo carrera es obligatorio',
+            'id_carrera.integer' => 'El campo carrera debe ser un número entero',
+            'id_carrera.exists' => 'La carrera seleccionada no existe',
+            'carnet.required' => 'El campo carnet es obligatorio',
+            'carnet.string' => 'El campo carnet debe ser una cadena de texto',
+            'carnet.max' => 'El campo carnet debe tener un máximo de 10 caracteres',
+            'carnet.unique' => 'El carnet ingresado ya está registrado',
+            'nombres.required' => 'El campo nombres es obligatorio',
+            'nombres.string' => 'El campo nombres debe ser una cadena de texto',
+            'nombres.max' => 'El campo nombres debe tener un máximo de 100 caracteres',
+            'apellidos.required' => 'El campo apellidos es obligatorio',
+            'apellidos.string' => 'El campo apellidos debe ser una cadena de texto',
+            'apellidos.max' => 'El campo apellidos debe tener un máximo de 100 caracteres',
+            'anio_estudio.required' => 'El campo año de estudio es obligatorio',
+            'anio_estudio.integer' => 'El campo año de estudio debe ser un número entero',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está registrado',
+            'direccion.required' => 'El campo dirección es obligatorio',
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -77,9 +100,24 @@ class EstudiantesController extends Controller {
             'direccion' => $request->direccion
         ]);
 
-        return response()->json([
+        $tokenResult = $user->createToken('Personal Access Token');
+
+        // Configurar la expiración del token
+        $token = $tokenResult->token;
+        $token->expires_at = Carbon::now()->addWeeks(1);
+        $token->save();
+
+        $data = [
+            'user' => $user,
+            'token' => $tokenResult->accessToken, // Token de acceso
+            'token_type' => 'Bearer',
+            'expires_at' => $token->expires_at, // Fecha de expiración
+        ];
+
+        return response([
+            'message' => 'Estudiante registrado correctamente',
+            'data' => $data,
             'success' => true,
-            'data' => $estudiante
         ], 201);
     }
 
