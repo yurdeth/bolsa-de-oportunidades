@@ -82,7 +82,7 @@ class User extends Authenticatable {
             ->get();
     }
 
-    public function getCompanyInfo($id) {
+    public function getCompanyInfo($id): Collection {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('empresas', 'usuarios.id', '=', 'empresas.id_usuario')
@@ -119,6 +119,47 @@ class User extends Authenticatable {
                 'empresas.logo_url',
                 'empresas.id_sector',
                 'sectores_industria.nombre'
+            )
+            ->get();
+    }
+
+    public function getCoordinatorInfo($id): Collection {
+        if (!is_null($id)) {
+            return DB::table('usuarios')
+                ->join('coordinadores', 'usuarios.id', '=', 'coordinadores.id_usuario')
+                ->join('carreras', 'coordinadores.id_carrera', '=', 'carreras.id')
+                ->join('departamento', 'carreras.id_departamento', '=', 'departamento.id')
+                ->select(
+                    'usuarios.id',
+                    'usuarios.email',
+                    'usuarios.id_tipo_usuario',
+                    'coordinadores.nombres',
+                    'coordinadores.apellidos',
+                    'coordinadores.telefono',
+                    'coordinadores.id_carrera',
+                    'carreras.nombre_carrera',
+                    'carreras.id_departamento',
+                    'departamento.nombre_departamento'
+                )
+                ->where('usuarios.id', $id)
+                ->get();
+        }
+
+        return DB::table('usuarios')
+            ->join('coordinadores', 'usuarios.id', '=', 'coordinadores.id_usuario')
+            ->join('carreras', 'coordinadores.id_carrera', '=', 'carreras.id')
+            ->join('departamento', 'carreras.id_departamento', '=', 'departamento.id')
+            ->select(
+                'usuarios.id',
+                'usuarios.email',
+                'usuarios.id_tipo_usuario',
+                'coordinadores.nombres',
+                'coordinadores.apellidos',
+                'coordinadores.telefono',
+                'coordinadores.id_carrera',
+                'carreras.nombre_carrera',
+                'carreras.id_departamento',
+                'departamento.nombre_departamento'
             )
             ->get();
     }

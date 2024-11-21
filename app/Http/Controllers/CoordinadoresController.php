@@ -22,9 +22,9 @@ class CoordinadoresController extends Controller {
             ]);
         }
 
-        $coordinadores = Coordinadores::all();
+        $coordinadores = (new User)->getCoordinatorInfo(null);
 
-        if ($coordinadores->isEmpty()) {
+        if (is_null($coordinadores)) {
             return response()->json([
                 'message' => 'No se encontraron coordinadores',
                 'status' => false
@@ -120,7 +120,7 @@ class CoordinadoresController extends Controller {
             ]);
         }
 
-        $coordinador = Coordinadores::find($id);
+        $coordinador = (new User)->getCoordinatorInfo($id);
 
         if (is_null($coordinador)) {
             return response()->json([
