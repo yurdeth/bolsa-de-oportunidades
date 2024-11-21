@@ -44,7 +44,8 @@ class EstudiantesController extends Controller {
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
             'telefono' => 'string|max:20|unique:estudiantes',
-            'direccion' => 'required|string'
+            'direccion' => 'required|string',
+            'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
         ];
 
         $messages = [
@@ -67,7 +68,11 @@ class EstudiantesController extends Controller {
             'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
             'telefono.unique' => 'El teléfono ingresado ya está registrado',
             'direccion.required' => 'El campo dirección es obligatorio',
-            'direccion.string' => 'El campo dirección debe ser una cadena de texto'
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
+            'email.required' => 'El campo correo electrónico es obligatorio',
+            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
+            'email.unique' => 'El correo electrónico ingresado ya está registrado',
+            'email.regex' => 'El correo electrónico debe ser de la Universidad de El Salvador',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -170,16 +175,39 @@ class EstudiantesController extends Controller {
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
             'telefono' => 'string|max:20|unique:estudiantes',
-            'direccion' => 'required|string'
+            'direccion' => 'required|string',
+            'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
         ];
 
-        foreach ($rules as $key => $value) {
-            if ($request->has($key)) {
-                $validations[$key] = $value;
-            }
-        }
+        $messages = [
+            'id_usuario.integer' => 'El campo id_usuario debe ser un número entero',
+            'id_usuario.exists' => 'El usuario seleccionado no existe',
+            'id_carrera.integer' => 'El campo id_carrera debe ser un número entero',
+            'id_carrera.exists' => 'La carrera seleccionada no existe',
+            'carnet.required' => 'El campo carnet es obligatorio',
+            'carnet.string' => 'El campo carnet debe ser una cadena de texto',
+            'carnet.max' => 'El campo carnet debe tener un máximo de 10 caracteres',
+            'carnet.unique' => 'El carnet ingresado ya está registrado',
+            'nombres.required' => 'El campo nombres es obligatorio',
+            'nombres.string' => 'El campo nombres debe ser una cadena de texto',
+            'nombres.max' => 'El campo nombres debe tener un máximo de 100 caracteres',
+            'apellidos.required' => 'El campo apellidos es obligatorio',
+            'apellidos.string' => 'El campo apellidos debe ser una cadena de texto',
+            'apellidos.max' => 'El campo apellidos debe tener un máximo de 100 caracteres',
+            'anio_estudio.required' => 'El campo año de estudio es obligatorio',
+            'anio_estudio.integer' => 'El campo año de estudio debe ser un número entero',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está registrado',
+            'direccion.required' => 'El campo dirección es obligatorio',
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
+            'email.required' => 'El campo correo electrónico es obligatorio',
+            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
+            'email.unique' => 'El correo electrónico ingresado ya está registrado',
+            'email.regex' => 'El correo electrónico debe ser de la Universidad de El Salvador',
+        ];
 
-        $validator = Validator::make($request->all(), $validations);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -188,8 +216,36 @@ class EstudiantesController extends Controller {
             ], 400);
         }
 
-        foreach ($validations as $key => $value) {
-            $estudiante->$key = $request->$key;
+        if($request->has('id_carrera')) {
+            $estudiante->id_carrera = $request->id_carrera;
+        }
+
+        if($request->has('carnet')) {
+            $estudiante->carnet = $request->carnet;
+        }
+
+        if($request->has('nombres')) {
+            $estudiante->nombres = $request->nombres;
+        }
+
+        if($request->has('apellidos')) {
+            $estudiante->apellidos = $request->apellidos;
+        }
+
+        if($request->has('anio_estudio')) {
+            $estudiante->anio_estudio = $request->anio_estudio;
+        }
+
+        if($request->has('telefono')) {
+            $estudiante->telefono = $request->telefono;
+        }
+
+        if($request->has('direccion')) {
+            $estudiante->direccion = $request->direccion;
+        }
+
+        if($request->has('email')) {
+            $estudiante->email = $request->email;
         }
 
         $estudiante->save();
