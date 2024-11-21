@@ -20,9 +20,9 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiantes = Estudiantes::all();
+        $estudiantes = (new User)->getStudentInfo(null);
 
-        if ($estudiantes->isEmpty()) {
+        if (is_null($estudiantes)) {
             return response()->json([
                 'success' => false,
                 'message' => 'No hay estudiantes registrados'
@@ -129,7 +129,7 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiante = Estudiantes::find($id);
+        $estudiante = (new User)->getStudentInfo($id);
 
         if (is_null($estudiante)) {
             return response()->json([
