@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
@@ -34,8 +35,8 @@ class User extends Authenticatable {
         return $this->belongsTo("App\Models\TiposUsuarios", "id_tipo_usuario", "id");
     }
 
-    public function getStudentInfo($id) {
-        if (!is_null($id)){
+    public function getStudentInfo($id): Collection {
+        if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
                 ->join('carreras', 'estudiantes.id_carrera', '=', 'carreras.id')
@@ -77,6 +78,47 @@ class User extends Authenticatable {
                 'carreras.nombre_carrera',
                 'carreras.id_departamento',
                 'departamento.nombre_departamento'
+            )
+            ->get();
+    }
+
+    public function getCompanyInfo($id) {
+        if (!is_null($id)) {
+            return DB::table('usuarios')
+                ->join('empresas', 'usuarios.id', '=', 'empresas.id_usuario')
+                ->join('sectores_industria', 'empresas.id_sector', '=', 'sectores_industria.id')
+                ->select(
+                    'usuarios.id',
+                    'usuarios.email',
+                    'usuarios.id_tipo_usuario',
+                    'empresas.nombre',
+                    'empresas.direccion',
+                    'empresas.telefono',
+                    'empresas.sitio_web',
+                    'empresas.descripcion',
+                    'empresas.logo_url',
+                    'empresas.id_sector',
+                    'sectores_industria.nombre'
+                )
+                ->where('usuarios.id', $id)
+                ->get();
+        }
+
+        return DB::table('usuarios')
+            ->join('empresas', 'usuarios.id', '=', 'empresas.id_usuario')
+            ->join('sectores_industria', 'empresas.id_sector', '=', 'sectores_industria.id')
+            ->select(
+                'usuarios.id',
+                'usuarios.email',
+                'usuarios.id_tipo_usuario',
+                'empresas.nombre',
+                'empresas.direccion',
+                'empresas.telefono',
+                'empresas.sitio_web',
+                'empresas.descripcion',
+                'empresas.logo_url',
+                'empresas.id_sector',
+                'sectores_industria.nombre'
             )
             ->get();
     }

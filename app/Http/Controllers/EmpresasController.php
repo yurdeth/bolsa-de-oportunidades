@@ -20,9 +20,9 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresas = Empresas::all();
+        $empresas = (new User)->getCompanyInfo(null);;
 
-        if ($empresas->isEmpty()) {
+        if (is_null($empresas)) {
             return response()->json([
                 'message' => 'No se encontraron empresas',
                 'status' => false
@@ -128,7 +128,7 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresa = Empresas::find($id);
+        $empresa = (new User)->getCompanyInfo($id);
 
         if (is_null($empresa)) {
             return response()->json([
