@@ -22,7 +22,7 @@ class CoordinadoresController extends Controller {
             ]);
         }
 
-        $coordinadores = (new User)->getCoordinatorInfo(null);
+        $coordinadores = (new User)->getInfoCoordinador(null);
 
         if (is_null($coordinadores)) {
             return response()->json([
@@ -120,7 +120,7 @@ class CoordinadoresController extends Controller {
             ]);
         }
 
-        $coordinador = (new User)->getCoordinatorInfo($id);
+        $coordinador = (new User)->getInfoCoordinador($id);
 
         if (is_null($coordinador)) {
             return response()->json([

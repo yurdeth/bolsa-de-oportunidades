@@ -35,7 +35,7 @@ class User extends Authenticatable {
         return $this->belongsTo("App\Models\TiposUsuarios", "id_tipo_usuario", "id");
     }
 
-    public function getStudentInfo($id): Collection {
+    public function getInfoEstudiante($id): Collection {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
@@ -82,7 +82,7 @@ class User extends Authenticatable {
             ->get();
     }
 
-    public function getCompanyInfo($id): Collection {
+    public function getInfoEmpresa($id): Collection {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('empresas', 'usuarios.id', '=', 'empresas.id_usuario')
@@ -123,7 +123,7 @@ class User extends Authenticatable {
             ->get();
     }
 
-    public function getCoordinatorInfo($id): Collection {
+    public function getInfoCoordinador($id): Collection {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('coordinadores', 'usuarios.id', '=', 'coordinadores.id_usuario')

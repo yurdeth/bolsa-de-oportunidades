@@ -20,7 +20,7 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiantes = (new User)->getStudentInfo(null);
+        $estudiantes = (new User)->getInfoEstudiante(null);
 
         if (is_null($estudiantes)) {
             return response()->json([
@@ -134,7 +134,7 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiante = (new User)->getStudentInfo($id);
+        $estudiante = (new User)->getInfoEstudiante($id);
 
         if (is_null($estudiante)) {
             return response()->json([

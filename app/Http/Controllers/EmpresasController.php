@@ -20,7 +20,7 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresas = (new User)->getCompanyInfo(null);;
+        $empresas = (new User)->getInfoEmpresa(null);;
 
         if (is_null($empresas)) {
             return response()->json([
@@ -128,7 +128,7 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresa = (new User)->getCompanyInfo($id);
+        $empresa = (new User)->getInfoEmpresa($id);
 
         if (is_null($empresa)) {
             return response()->json([
