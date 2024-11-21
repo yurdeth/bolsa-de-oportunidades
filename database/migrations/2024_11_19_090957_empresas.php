@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('empresas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_usuario')->constrained('usuarios')
@@ -19,13 +18,12 @@ return new class extends Migration {
             $table->string('sitio_web', 255)->nullable();
             $table->text('descripcion');
             $table->string('logo_url', 255)->nullable();
-            $table->boolean('verificada')->default(false);
+            $table->boolean('verificada')->default(true);
             $table->timestamps();
         });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('empresas');
     }
 };
