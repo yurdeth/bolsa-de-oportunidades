@@ -30,7 +30,7 @@ import { api } from "../../api";
 export default {
     data() {
         return {
-            loading: false,
+            loading: true,
         };
     },
     async mounted() {
