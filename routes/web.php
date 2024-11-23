@@ -10,12 +10,4 @@ Route::fallback(function () {
 
 Route::get('/{any}', function () {
     return view('App'); // La vista donde está montada la app Vue
-})->where('any', '.*');
-
-Route::middleware(['auth', NoBrowserCache::class])->group(function () {
-    // *****************************************************************************************************
-});
-
-Route::get('/login', function () {
-    return 'login';
-})->name('login');
+})->where('any', '^(?!api).*$'); // Excluye rutas que comiencen con "api"
