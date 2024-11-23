@@ -1,11 +1,11 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Excluir rutas que comiencen con /api/
+    # Redirige las solicitudes a las APIs antes de redirigir al index.php
     RewriteCond %{REQUEST_URI} ^/api/ [NC]
     RewriteRule ^ - [L]
 
-    # Redirige todo al archivo index.php excepto los archivos existentes
+    # Redirige todo lo demás al archivo index.php excepto los archivos existentes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
