@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EmpresasController extends Controller {
@@ -88,6 +89,11 @@ class EmpresasController extends Controller {
 
         $id_usuario = $user->id;
 
+        if ($request->hasFile('logo_url')) {
+            $path = $request->file('logo_url')->store('public/logos');
+            $url = Storage::url($path);
+        }
+
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
             'id_sector' => $request->id_sector,
@@ -96,7 +102,7 @@ class EmpresasController extends Controller {
             'telefono' => $request->telefono,
             'sitio_web' => $request->sitio_web,
             'descripcion' => $request->descripcion,
-            'logo_url' => $request->logo_url,
+            'logo_url' => $url,
             'verificada' => $request->verificada
         ]);
         $tokenResult = $user->createToken('Personal Access Token');
