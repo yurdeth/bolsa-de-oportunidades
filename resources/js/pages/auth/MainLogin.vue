@@ -183,8 +183,8 @@ h2 {
                 </span>
             </div>
 
-            <div class="form-group d-flex justify-content-between">
-                <div class="form-check">
+            <div class="form-group d-flex justify-content-between flex-wrap">
+                <div class="form-check mb-2">
                     <input
                         class="form-check-input"
                         type="checkbox"

@@ -107,6 +107,7 @@ nav {
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
+    padding: 5px;
 }
 
 .nav-desktop.show {
@@ -127,6 +128,7 @@ nav {
         z-index: 1000;
         transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
     }
 
     .nav-mobile {
@@ -224,10 +226,18 @@ nav {
             </small>
         </nav>
         <nav class="nav-mobile">
-            <div>
+            <div style="display: flex; align-items: center; gap: 10px">
                 <button @click="toggleMenu" class="btn menu-button">
                     <i class="fas fa-bars"></i>
                 </button>
+                <span>Bolsa de oportunidades</span>
+            </div>
+            <div class="avatar">
+                <img
+                    :src="getPhotoAvata()"
+                    alt="Logo Facultad"
+                    style="width: 45px"
+                />
             </div>
         </nav>
         <main class="py-4 px-5">
