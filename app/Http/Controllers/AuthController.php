@@ -144,6 +144,10 @@ class AuthController extends Controller {
              * - logo_url (imagen)
              */
         }
-        return response(['message' => 'Tipo de usuario no válido', 'status' => false], 400);
+
+        return response()->json([
+            'message' => 'Tipo de usuario no válido',
+            'status' => false
+        ], 400);
     }
 }
