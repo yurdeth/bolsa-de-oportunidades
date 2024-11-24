@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\DB;
 
 
 class AuthController extends Controller {
+    /*
+        Recibir: email, password
+        Retornar: token, token_type, expires_at, información del usuario
+    */
     public function login(Request $r) {
         $user = $r->email;
         $pass = $r->password;
@@ -91,9 +95,31 @@ class AuthController extends Controller {
     }
 
     public function register(Request $r) {
+        /*
+            Recibir: user_type (estudiante = 3, empresa = 4)
+        */
 
         if ($r->has('user_type') && $r->user_type == 'estudiante' || $r->has('id_tipo_usuario') && $r->id_tipo_usuario == '3') {
             return (new EstudiantesController)->store($r);
+            /**
+             * Para evitar la duplicidad de código, se puede llamar al método store del controlador EstudiantesController
+             * Datos requeridos para registrar estudiantes:
+             * - user_type (estudiante), o id_tipo_usuario (3)
+             * - email
+             * - password
+             * - id_tipo_usuario (3)
+             * - estado_usuario (true)
+             * - fecha_registro (hoy)
+             * - token_recuperacion (cualquier cosa, no se ocupa en sí)
+             * - token_expiracion (cualquier cosa, no se ocupa en sí)
+             * - carnet
+             * - nombres
+             * - apellidos
+             * - id_carrera (traer la lista de carreras a partir del filtrado de departamentos: /api/departamentos, /api/carreras/{id})
+             * - año de estudio
+             * - teléfono de contacto
+             * - dirección de residencia
+            */
 
             /*$rules = [
                 'email' => 'required|email|unique:usuarios',
