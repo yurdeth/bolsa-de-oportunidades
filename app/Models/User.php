@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -31,11 +32,15 @@ class User extends Authenticatable {
         'token_recuperacion',
     ];
 
-    public function tipoUsuario() {
+    protected $appends = ['info_estudiante', 'info_empresa', 'info_coordinador'];
+
+    public function tipoUsuario()
+    {
         return $this->belongsTo("App\Models\TiposUsuarios", "id_tipo_usuario", "id");
     }
 
-    public function getInfoEstudiante($id): Collection {
+    public function getInfoEstudiante($id): Collection
+    {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
@@ -82,7 +87,13 @@ class User extends Authenticatable {
             ->get();
     }
 
-    public function getInfoEmpresa($id): Collection {
+    public function getInfoEstudianteAttribute(): Collection
+    {
+        return $this->getInfoEstudiante($this->id);
+    }
+
+    public function getInfoEmpresa($id): Collection
+    {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('empresas', 'usuarios.id', '=', 'empresas.id_usuario')
@@ -123,7 +134,13 @@ class User extends Authenticatable {
             ->get();
     }
 
-    public function getInfoCoordinador($id): Collection {
+    public function getInfoEmpresaAttribute(): Collection
+    {
+        return $this->getInfoEmpresa($this->id);
+    }
+
+    public function getInfoCoordinador($id): Collection
+    {
         if (!is_null($id)) {
             return DB::table('usuarios')
                 ->join('coordinadores', 'usuarios.id', '=', 'coordinadores.id_usuario')
@@ -162,5 +179,10 @@ class User extends Authenticatable {
                 'departamento.nombre_departamento'
             )
             ->get();
+    }
+
+    public function getInfoCoordinadorAttribute(): Collection
+    {
+        return $this->getInfoCoordinador($this->id);
     }
 }

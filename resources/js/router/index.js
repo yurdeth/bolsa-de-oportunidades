@@ -12,7 +12,13 @@ const routes = [
     },
     {
         path: "/dashboard",
-        component: () => import("../pages/dashboard/MainDashboard.vue"),
+        component: () => import("../layouts/MainLayout.vue"),
+        children: [
+            {
+                path: "/dashboard",
+                component: () => import("../pages/dashboard/MainDashboard.vue"),
+            },
+        ],
     },
 ];
 
