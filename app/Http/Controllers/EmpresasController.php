@@ -24,14 +24,7 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresas = (new User)->getInfoEmpresa(null);;
-
-        if (is_null($empresas)) {
-            return response()->json([
-                'message' => 'No se encontraron empresas',
-                'status' => false
-            ], 404);
-        }
+        $empresas = (new User)->getInfoEmpresa(null);
 
         return response()->json([
             'message' => 'Empresas recuperadas correctamente',

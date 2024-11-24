@@ -22,13 +22,6 @@ class EstudiantesController extends Controller {
 
         $estudiantes = (new User)->getInfoEstudiante(null);
 
-        if (is_null($estudiantes)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No hay estudiantes registrados'
-            ], 404);
-        }
-
         return response()->json([
             'success' => true,
             'data' => $estudiantes

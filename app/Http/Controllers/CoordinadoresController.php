@@ -24,13 +24,6 @@ class CoordinadoresController extends Controller {
 
         $coordinadores = (new User)->getInfoCoordinador(null);
 
-        if (is_null($coordinadores)) {
-            return response()->json([
-                'message' => 'No se encontraron coordinadores',
-                'status' => false
-            ], 404);
-        }
-
         return response()->json([
             'message' => 'Coordinadores recuperados correctamente',
             'status' => true,
