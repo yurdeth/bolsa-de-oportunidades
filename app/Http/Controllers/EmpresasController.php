@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Empresas;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -37,7 +40,7 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
         $rules = [
 //            'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
@@ -72,7 +75,7 @@ class EmpresasController extends Controller {
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return response([
+            return response()->json([
                 'message' => 'Error de validación',
                 'status' => false,
                 'errors' => $validator->errors()
@@ -119,11 +122,11 @@ class EmpresasController extends Controller {
             'expires_at' => $token->expires_at, // Fecha de expiración
         ];
 
-        return response([
+        return response()->json([
             'message' => 'Empresa registrada correctamente',
-            'data' => $data,
             'status' => true,
-        ], 201);
+            'data' => $data
+        ]);
     }
 
     public function show($id): JsonResponse {

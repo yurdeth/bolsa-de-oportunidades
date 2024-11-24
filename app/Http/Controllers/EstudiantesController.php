@@ -35,7 +35,7 @@ class EstudiantesController extends Controller {
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
         $rules = [
 //            'id_usuario' => 'required|integer|exists:users,id',
             'id_carrera' => 'required|integer|exists:carreras,id',
@@ -119,7 +119,7 @@ class EstudiantesController extends Controller {
             'expires_at' => $token->expires_at, // Fecha de expiración
         ];
 
-        return response([
+        return response()->json([
             'message' => 'Estudiante registrado correctamente',
             'data' => $data,
             'success' => true,
