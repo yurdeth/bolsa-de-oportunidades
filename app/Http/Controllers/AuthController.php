@@ -119,10 +119,10 @@ class AuthController extends Controller {
              * - año de estudio
              * - teléfono de contacto
              * - dirección de residencia
-            */
+             */
         }
 
-        if ($r->has('user_type') && $r->user_type == 'empresa'  || $r->has('id_tipo_usuario') && $r->id_tipo_usuario == '4') {
+        if ($r->has('user_type') && $r->user_type == 'empresa' || $r->has('id_tipo_usuario') && $r->id_tipo_usuario == '4') {
             return (new EmpresasController())->store($r);
             /**
              * Para evitar la duplicidad de código, se puede llamar al método store del controlador EmpresasController
@@ -143,7 +143,7 @@ class AuthController extends Controller {
              * - descripción
              * - logo_url (imagen)
              */
-
+        }
         return response(['message' => 'Tipo de usuario no válido', 'status' => false], 400);
     }
 }
