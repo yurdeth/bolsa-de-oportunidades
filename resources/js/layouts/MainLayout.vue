@@ -230,7 +230,6 @@ nav {
                     <router-link to="/dashboard" @click="showMenu = false">
                         Dashboard
                     </router-link>
-
                     <router-link
                         to="/empresas"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
