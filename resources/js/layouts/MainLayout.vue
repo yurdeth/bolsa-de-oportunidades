@@ -196,20 +196,20 @@ nav {
                     </button>
                 </div>
                 <div class="avatar">
-                    <img :src="getPhotoAvata()" alt="Logo Facultad" />
+                    <img :src="getPhotoAvata()" alt="Logo Facultad"/>
                     <h3>
                         {{
                             user_data.info_coordinador.length > 0
                                 ? user_data.info_coordinador[0].nombres +
-                                  " " +
-                                  user_data.info_coordinador[0].apellidos
+                                " " +
+                                user_data.info_coordinador[0].apellidos
                                 : user_data.info_estudiante.length > 0
-                                ? user_data.info_estudiante[0].nombres +
-                                  " " +
-                                  user_data.info_estudiante[0].apellidos
-                                : user_data.info_empresa.length > 0
-                                ? user_data.info_empresa[0].nombre
-                                : "Administrador"
+                                    ? user_data.info_estudiante[0].nombres +
+                                    " " +
+                                    user_data.info_estudiante[0].apellidos
+                                    : user_data.info_empresa.length > 0
+                                        ? user_data.info_empresa[0].nombre
+                                        : "Administrador"
                         }}
                     </h3>
                     <h4>{{ user_data.email }}</h4>
@@ -218,10 +218,10 @@ nav {
                             user_data.info_coordinador.length > 0
                                 ? "Coordinador"
                                 : user_data.info_estudiante.length > 0
-                                ? "Estudiante"
-                                : user_data.info_empresa.length > 0
-                                ? "Empresa"
-                                : "Administrador"
+                                    ? "Estudiante"
+                                    : user_data.info_empresa.length > 0
+                                        ? "Empresa"
+                                        : "Administrador"
                         }}
                     </h5>
                 </div>
@@ -229,9 +229,17 @@ nav {
                     <router-link to="/dashboard" @click="showMenu = false">
                         Dashboard
                     </router-link>
-                    <router-link to="/empresas" @click="showMenu = false">
+
+                    <router-link
+                        to="/empresas"
+                        v-if="Number(user_data.id_tipo_usuario) === 1"
+                        @click="showMenu = false">
                         Empresas
                     </router-link>
+
+<!--                    <router-link to="/empresas" @click="showMenu = false">
+                        Empresas
+                    </router-link>-->
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
@@ -268,7 +276,7 @@ nav {
 </template>
 
 <script>
-import { api } from "../api";
+import {api} from "../api";
 import Alert from "../helpers/Alert";
 
 export default {
