@@ -415,11 +415,14 @@ h2 {
                             <div class="input-group-append">
                                 <span
                                     class="input-group-text toggle-password"
-                                    @click="togglePassword"
+                                    @click="
+                                        showConfirmPassword =
+                                            !showConfirmPassword
+                                    "
                                 >
                                     <i
                                         :class="
-                                            showPassword
+                                            showConfirmPassword
                                                 ? 'fa fa-eye'
                                                 : 'fa fa-eye-slash'
                                         "
@@ -464,6 +467,7 @@ export default {
     data() {
         return {
             showPassword: false,
+            showConfirmPassword: false,
             loading: false,
             form: {
                 nombre: "",
