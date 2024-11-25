@@ -5,7 +5,7 @@
                 <span class="sr-only">Cargando...</span>
             </div>
         </div>
-        <h3>Compañías</h3>
+        <h3>Empresas</h3>
 
         <div>
             <table class="table table-striped">

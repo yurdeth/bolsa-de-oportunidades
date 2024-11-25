@@ -63,64 +63,64 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
 
     //-------------------------------------------------------------------------
     Route::post('/departamentos', [DepartamentosController::class, 'store'])->name('departamentos.store');
-    Route::put('/departamentos/{id}', [DepartamentosController::class, 'update'])->name('departamentos.update');
+    Route::patch('/departamentos/{id}', [DepartamentosController::class, 'update'])->name('departamentos.update');
     Route::delete('/departamentos/{id}', [DepartamentosController::class, 'destroy'])->name('departamentos.destroy');
 
     //-------------------------------------------------------------------------
     Route::post('/carreras', [CarrerasController::class, 'store'])->name('carreras.store');
-    Route::put('/carreras/{id}', [CarrerasController::class, 'update'])->name('carreras.update');
+    Route::patch('/carreras/{id}', [CarrerasController::class, 'update'])->name('carreras.update');
     Route::delete('/carreras/{id}', [CarrerasController::class, 'destroy'])->name('carreras.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/coordinadores', [CoordinadoresController::class, 'index'])->name('coordinadores.index');
     Route::get('/coordinadores/{id}', [CoordinadoresController::class, 'show'])->name('coordinadores.show');
     Route::post('/coordinadores', [CoordinadoresController::class, 'store'])->name('coordinadores.store');
-    Route::put('/coordinadores/{id}', [CoordinadoresController::class, 'update'])->name('coordinadores.update');
+    Route::patch('/coordinadores/{id}', [CoordinadoresController::class, 'update'])->name('coordinadores.update');
     Route::delete('/coordinadores/{id}', [CoordinadoresController::class, 'destroy'])->name('coordinadores.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/empresas', [EmpresasController::class, 'index'])->name('empresas.index');
     Route::get('/empresas/{id}', [EmpresasController::class, 'show'])->name('empresas.show');
-    Route::put('/empresas/{id}', [EmpresasController::class, 'update'])->name('empresas.update');
+    Route::patch('/empresas/{id}', [EmpresasController::class, 'update'])->name('empresas.update');
     Route::delete('/empresas/{id}', [EmpresasController::class, 'destroy'])->name('empresas.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/estudiantes', [EstudiantesController::class, 'index'])->name('estudiantes.index');
     Route::get('/estudiantes/{id}', [EstudiantesController::class, 'show'])->name('estudiantes.show');
-    Route::put('/estudiantes/{id}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
+    Route::patch('/estudiantes/{id}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
     Route::delete('/estudiantes/{id}', [EstudiantesController::class, 'destroy'])->name('estudiantes.destroy');
 
     //-------------------------------------------------------------------------
     Route::post('/sectores-industria/{id}', [SectoresIndustriaController::class, 'store'])->name('sectores.store');
-    Route::put('/sectores-industria/{id}', [SectoresIndustriaController::class, 'update'])->name('sectores.update');
+    Route::patch('/sectores-industria/{id}', [SectoresIndustriaController::class, 'update'])->name('sectores.update');
     Route::delete('/sectores-industria/{id}', [SectoresIndustriaController::class, 'destroy'])->name('sectores.destroy');
 
     //-------------------------------------------------------------------------
     Route::post('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'store'])->name('modalidades.store');
-    Route::put('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'update'])->name('modalidades.update');
+    Route::patch('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'update'])->name('modalidades.update');
     Route::delete('/modalidades-trabajo/{id}', [ModalidadesTrabajoController::class, 'destroy'])->name('modalidades.destroy');
 
     //-------------------------------------------------------------------------
     Route::post('/tipos-proyecto/{id}', [TiposProyectoController::class, 'store'])->name('tipos.proyectos.store');
-    Route::put('/tipos-proyecto/{id}', [TiposProyectoController::class, 'update'])->name('tipos.proyectos.update');
+    Route::patch('/tipos-proyecto/{id}', [TiposProyectoController::class, 'update'])->name('tipos.proyectos.update');
     Route::delete('/tipos-proyecto/{id}', [TiposProyectoController::class, 'destroy'])->name('tipos.proyectos.destroy');
 
     //-------------------------------------------------------------------------
     Route::post('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'store'])->name('estado.oferta.store');
-    Route::put('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'update'])->name('estado.oferta.update');
+    Route::patch('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'update'])->name('estado.oferta.update');
     Route::delete('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'destroy'])->name('estado.oferta.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
     Route::get('/proyectos/{id}', [ProyectosController::class, 'show'])->name('proyectos.show');
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
-    Route::put('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
+    Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');
     Route::get('/aplicaciones/{id}', [AplicacionesController::class, 'show'])->name('aplicaciones.show');
     Route::post('/aplicaciones', [AplicacionesController::class, 'store'])->name('aplicaciones.store');
-    Route::put('/aplicaciones/{id}', [AplicacionesController::class, 'update'])->name('aplicaciones.update');
+    Route::patch('/aplicaciones/{id}', [AplicacionesController::class, 'update'])->name('aplicaciones.update');
     Route::delete('/aplicaciones/{id}', [AplicacionesController::class, 'destroy'])->name('aplicaciones.destroy');
 });
