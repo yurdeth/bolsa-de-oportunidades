@@ -25,6 +25,10 @@ const routes = [
         path: "/register",
         component: () => import("../pages/companies/RegisterCompanies.vue"),
     },
+    {
+        path: "/inicio",
+        component: () => import("../pages/companies/MainCompanies.vue"),
+    }
 ];
 
 // Configura el router

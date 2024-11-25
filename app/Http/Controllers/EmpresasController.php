@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresas;
 use App\Models\User;
+use App\Rules\PhoneNumberRule;
 use Carbon\Carbon;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Application;
@@ -39,7 +40,7 @@ class EmpresasController extends Controller {
             'id_sector' => 'required|integer|exists:sectores_industria,id',
             'nombre' => 'required|string|max:200',
             'direccion' => 'string',
-            'telefono' => 'string|max:20|unique:empresas',
+            'telefono' => 'string|max:20|unique:empresas', new PhoneNumberRule(),
             'sitio_web' => 'string|max:255',
             'descripcion' => 'string',
             'logo_url' => 'string|max:255',
@@ -108,13 +109,14 @@ class EmpresasController extends Controller {
         }*/
 
         $url = "No Data Was Provided"; // <- Test purpose only
+        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503" . $request->telefono;
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
             'id_sector' => $request->id_sector,
             'nombre' => $request->nombre,
             'direccion' => $request->direccion,
-            'telefono' => $request->telefono,
+            'telefono' => $telefono,
             'sitio_web' => $request->sitio_web,
             'descripcion' => $request->descripcion,
             'logo_url' => $url,

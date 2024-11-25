@@ -110,7 +110,7 @@ h2 {
                         <div class="input-group">
                             <input id="nombre" type="text" class="form-control" :class="{ 'is-invalid': errors.nombre }"
                                    name="nombre" placeholder="Ingrese el nombre comercial de su empresa"
-                                   v-model="form.nombre" required autofocus/>
+                                   v-model="form.nombre" style="height: 40px" required autofocus/>
                         </div>
                         <span v-if="errors.nombre" class="invalid-feedback d-block" role="alert">
                             <strong>{{ errors.nombre[0] }}</strong>
@@ -122,7 +122,7 @@ h2 {
                         <label for="email" class="form-label">Correo Electrónico</label>
                         <div class="input-group">
                             <input id="email" type="email" class="form-control" :class="{ 'is-invalid': errors.email }"
-                                   name="email" placeholder="Ingrese su correo" v-model="form.email" required
+                                   name="email" placeholder="Ingrese su correo" v-model="form.email"  style="height: 40px" required
                                    autofocus/>
                         </div>
                         <span v-if="errors.email" class="invalid-feedback d-block" role="alert">
@@ -136,7 +136,7 @@ h2 {
                         <div class="input-group">
                             <input id="direccion" type="text" class="form-control"
                                    :class="{ 'is-invalid': errors.direccion }" name="direccion"
-                                   placeholder="Ingrese la ubicación de su empresa" v-model="form.direccion" required
+                                   placeholder="Ingrese la ubicación de su empresa" v-model="form.direccion"  style="height: 40px" required
                                    autofocus/>
                         </div>
                         <span v-if="errors.direccion" class="invalid-feedback d-block" role="alert">
@@ -150,7 +150,7 @@ h2 {
                         <div class="input-group">
                             <input id="telefono" type="text" class="form-control"
                                    :class="{ 'is-invalid': errors.telefono }" name="telefono"
-                                   placeholder="Ingrese el teléfono de su empresa" v-model="form.telefono" required
+                                   placeholder="Ingrese el teléfono de su empresa" v-model="form.telefono"  style="height: 40px" required
                                    autofocus/>
                         </div>
                         <span v-if="errors.telefono" class="invalid-feedback d-block" role="alert">
@@ -164,7 +164,7 @@ h2 {
                         <div class="input-group">
                             <input id="sitio_web" type="text" class="form-control"
                                    :class="{ 'is-invalid': errors.sitio_web }" name="sitio_web"
-                                   placeholder="Ingrese el sitio web de su empresa" v-model="form.sitio_web" required
+                                   placeholder="Ingrese el sitio web de su empresa" v-model="form.sitio_web"  style="height: 40px" required
                                    autofocus/>
                         </div>
                         <span v-if="errors.sitio_web" class="invalid-feedback d-block" role="alert">
@@ -177,7 +177,7 @@ h2 {
                         <label for="id_sector" class="form-label">Sector de la industria</label>
                         <div class="input-group">
                             <select id="id_sector" class="form-control" :class="{ 'is-invalid': errors.id_sector }"
-                                    name="id_sector" v-model="form.id_sector" required>
+                                    name="id_sector" v-model="form.id_sector" style="height: 40px" required>
                                 <option value="" disabled>Seleccione un sector</option>
                                 <option v-for="sector in sectors" :key="sector.id" :value="sector.id">{{
                                         sector.nombre
@@ -196,7 +196,7 @@ h2 {
                         <div class="input-group">
                             <textarea id="descripcion" type="text" class="form-control"
                                       :class="{ 'is-invalid': errors.descripcion }" name="descripcion"
-                                      placeholder="Ingrese una descripción de su empresa" v-model="form.descripcion"
+                                      placeholder="Ingrese una descripción de su empresa"  style="height: 40px" v-model="form.descripcion"
                                       required autofocus></textarea>
                         </div>
                         <span v-if="errors.descripcion" class="invalid-feedback d-block" role="alert">
@@ -210,7 +210,7 @@ h2 {
                         <div class="input-group">
                             <input id="logo_url" type="file" class="form-control"
                                    :class="{ 'is-invalid': errors.logo_url }" name="logo_url"
-                                   placeholder="Ingrese el logo de su empresa" v-on:change="form.logo_url"
+                                   placeholder="Ingrese el logo de su empresa" style="height: 40px" v-on:change="form.logo_url"
                                    autofocus/>
                         </div>
                         <span v-if="errors.logo_url" class="invalid-feedback d-block" role="alert">
@@ -224,7 +224,7 @@ h2 {
                         <div class="input-group">
                             <input id="password" :type="showPassword ? 'text' : 'password'" class="form-control"
                                    :class="{ 'is-invalid': errors.password }" name="password"
-                                   placeholder="Ingrese su contraseña" v-model="form.password" required/>
+                                   placeholder="Ingrese su contraseña" v-model="form.password" style="height: 40px" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text toggle-password" @click="togglePassword">
                                     <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
@@ -243,7 +243,7 @@ h2 {
                             <input id="password_confirmation" :type="showPassword ? 'text' : 'password'"
                                    class="form-control" :class="{ 'is-invalid': errors.password_confirmation }"
                                    name="password_confirmation" placeholder="Repita su contraseña"
-                                   v-model="form.password_confirmation" required/>
+                                   v-model="form.password_confirmation" style="height: 40px" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text toggle-password" @click="togglePassword">
                                     <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
@@ -332,7 +332,7 @@ export default {
                 let response = await api.post("/register", this.form);
                 localStorage.setItem("token", response.data.data.token);
                 localStorage.setItem("user", JSON.stringify(response.data.data.user));
-                this.$router.push("/dashboard");
+                this.$router.push("/inicio");
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.errors) {
                     this.errors = error.response.data.errors;

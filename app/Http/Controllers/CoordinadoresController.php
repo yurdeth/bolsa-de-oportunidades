@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Coordinadores;
 use App\Models\User;
+use App\Rules\PhoneNumberRule;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class CoordinadoresController extends Controller {
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'id_carrera' => 'required|integer|exists:carreras,id',
-            'telefono' => 'string|max:20|unique:coordinadores',
+            'telefono' => 'string|max:20|unique:coordinadores', new PhoneNumberRule(),
             'email' => 'required|email|unique:usuarios',
             'password' => 'required|string|min:8'
         ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estudiantes;
 use App\Models\User;
+use App\Rules\PhoneNumberRule;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class EstudiantesController extends Controller {
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
-            'telefono' => 'string|max:20|unique:estudiantes',
+            'telefono' => 'string|max:20|unique:estudiantes', new PhoneNumberRule(),
             'direccion' => 'required|string',
             'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
         ];
@@ -87,6 +88,8 @@ class EstudiantesController extends Controller {
 
         $id_usuario = $user->id;
 
+        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503" . $request->telefono;
+
         $estudiante = Estudiantes::create([
             'id_usuario' => $id_usuario,
             'id_carrera' => $request->id_carrera,
@@ -94,7 +97,7 @@ class EstudiantesController extends Controller {
             'nombres' => $request->nombres,
             'apellidos' => $request->apellidos,
             'anio_estudio' => $request->anio_estudio,
-            'telefono' => $request->telefono,
+            'telefono' => "+503" .  $telefono,
             'direccion' => $request->direccion
         ]);
 
