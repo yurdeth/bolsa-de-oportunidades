@@ -19,16 +19,16 @@ const routes = [
                 path: "/dashboard",
                 component: () => import("../pages/dashboard/MainDashboard.vue"),
             },
+            {
+                path: "/empresas",
+                component: () => import("../pages/companies/MainCompanies.vue"),
+            },
         ],
     },
     {
         path: "/register",
-        component: () => import("../pages/companies/RegisterCompanies.vue"),
+        component: () => import("../pages/auth/MainRegisterCompanies.vue"),
     },
-    {
-        path: "/inicio",
-        component: () => import("../pages/companies/MainCompanies.vue"),
-    }
 ];
 
 // Configura el router

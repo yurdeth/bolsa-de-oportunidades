@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 
-function generarGraficoBarras(selector, etiquetas, datos) {
+function chart(selector, etiquetas, datos) {
     // Generar colores aleatorios
     const coloresAleatorios = datos.map(() => {
         const randomColor = () => Math.floor(Math.random() * 256);
@@ -37,4 +37,4 @@ function generarGraficoBarras(selector, etiquetas, datos) {
     return myChart;
 }
 
-export { generarGraficoBarras };
+export default chart;

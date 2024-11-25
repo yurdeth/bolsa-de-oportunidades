@@ -25,12 +25,6 @@ body {
     width: 100px;
     height: 100px;
 }
-
-.content {
-    width: 99%;
-    height: 97vh;
-    overflow-y: auto;
-}
 </style>
 
 <template>
@@ -39,7 +33,7 @@ body {
             <span class="sr-only">Cargando...</span>
         </div>
     </div>
-    content
+    <div>content</div>
 </template>
 
 <script>

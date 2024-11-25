@@ -30,15 +30,20 @@ class DashboardController extends Controller
                 ->groupBy('tipos_usuario.nombre')
                 ->get();
 
+            $dataAplicacionesByStatus = DB::table('aplicaciones')
+                ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+                ->select('estados_aplicacion.nombre as status', DB::raw('count(*) as total'))
+                ->groupBy('estados_aplicacion.nombre')
+                ->get();
+
             return response()->json([
                 'totalUsers' => $totalUsers,
                 'activeRequests' => $activeRequests,
                 'activeProjects' => $activeProjects,
                 'totalStudent' => $totalStudent,
-                'dataUserbyRol' => $dataUserbyRol
+                'dataUserbyRol' => $dataUserbyRol,
+                'dataAplicacionesByStatus' => $dataAplicacionesByStatus
             ], 200);
-        } elseif ($user->id_tipo_usuario == 2) {
-            return redirect()->route('coordinadores.index');
         }
 
         return response()->json(['status' => 'success', 'message' => 'no se ha encontrado una ruta para el usuario'], 404);

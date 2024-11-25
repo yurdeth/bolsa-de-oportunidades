@@ -26,12 +26,6 @@ body {
     height: 100px;
 }
 
-.content {
-    width: 99%;
-    height: 97vh;
-    overflow-y: auto;
-}
-
 /* Título Principal */
 .content h1 {
     font-size: 28px;
@@ -90,8 +84,6 @@ body {
 
 /* Gráficos */
 .details {
-    display: flex;
-    gap: 20px;
     margin-bottom: 40px;
 }
 
@@ -192,7 +184,7 @@ body {
                 </p>
             </div>
             <div class="stat-card">
-                <i class="fas fa-bell icon"></i>
+                <i class="fas fa-user-graduate icon"></i>
                 <h2>Estudiantes Registrados</h2>
                 <p>
                     {{
@@ -206,14 +198,18 @@ body {
         </section>
 
         <!-- Gráficos y Listados -->
-        <section class="details">
-            <div class="chart">
-                <h3>Usuarios por Rol</h3>
-                <div class="chart-placeholder">📊 gráfico de roles</div>
+        <section class="row details">
+            <div class="col-12 col-md-6 px-3 mb-3">
+                <div class="chart">
+                    <h3>Usuarios por Rol</h3>
+                    <canvas id="userChart" width="400" height="200"></canvas>
+                </div>
             </div>
-            <div class="chart">
-                <h3>Solicitudes por Estado</h3>
-                <div class="chart-placeholder">📈 gráfico de estados</div>
+            <div class="col-12 col-md-6 px-3 mb-3">
+                <div class="chart">
+                    <h3>Solicitudes por Estado</h3>
+                    <canvas id="requestChart" width="400" height="200"></canvas>
+                </div>
             </div>
         </section>
     </div>
@@ -222,6 +218,8 @@ body {
 <script>
 import { api } from "../../api";
 import Alert from "../../helpers/Alert";
+import chart from "../../helpers/Chart";
+
 export default {
     data() {
         return {
@@ -231,10 +229,6 @@ export default {
             activeRequests: 0,
             activedProjects: 0,
             numStudents: 0,
-            chartDataUser: {
-                labels: [],
-                datasets: [],
-            },
         };
     },
     async mounted() {
@@ -249,23 +243,16 @@ export default {
                 this.numStudents = response.data.totalStudent;
 
                 // Cargar gráficos
-                let dataUserbyRole = response.data.dataUserbyRole;
-                this.chartDataUser.labels = dataUserbyRole.map(
-                    (item) => item.rol
-                );
-                this.chartDataUser.datasets = [
-                    {
-                        label: "Usuarios por Rol",
-                        backgroundColor: [
-                            "#ffcd56",
-                            "#ff6384",
-                            "#36a2eb",
-                            "#fd6b19",
-                            "#4bc0c0",
-                        ],
-                        data: dataUserbyRole.map((item) => item.total),
-                    },
-                ];
+                let dataUserbyRole = response.data.dataUserbyRol,
+                    label = dataUserbyRole.map((item) => item.rol),
+                    data = dataUserbyRole.map((item) => item.total);
+                chart("#userChart", label, data);
+
+                let dataAplicacionesByStatus =
+                    response.data.dataAplicacionesByStatus;
+                label = dataAplicacionesByStatus.map((item) => item.status);
+                data = dataAplicacionesByStatus.map((item) => item.total);
+                chart("#requestChart", label, data);
             }
         } catch (error) {
             Alert("Error", error.response.data.message, "error");

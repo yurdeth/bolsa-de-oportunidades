@@ -13,6 +13,12 @@
     grid-template-columns: 300px 1fr;
 }
 
+.content {
+    width: 99%;
+    height: 97vh;
+    overflow-y: auto;
+}
+
 nav {
     display: flex;
     flex-direction: column;
@@ -86,14 +92,12 @@ nav {
     font-weight: bold;
 }
 
-.links a.router-link-active,
 .links a.router-link-exact-active {
     background-color: #fff;
     color: #8b0000;
     font-weight: bold;
 }
 
-.links a.router-link-active:hover,
 .links a.router-link-exact-active:hover {
     background-color: #595959ff;
     color: white;
@@ -213,6 +217,7 @@ nav {
                 </div>
                 <div class="links">
                     <router-link to="/dashboard">Dashboard</router-link>
+                    <router-link to="/empresas">Empresas</router-link>
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
