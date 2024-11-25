@@ -90,12 +90,14 @@ class CoordinadoresController extends Controller {
 
         $id_usuario = $user->id;
 
+        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503 " . $request->telefono;
+
         $coordinador = Coordinadores::create([
             'id_usuario' => $id_usuario,
             'nombres' => $request->nombres,
             'apellidos' => $request->apellidos,
             'id_carrera' => $request->id_carrera,
-            'telefono' => $request->telefono
+            'telefono' => $telefono
         ]);
 
         return response()->json([

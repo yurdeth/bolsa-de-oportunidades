@@ -109,7 +109,7 @@ class EmpresasController extends Controller {
         }*/
 
         $url = "No Data Was Provided"; // <- Test purpose only
-        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503" . $request->telefono;
+        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503 " . $request->telefono;
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,

@@ -88,7 +88,7 @@ class EstudiantesController extends Controller {
 
         $id_usuario = $user->id;
 
-        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503" . $request->telefono;
+        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503 " . $request->telefono;
 
         $estudiante = Estudiantes::create([
             'id_usuario' => $id_usuario,
