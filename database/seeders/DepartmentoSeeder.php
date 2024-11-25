@@ -10,8 +10,6 @@ class DepartmentoSeeder extends Seeder {
     public function run(): void {
         $departments = [
             ['nombre_departamento' => 'Ingeniería y Arquitectura', 'created_at' => now(), 'updated_at' => now()],
-            ['nombre_departamento' => 'Ciencias de la Salud', 'created_at' => now(), 'updated_at' => now()],
-            ['nombre_departamento' => 'Ciencias Sociales', 'created_at' => now(), 'updated_at' => now()],
             ['nombre_departamento' => 'Medicina', 'created_at' => now(), 'updated_at' => now()],
             ['nombre_departamento' => 'Humanidades', 'created_at' => now(), 'updated_at' => now()],
             ['nombre_departamento' => 'Agronomía', 'created_at' => now(), 'updated_at' => now()],

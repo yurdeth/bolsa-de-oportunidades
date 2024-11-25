@@ -33,6 +33,7 @@ Route::get('/departamentos/{id}', [DepartamentosController::class, 'show'])->nam
 //-------------------------------------------------------------------------
 Route::get('/carreras', [CarrerasController::class, 'index'])->name('carreras.index');
 Route::get('/carreras/{id}', [CarrerasController::class, 'show'])->name('carreras.show');
+Route::get('/departamentos/carreras/{id}', [CarrerasController::class, 'getCarrerasByDepartamento'])->name('carreras.by.departamento');
 
 //-------------------------------------------------------------------------
 Route::get('/sectores-industria', [SectoresIndustriaController::class, 'index'])->name('sectores.index');

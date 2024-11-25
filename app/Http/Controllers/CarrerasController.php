@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Carreras;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -132,6 +133,20 @@ class CarrerasController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Carrera eliminada correctamente'
+        ]);
+    }
+
+    public function getCarrerasByDepartamento($id_departamento): JsonResponse {
+        $carreras = Carreras::where('id_departamento', $id_departamento)->get();
+        if ($carreras->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No hay carreras registradas para este departamento'
+            ], 404);
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $carreras
         ]);
     }
 }

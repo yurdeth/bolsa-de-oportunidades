@@ -11,13 +11,13 @@
                 class="btn btn-success"
                 data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop"
-                @click="$emit('view-company', coordinator.id)"
+                @click="$emit('view-coordinator', coordinator)"
             >
                 Editar
             </button>
             <button
                 class="btn btn-danger"
-                @click="$emit('delete-company', coordinator.id)"
+                @click="$emit('delete-coordinator', coordinator.id)"
             >
                 Eliminar
             </button>
