@@ -240,7 +240,7 @@ nav {
                 />
             </div>
         </nav>
-        <main class="py-4 px-5">
+        <main class="content py-4 px-5">
             <router-view></router-view>
         </main>
     </div>
