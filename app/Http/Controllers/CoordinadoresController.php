@@ -147,15 +147,14 @@ class CoordinadoresController extends Controller {
     }
 
     public function update(Request $request, $id): JsonResponse {
-        if (Auth::user()->id != $id) {
+        if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([
-//                'message' => 'No tienes permisos para realizar esta acción',
                 'message' => 'Ruta no encontrada en este servidor',
                 'status' => false
             ]);
         }
 
-        $coordinador = Coordinadores::find($id);
+        $coordinador = Coordinadores::where('id_usuario', $id)->first();
 
         if (is_null($coordinador)) {
             return response()->json([
@@ -164,22 +163,27 @@ class CoordinadoresController extends Controller {
             ], 404);
         }
 
-        $validations = [];
         $rules = [
-            'id_usuario' => 'integer|exists:usuarios,id',
-            'nombres' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
+            'nombres' => 'string|max:100',
+            'apellidos' => 'string|max:100',
             'id_departamento' => 'integer|exists:departamento,id',
-            'telefono' => 'string|max:20|unique:coordinadores,telefono,' . $id
+            'telefono' => ['string', 'max:20', new PhoneNumberRule()],
+            'id_carrera' => 'integer|exists:carreras,id',
         ];
 
-        foreach ($rules as $key => $value) {
-            if (!$request->has($key)) {
-                $validations[$key] = $value;
-            }
-        }
+        $messages = [
+            'nombres.string' => 'El campo nombres debe ser una cadena de texto',
+            'nombres.max' => 'El campo nombres debe tener un máximo de 100 caracteres',
+            'apellidos.string' => 'El campo apellidos debe ser una cadena de texto',
+            'apellidos.max' => 'El campo apellidos debe tener un máximo de 100 caracteres',
+            'id_departamento.integer' => 'El campo departamento debe ser un número entero',
+            'id_departamento.exists' => 'El departamento seleccionado no existe',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está registrado'
+        ];
 
-        $validator = Validator::make($request->all(), $validations);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -189,8 +193,42 @@ class CoordinadoresController extends Controller {
             ], 400);
         }
 
-        foreach ($validations as $key => $value) {
-            $coordinador->$key = $request->$key;
+        $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
+        $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
+
+        $user = DB::table('coordinadores')
+            ->select('telefono')
+            ->where('telefono', $telefono)
+            ->where('id_usuario', '!=', $id)
+            ->first();
+
+        if ($user) {
+            return response()->json([
+                'message' => 'El teléfono ingresado ya está en uso',
+                'status' => false
+            ], 400);
+        }
+
+        if ($request->has('nombres')) {
+            $coordinador->nombres = $request->nombres;
+        }
+
+        if ($request->has('apellidos')) {
+            $coordinador->apellidos = $request->apellidos;
+        }
+
+        if ($request->has('id_carrera')) {
+            $coordinador->id_carrera = $request->id_carrera;
+        }
+
+        if ($request->has('telefono')) {
+            $coordinador->telefono = $telefono;
+        }
+
+        if ($request->has('password')) {
+            $user = User::find($id);
+            $user->password = Hash::make($request->password);
+            $user->save();
         }
 
         $coordinador->save();
@@ -211,16 +249,16 @@ class CoordinadoresController extends Controller {
             ]);
         }
 
-        $coordinador = Coordinadores::find($id);
+        $user = User::where('id', $id)->first();
 
-        if (is_null($coordinador)) {
+        if (is_null($user)) {
             return response()->json([
                 'message' => 'Coordinador no encontrado',
                 'status' => false
             ], 404);
         }
 
-        $coordinador->delete();
+        $user->delete();
 
         return response()->json([
             'message' => 'Coordinador eliminado correctamente',
