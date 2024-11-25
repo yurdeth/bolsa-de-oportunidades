@@ -3,6 +3,7 @@
 use App\Http\Controllers\AplicacionesController;
 use App\Http\Controllers\CarrerasController;
 use App\Http\Controllers\CoordinadoresController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstudiantesController;
@@ -57,6 +58,8 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/access_token', [AuthController::class, 'access_token']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     //-------------------------------------------------------------------------
     Route::post('/departamentos', [DepartamentosController::class, 'store'])->name('departamentos.store');
