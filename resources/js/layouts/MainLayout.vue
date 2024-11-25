@@ -226,13 +226,19 @@ nav {
                     </h5>
                 </div>
                 <div class="links">
-                    <router-link to="/dashboard">Dashboard</router-link>
-                    <router-link to="/empresas">Empresas</router-link>
+                    <router-link to="/dashboard" @click="toggleMenu">
+                        Dashboard
+                    </router-link>
+                    <router-link to="/empresas" @click="toggleMenu">
+                        Empresas
+                    </router-link>
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
-                        >Usuarios</router-link
+                        @click="toggleMenu"
                     >
+                        Usuarios
+                    </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
