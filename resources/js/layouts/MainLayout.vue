@@ -238,10 +238,6 @@ nav {
                     >
                         Empresas
                     </router-link>
-
-                    <!--                    <router-link to="/empresas" @click="showMenu = false">
-                        Empresas
-                    </router-link>-->
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
