@@ -226,16 +226,16 @@ nav {
                     </h5>
                 </div>
                 <div class="links">
-                    <router-link to="/dashboard" @click="toggleMenu">
+                    <router-link to="/dashboard" @click="showMenu = false">
                         Dashboard
                     </router-link>
-                    <router-link to="/empresas" @click="toggleMenu">
+                    <router-link to="/empresas" @click="showMenu = false">
                         Empresas
                     </router-link>
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
-                        @click="toggleMenu"
+                        @click="showMenu = false"
                     >
                         Usuarios
                     </router-link>
