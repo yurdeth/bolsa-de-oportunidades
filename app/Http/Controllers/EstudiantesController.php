@@ -37,7 +37,7 @@ class EstudiantesController extends Controller {
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
-            'telefono' => 'string|max:20|unique:estudiantes', new PhoneNumberRule(),
+            'telefono' => ['string', 'max:20', 'unique:estudiantes', new PhoneNumberRule()],
             'direccion' => 'required|string',
             'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
         ];

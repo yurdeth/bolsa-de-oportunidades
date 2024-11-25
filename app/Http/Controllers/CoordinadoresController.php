@@ -44,7 +44,7 @@ class CoordinadoresController extends Controller {
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'id_carrera' => 'required|integer|exists:carreras,id',
-            'telefono' => 'string|max:20|unique:coordinadores', new PhoneNumberRule(),
+            'telefono' => ['string', 'max:20', 'unique:coordinadores', new PhoneNumberRule()],
             'email' => 'required|email|unique:usuarios',
             'password' => 'required|string|min:8'
         ];
