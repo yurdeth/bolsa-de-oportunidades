@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -93,6 +94,27 @@ class EmpresasController extends Controller {
             ], 400);
         }
 
+        /* if ($request->hasFile('logo_url')) {
+             $path = $request->file('logo_url')->store('public/logos');
+             $url = Storage::url($path);
+         }*/
+
+        $url = "No Data Was Provided"; // <- Test purpose only
+        $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
+        $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
+
+        $user = DB::table('empresas')
+            ->select('telefono')
+            ->where('telefono', $telefono)
+            ->first();
+
+        if ($user) {
+            return response()->json([
+                'message' => 'El teléfono ingresado ya está en uso',
+                'status' => false
+            ], 400);
+        }
+
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -102,14 +124,6 @@ class EmpresasController extends Controller {
         ]);
 
         $id_usuario = $user->id;
-
-       /* if ($request->hasFile('logo_url')) {
-            $path = $request->file('logo_url')->store('public/logos');
-            $url = Storage::url($path);
-        }*/
-
-        $url = "No Data Was Provided"; // <- Test purpose only
-        $telefono = strpos($request->telefono, "+503") === 0 ? $request->telefono : "+503 " . $request->telefono;
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,

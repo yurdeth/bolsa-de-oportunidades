@@ -84,6 +84,7 @@ class User extends Authenticatable
                 'carreras.id_departamento',
                 'departamento.nombre_departamento'
             )
+            ->orderBy('usuarios.id', 'asc')
             ->get();
     }
 
@@ -109,7 +110,7 @@ class User extends Authenticatable
                     'empresas.descripcion',
                     'empresas.logo_url',
                     'empresas.id_sector',
-                    'sectores_industria.nombre'
+                    'sectores_industria.nombre as sector'
                 )
                 ->where('usuarios.id', $id)
                 ->get();
@@ -129,8 +130,9 @@ class User extends Authenticatable
                 'empresas.descripcion',
                 'empresas.logo_url',
                 'empresas.id_sector',
-                'sectores_industria.nombre'
+                'sectores_industria.nombre as sector'
             )
+            ->orderBy('usuarios.id', 'asc')
             ->get();
     }
 
@@ -178,6 +180,7 @@ class User extends Authenticatable
                 'carreras.id_departamento',
                 'departamento.nombre_departamento'
             )
+            ->orderBy('usuarios.id', 'asc')
             ->get();
     }
 
