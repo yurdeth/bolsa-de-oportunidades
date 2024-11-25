@@ -291,7 +291,6 @@ export default {
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
                 }
-            } finally {
                 this.loading = false;
             }
         },

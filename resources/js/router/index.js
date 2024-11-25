@@ -27,6 +27,11 @@ const routes = [
                 path: "/usuarios",
                 component: () => import("../pages/users/MainUsers.vue"),
             },
+            {
+                path: "/coordinadores",
+                component: () =>
+                    import("../pages/coordinators/MainCoordinators.vue"),
+            },
         ],
     },
     {
