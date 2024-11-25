@@ -1,4 +1,14 @@
 <style>
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: #f7f7f7; /* Fondo de la página */
+    color: #4b4b4b; /* Texto Principal */
+    overflow: hidden;
+}
+
 .loader-container {
     width: 100%;
     height: 100vh;
@@ -216,13 +226,19 @@ nav {
                     </h5>
                 </div>
                 <div class="links">
-                    <router-link to="/dashboard">Dashboard</router-link>
-                    <router-link to="/empresas">Empresas</router-link>
+                    <router-link to="/dashboard" @click="showMenu = false">
+                        Dashboard
+                    </router-link>
+                    <router-link to="/empresas" @click="showMenu = false">
+                        Empresas
+                    </router-link>
                     <router-link
                         to="/usuarios"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
-                        >Usuarios</router-link
+                        @click="showMenu = false"
                     >
+                        Usuarios
+                    </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
