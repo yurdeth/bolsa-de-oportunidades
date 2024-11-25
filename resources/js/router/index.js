@@ -12,6 +12,7 @@ const routes = [
     },
     {
         path: "/dashboard",
+        middleware: "auth",
         component: () => import("../layouts/MainLayout.vue"),
         children: [
             {
@@ -19,6 +20,10 @@ const routes = [
                 component: () => import("../pages/dashboard/MainDashboard.vue"),
             },
         ],
+    },
+    {
+        path: "/register",
+        component: () => import("../pages/companies/RegisterCompanies.vue"),
     },
 ];
 

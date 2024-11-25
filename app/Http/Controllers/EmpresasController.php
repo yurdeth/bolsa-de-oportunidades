@@ -43,7 +43,10 @@ class EmpresasController extends Controller {
             'sitio_web' => 'string|max:255',
             'descripcion' => 'string',
             'logo_url' => 'string|max:255',
-            'verificada' => 'boolean'
+            'verificada' => 'boolean',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'password_confirmation' => ['required', 'string', 'min:8', 'max:255', 'same:password'],
         ];
 
         $messages = [
@@ -62,7 +65,21 @@ class EmpresasController extends Controller {
             'descripcion.string' => 'El campo descripción debe ser una cadena de texto',
             'logo_url.string' => 'El campo logo debe ser una cadena de texto',
             'logo_url.max' => 'El campo logo debe tener un máximo de 255 caracteres',
-            'verificada.boolean' => 'El campo verificada debe ser un valor booleano'
+            'verificada.boolean' => 'El campo verificada debe ser un valor booleano',
+            'email.required' => 'El campo correo electrónico es obligatorio',
+            'email.string' => 'El campo correo electrónico debe ser una cadena de texto',
+            'email.email' => 'El correo electrónico ingresado no es válido',
+            'email.max' => 'El campo correo electrónico debe tener un máximo de 255 caracteres',
+            'email.unique' => 'El correo electrónico ingresado ya está en uso',
+            'password.required' => 'El campo contraseña es obligatorio',
+            'password.string' => 'El campo contraseña debe ser una cadena de texto',
+            'password.min' => 'El campo contraseña debe tener al menos 8 caracteres',
+            'password.max' => 'El campo contraseña debe tener un máximo de 255 caracteres',
+            'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio',
+            'password_confirmation.string' => 'El campo confirmación de contraseña debe ser una cadena de texto',
+            'password_confirmation.min' => 'El campo confirmación de contraseña debe tener al menos 8 caracteres',
+            'password_confirmation.max' => 'El campo confirmación de contraseña debe tener un máximo de 255 caracteres',
+            'password_confirmation.same' => 'Las contraseñas no coinciden'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -85,10 +102,12 @@ class EmpresasController extends Controller {
 
         $id_usuario = $user->id;
 
-        if ($request->hasFile('logo_url')) {
+       /* if ($request->hasFile('logo_url')) {
             $path = $request->file('logo_url')->store('public/logos');
             $url = Storage::url($path);
-        }
+        }*/
+
+        $url = "No Data Was Provided"; // <- Test purpose only
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
