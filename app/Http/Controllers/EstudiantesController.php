@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class EstudiantesController extends Controller {
@@ -87,8 +88,11 @@ class EstudiantesController extends Controller {
             ], 400);
         }
 
+        Log::info($request->telefono);
         $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
+        Log::info($telefono);
         $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
+        Log::info($telefono);
 
         $user = DB::table('estudiantes')
             ->select('telefono')
@@ -119,7 +123,7 @@ class EstudiantesController extends Controller {
             'nombres' => $request->nombres,
             'apellidos' => $request->apellidos,
             'anio_estudio' => $request->anio_estudio,
-            'telefono' => "+503" .  $telefono,
+            'telefono' => $telefono,
             'direccion' => $request->direccion
         ]);
 
