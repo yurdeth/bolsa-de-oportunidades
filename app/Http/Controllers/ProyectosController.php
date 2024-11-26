@@ -36,6 +36,11 @@ class ProyectosController extends Controller {
             ], 404);
         }
 
+        $proyectos = $proyectos->map(function ($proyecto) {
+            $proyecto->requisitos = explode(',', $proyecto->requisitos);
+            return $proyecto;
+        });
+
         return response()->json([
             'success' => true,
             'data' => $proyectos
