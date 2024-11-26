@@ -47,7 +47,8 @@ class CoordinadoresController extends Controller {
             'id_carrera' => 'required|integer|exists:carreras,id',
             'telefono' => ['string', 'max:20', 'unique:coordinadores', new PhoneNumberRule()],
             'email' => 'required|email|unique:usuarios',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8',
+            'password_confirmation' => 'required|same:password'
         ];
 
         $messages = [
@@ -68,7 +69,9 @@ class CoordinadoresController extends Controller {
             'email.unique' => 'El correo electrónico ingresado ya está registrado',
             'password.required' => 'El campo contraseña es obligatorio',
             'password.string' => 'El campo contraseña debe ser una cadena de texto',
-            'password.min' => 'El campo contraseña debe tener un mínimo de 8 caracteres'
+            'password.min' => 'El campo contraseña debe tener un mínimo de 8 caracteres',
+            'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio',
+            'password_confirmation.same' => 'Las contraseñas no coinciden'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
