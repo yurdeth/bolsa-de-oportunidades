@@ -251,7 +251,7 @@ class EmpresasController extends Controller {
             ]);
         }
 
-        $empresa = Empresas::find($id);
+        $empresa = User::where('id', $id)->first();
 
         if (is_null($empresa)) {
             return response()->json([

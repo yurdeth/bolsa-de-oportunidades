@@ -23,7 +23,7 @@
                     v-for="company in companies"
                     :key="company.id"
                     :company="company"
-                    @delete-company="deleteCompany"
+                    @delete-company="confirmDelete"
                     @view-company="viewCompany"
                 />
                 </tbody>
@@ -72,6 +72,7 @@
 <script>
 import { api } from "../../api";
 import CompanyItem from './CompanyItem.vue';
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -95,6 +96,27 @@ export default {
         this.loading = false;
     },
     methods: {
+        async confirmDelete(id) {
+            const result = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'No podrás revertir esto',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminarlo',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
+                await this.deleteCompany(id);
+                Swal.fire(
+                    'Eliminado',
+                    'El coordinador ha sido eliminado.',
+                    'success'
+                );
+            }
+        },
         async deleteCompany(id) {
             try {
                 await api.delete(`/empresas/${id}`);
