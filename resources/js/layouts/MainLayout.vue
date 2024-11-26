@@ -245,7 +245,7 @@ nav {
                         Coordinadores
                     </router-link>
                     <router-link
-                        to="/usuarios"
+                        to="/estudiantes"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
                         @click="showMenu = false"
                     >

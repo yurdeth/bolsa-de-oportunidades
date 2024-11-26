@@ -28,6 +28,10 @@ const routes = [
                 component: () => import("../pages/users/MainUsers.vue"),
             },
             {
+                path: "/estudiantes",
+                component: () => import("../pages/students/MainStudents.vue"),
+            },
+            {
                 path: "/coordinadores",
                 component: () =>
                     import("../pages/coordinators/MainCoordinators.vue"),
