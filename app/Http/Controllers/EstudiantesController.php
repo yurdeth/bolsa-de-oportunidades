@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Estudiantes;
 use App\Models\User;
+use App\Rules\FormatCarnetRule;
+use App\Rules\FormatEmailEstudianteRule;
 use App\Rules\PhoneNumberRule;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -34,13 +36,13 @@ class EstudiantesController extends Controller {
         $rules = [
 //            'id_usuario' => 'required|integer|exists:users,id',
             'id_carrera' => 'required|integer|exists:carreras,id',
-            'carnet' => 'required|string|max:10|unique:estudiantes',
+            'carnet' => ['required', 'string', 'max:10', 'unique:estudiantes', new FormatCarnetRule()],
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
             'telefono' => ['string', 'max:20', 'unique:estudiantes', new PhoneNumberRule()],
             'direccion' => 'required|string',
-            'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
+            'email' => ['required', 'email', 'unique:usuarios', new FormatEmailEstudianteRule()],
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|same:password'
         ];
@@ -69,7 +71,6 @@ class EstudiantesController extends Controller {
             'email.required' => 'El campo correo electrónico es obligatorio',
             'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
             'email.unique' => 'El correo electrónico ingresado ya está registrado',
-            'email.regex' => 'El correo electrónico debe ser de la Universidad de El Salvador',
             'password.required' => 'El campo contraseña es obligatorio',
             'password.string' => 'El campo contraseña debe ser una cadena de texto',
             'password.min' => 'El campo contraseña debe tener un mínimo de 8 caracteres',
