@@ -11,6 +11,10 @@ const routes = [
         component: () => import("../pages/auth/MainLogin.vue"),
     },
     {
+        path: "/proyectos",
+        component: () => import("../pages/projects/MainProjects.vue"),
+    },
+    {
         path: "/dashboard",
         middleware: "auth",
         component: () => import("../layouts/MainLayout.vue"),
