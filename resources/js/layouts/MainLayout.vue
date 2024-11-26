@@ -238,12 +238,6 @@ nav {
                         Empresas
                     </router-link>
                     <router-link
-                        to="/proyectos"
-                        v-if="Number(user_data.id_tipo_usuario) === 4"
-                        @click="showMenu = false">
-                        Proyectos
-                    </router-link>
-                    <router-link
                         to="/coordinadores"
                         v-if="Number(user_data.id_tipo_usuario) === 1"
                         @click="showMenu = false"
