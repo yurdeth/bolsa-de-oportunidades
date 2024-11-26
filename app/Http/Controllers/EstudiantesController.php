@@ -88,11 +88,8 @@ class EstudiantesController extends Controller {
             ], 400);
         }
 
-        Log::info($request->telefono);
         $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
-        Log::info($telefono);
         $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
-        Log::info($telefono);
 
         $user = DB::table('estudiantes')
             ->select('telefono')

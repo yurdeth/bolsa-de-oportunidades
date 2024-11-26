@@ -144,6 +144,7 @@ class EmpresasController extends Controller {
         $token->save();
 
         $data = [
+            'empresa_id' => $empresa->id,
             'user' => $user,
             'token' => $tokenResult->accessToken, // Token de acceso
             'token_type' => 'Bearer',
