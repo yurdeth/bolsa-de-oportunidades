@@ -124,4 +124,5 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/aplicaciones', [AplicacionesController::class, 'store'])->name('aplicaciones.store');
     Route::patch('/aplicaciones/{id}', [AplicacionesController::class, 'update'])->name('aplicaciones.update');
     Route::delete('/aplicaciones/{id}', [AplicacionesController::class, 'destroy'])->name('aplicaciones.destroy');
+    Route::get('/aplicaciones/estudiante/{id}', [AplicacionesController::class, 'findByEstudiante'])->name('aplicaciones.find');
 });

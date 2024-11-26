@@ -68,6 +68,24 @@ class AplicacionesController extends Controller
         ]);
     }
 
+
+    public function findByEstudiante($id_estudiante)
+    {
+        $aplicaciones = Aplicaciones::where('id_estudiante', $id_estudiante)->get();
+
+        if ($aplicaciones->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay aplicaciones registradas para el estudiante'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $aplicaciones
+        ]);
+    }
+
     public function update(Request $request, $id)
     {
         $aplicacion = Aplicaciones::find($id);
