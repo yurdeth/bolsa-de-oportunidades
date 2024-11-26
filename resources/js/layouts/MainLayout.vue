@@ -257,6 +257,12 @@ nav {
                     >
                         Estudiantes
                     </router-link>
+                    <router-link
+                        to="/proyectos"
+                        v-if="Number(user_data.id_tipo_usuario) === 4 || Number(user_data.id_tipo_usuario) === 2"
+                        @click="showMenu = false">
+                        Proyectos
+                    </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
