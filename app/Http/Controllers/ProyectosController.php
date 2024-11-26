@@ -19,6 +19,29 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    public function findByEmpresa($id)
+    {
+        $proyectos = Proyectos::where('id_empresa', $id)
+            ->with('empresa_table')
+            ->with('estado_oferta_table')
+            ->with('modalidad_trabajo_table')
+            ->with('tipo_proyecto_table')
+            ->with('carrera_table')
+            ->get();
+
+        if ($proyectos->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontraron proyectos'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyectos
+        ]);
+    }
+
     public function store(Request $request) {
         if (Auth::user()->id_tipo_usuario != 4) { // <- Solamente las empresas pueden crear proyectos
             return response()->json([

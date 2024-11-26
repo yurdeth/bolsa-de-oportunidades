@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -99,6 +100,31 @@ class Proyectos extends Model {
             ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
             ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
             ->get();
+    }
+
+    public function empresa_table(): BelongsTo
+    {
+        return $this->belongsTo(Empresas::class, 'id_empresa');
+    }
+
+    public function estado_oferta_table(): BelongsTo
+    {
+        return $this->belongsTo(EstadosOferta::class, 'id_estado_oferta');
+    }
+
+    public function modalidad_trabajo_table(): BelongsTo
+    {
+        return $this->belongsTo(ModalidadesTrabajo::class, 'id_modalidad');
+    }
+
+    public function tipo_proyecto_table(): BelongsTo
+    {
+        return $this->belongsTo(TiposProyecto::class, 'id_tipo_proyecto');
+    }
+
+    public function carrera_table(): BelongsTo
+    {
+        return $this->belongsTo(Carreras::class, 'id_carrera');
     }
 
 }

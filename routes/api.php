@@ -51,6 +51,7 @@ Route::get('/tipos-proyecto/{id}', [TiposProyectoController::class, 'show'])->na
 Route::get('/estado-oferta', [ModalidadesTrabajoController::class, 'index'])->name('estado.oferta.index');
 Route::get('/estado-oferta/{id}', [ModalidadesTrabajoController::class, 'show'])->name('estado.oferta.show');
 
+
 /*Route::resource('proyectos', 'App\Http\Controllers\ProyectosController', ['except' => ['edit', 'create']]);
 Route::resource('aplicaciones', 'App\Http\Controllers\AplicacionesController', ['except' => ['edit', 'create']]);*/
 
@@ -117,6 +118,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
+    Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');
