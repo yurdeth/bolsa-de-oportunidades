@@ -112,7 +112,7 @@ export default {
                 await this.deleteCompany(id);
                 Swal.fire(
                     'Eliminado',
-                    'El coordinador ha sido eliminado.',
+                    'La empresa ha sido eliminado.',
                     'success'
                 );
             }

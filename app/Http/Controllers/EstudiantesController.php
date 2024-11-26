@@ -41,6 +41,8 @@ class EstudiantesController extends Controller {
             'telefono' => ['string', 'max:20', 'unique:estudiantes', new PhoneNumberRule()],
             'direccion' => 'required|string',
             'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
+            'password' => 'required|string|min:8',
+            'password_confirmation' => 'required|same:password'
         ];
 
         $messages = [
@@ -68,6 +70,11 @@ class EstudiantesController extends Controller {
             'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
             'email.unique' => 'El correo electrónico ingresado ya está registrado',
             'email.regex' => 'El correo electrónico debe ser de la Universidad de El Salvador',
+            'password.required' => 'El campo contraseña es obligatorio',
+            'password.string' => 'El campo contraseña debe ser una cadena de texto',
+            'password.min' => 'El campo contraseña debe tener un mínimo de 8 caracteres',
+            'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio',
+            'password_confirmation.same' => 'Las contraseñas no coinciden'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -276,7 +283,7 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiante = Estudiantes::find($id);
+        $estudiante = User::find($id);
 
         if (is_null($estudiante)) {
             return response()->json([

@@ -30,6 +30,7 @@ class Proyectos extends Model {
 
         /*
          * Campos obtenidos:
+         * - id_proyecto
          * - nombre_empresa
          * - titulo_proyecto
          * - descripcion_proyeto

@@ -35,7 +35,7 @@
                         class="btn btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop"
-                        @click="viewCoordinator(student)"
+                        @click="viewStudent(student)"
                     >
                         Ver
                     </button>
@@ -65,16 +65,17 @@
                         <div class="row">
                             <div class="col-6">
                                 <img src="../../img/Logo_Nuevo.png"
-                                     alt="Logo de la empresa" class="img-thumbnail">
+                                     alt="Logo de la FMO" class="img-thumbnail">
                             </div>
                             <div class="col-6">
-                                <p><strong>Nombre completo:</strong> </p>
-                                <p><strong>Correo institucional:</strong> </p>
-                                <p><strong>Carnet:</strong> </p>
-                                <p><strong>Carrera:</strong> </p>
-                                <p><strong>Año de estudio:</strong> </p>
-                                <p><strong>Dirección:</strong> </p>
-                                <p><strong>Teléfono:</strong> </p>
+                                <p><strong>Nombre completo:</strong>
+                                    {{ `${selectedStudent.nombres} ${selectedStudent.apellidos}` }} </p>
+                                <p><strong>Correo institucional:</strong> {{ selectedStudent.email }} </p>
+                                <p><strong>Carnet:</strong> {{ selectedStudent.carnet }} </p>
+                                <p><strong>Carrera:</strong> {{ selectedStudent.nombre_carrera }} </p>
+                                <p><strong>Año de estudio:</strong> {{ selectedStudent.anio_estudio }}° </p>
+                                <p><strong>Dirección:</strong> {{ selectedStudent.direccion }} </p>
+                                <p><strong>Teléfono:</strong> {{ selectedStudent.telefono }} </p>
                             </div>
                         </div>
                     </div>
@@ -96,14 +97,13 @@ export default {
         return {
             loading: false,
             students: [],
-            selectedCoordinator: {},
+            selectedStudent: {},
         };
     },
     async mounted() {
         this.loading = true;
         try {
             const response = await api.get("/estudiantes");
-            console.log(response.data.data);
             this.students = response.data.data;
         } catch (error) {
             console.error(error);
@@ -125,29 +125,46 @@ export default {
             });
 
             if (result.isConfirmed) {
-                await this.deleteCoordinator(id);
+                await this.deleteStudent(id);
                 Swal.fire(
                     'Eliminado',
-                    'El coordinador ha sido eliminado.',
+                    'El estudiante ha sido eliminado.',
                     'success'
                 );
             }
         },
-        async deleteCoordinator(id) {
+        async deleteStudent(id) {
             try {
-                await api.delete(`/coordinadores/${id}`);
-                this.coordinators = this.coordinators.filter(
-                    (coordinator) => coordinator.id !== id
+                await api.delete(`/estudiantes/${id}`);
+                this.students = this.students.filter(
+                    (student) => student.id !== id
                 );
             } catch (error) {
                 console.error(error);
             }
         },
-        viewCoordinator(coordinator) {
-            this.selectedCoordinator = coordinator;
-            this.form = {...coordinator};
-            this.createNew = false;
+        viewStudent(student) {
+            this.selectedStudent = {...student};
         },
     }
 };
 </script>
+
+<style scoped>
+.loader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.loader .spinner-border {
+    width: 100px;
+    height: 100px;
+}
+</style>
