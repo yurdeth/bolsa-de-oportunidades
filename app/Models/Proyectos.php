@@ -49,6 +49,7 @@ class Proyectos extends Model {
         if (!is_null($id)){
             return DB::table('proyectos')
                 ->select(
+                    'proyectos.id as id_proyecto',
                     'empresas.nombre as nombre_empresa',
                     'proyectos.titulo as titulo_proyecto',
                     'proyectos.descripcion as descripcion_proyeto',
@@ -75,6 +76,7 @@ class Proyectos extends Model {
 
         return DB::table('proyectos')
             ->select(
+                'proyectos.id as id_proyecto',
                 'empresas.nombre as nombre_empresa',
                 'proyectos.titulo as titulo_proyecto',
                 'proyectos.descripcion as descripcion_proyeto',
