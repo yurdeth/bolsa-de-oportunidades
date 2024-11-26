@@ -69,6 +69,7 @@ class Proyectos extends Model {
                 ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
                 ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
                 ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
+                ->where('proyectos.id', $id)
                 ->get();
         }
 
@@ -94,7 +95,6 @@ class Proyectos extends Model {
             ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
             ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
             ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
-            ->where('proyectos.id', $id)
             ->get();
     }
 
