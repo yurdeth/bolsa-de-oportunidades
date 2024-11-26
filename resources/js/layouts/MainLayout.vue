@@ -249,7 +249,7 @@ nav {
                         v-if="Number(user_data.id_tipo_usuario) === 1"
                         @click="showMenu = false"
                     >
-                        Usuarios
+                        Estudiantes
                     </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>

@@ -167,7 +167,7 @@ class EstudiantesController extends Controller {
             ]);
         }
 
-        $estudiante = Estudiantes::find($id);
+        $estudiante = Estudiantes::where('id_usuario', $id)->first();
 
         if (is_null($estudiante)) {
             return response()->json([
@@ -176,28 +176,18 @@ class EstudiantesController extends Controller {
             ], 404);
         }
 
-        $validations = [];
         $rules = [
-            'id_usuario' => 'integer|exists:users,id',
             'id_carrera' => 'integer|exists:carreras,id',
-            'carnet' => 'required|string|max:10|unique:estudiantes,carnet,' . $id,
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'anio_estudio' => 'required|integer',
             'telefono' => 'string|max:20|unique:estudiantes',
             'direccion' => 'required|string',
-            'email' => 'required|email|unique:usuarios|regex:/^[a-zA-Z0-9._%+-]+@ues\.edu\.sv$/',
         ];
 
         $messages = [
-            'id_usuario.integer' => 'El campo id_usuario debe ser un número entero',
-            'id_usuario.exists' => 'El usuario seleccionado no existe',
             'id_carrera.integer' => 'El campo id_carrera debe ser un número entero',
             'id_carrera.exists' => 'La carrera seleccionada no existe',
-            'carnet.required' => 'El campo carnet es obligatorio',
-            'carnet.string' => 'El campo carnet debe ser una cadena de texto',
-            'carnet.max' => 'El campo carnet debe tener un máximo de 10 caracteres',
-            'carnet.unique' => 'El carnet ingresado ya está registrado',
             'nombres.required' => 'El campo nombres es obligatorio',
             'nombres.string' => 'El campo nombres debe ser una cadena de texto',
             'nombres.max' => 'El campo nombres debe tener un máximo de 100 caracteres',
@@ -211,10 +201,6 @@ class EstudiantesController extends Controller {
             'telefono.unique' => 'El teléfono ingresado ya está registrado',
             'direccion.required' => 'El campo dirección es obligatorio',
             'direccion.string' => 'El campo dirección debe ser una cadena de texto',
-            'email.required' => 'El campo correo electrónico es obligatorio',
-            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida',
-            'email.unique' => 'El correo electrónico ingresado ya está registrado',
-            'email.regex' => 'El correo electrónico debe ser de la Universidad de El Salvador',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -247,6 +233,22 @@ class EstudiantesController extends Controller {
         }
 
         if($request->has('telefono')) {
+            $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
+            $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
+
+            $user = DB::table('coordinadores')
+                ->select('telefono')
+                ->where('telefono', $telefono)
+                ->where('id_usuario', '!=', $id)
+                ->first();
+
+            if ($user) {
+                return response()->json([
+                    'message' => 'El teléfono ingresado ya está en uso',
+                    'status' => false
+                ], 400);
+            }
+
             $estudiante->telefono = $request->telefono;
         }
 

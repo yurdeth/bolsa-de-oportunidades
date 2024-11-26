@@ -23,7 +23,7 @@
             <span class="sr-only">Cargando...</span>
         </div>
     </div>
-    <div>Usuarios</div>
+    <h3>Estudiantes</h3>
 </template>
 
 <script>

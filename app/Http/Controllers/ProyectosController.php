@@ -3,20 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proyectos;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ProyectosController extends Controller {
     public function index() {
-        $proyectos = Proyectos::all();
-
-        if ($proyectos->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No hay proyectos registrados'
-            ], 404);
-        }
+        $proyectos = ((new Proyectos())->getProyetos(null));
 
         return response()->json([
             'success' => true,
@@ -95,15 +90,8 @@ class ProyectosController extends Controller {
         ], 201);
     }
 
-    public function show($id) {
-        $proyecto = Proyectos::find($id);
-
-        if (is_null($proyecto)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Proyecto no encontrado'
-            ], 404);
-        }
+    public function show($id): JsonResponse {
+        $proyecto = ((new Proyectos())->getProyetos($id));
 
         return response()->json([
             'success' => true,
