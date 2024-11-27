@@ -168,7 +168,7 @@ class EmpresasController extends Controller {
 
         $empresa = (new User)->getInfoEmpresa($id);
 
-        if (is_null($empresa)) {
+        if ($empresa->isEmpty()) {
             return response()->json([
                 'message' => 'Empresa no encontrada',
                 'status' => false
@@ -181,6 +181,24 @@ class EmpresasController extends Controller {
             'data' => $empresa
         ]);
 
+    }
+
+    public function showByProyecto($id)
+    {
+        $empresa = Empresas::where('id_usuario', $id)->get();
+
+        if ($empresa->isEmpty()) {
+            return response()->json([
+                'message' => 'Empresa no encontrada',
+                'status' => false
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Empresa recuperada correctamente',
+            'status' => true,
+            'data' => $empresa
+        ]);
     }
 
     public function update(Request $request, $id): JsonResponse {

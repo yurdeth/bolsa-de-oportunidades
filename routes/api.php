@@ -24,6 +24,7 @@ Route::get('/', function () {
 
 Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
 Route::get('proyectos/empresa', [ProyectosController::class, 'indexBelongs'])->name('proyectos.belongs');
+Route::get('/empresas/proyecto/{id}', [EmpresasController::class, 'showByProyecto'])->name('empresas.find');
 
 //-------------------------------------------------------------------------
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
