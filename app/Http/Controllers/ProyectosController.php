@@ -19,6 +19,28 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    public function indexBelongs()
+    {
+        $proyectos = Proyectos::all()
+            ->with('empresa_table')
+            ->with('estado_oferta_table')
+            ->with('modalidad_trabajo_table')
+            ->with('tipo_proyecto_table')
+            ->with('carrera_table');
+
+        if ($proyectos->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontraron proyectos'
+            ], 404);
+        }
+
+        $proyectos = $proyectos->map(function ($proyecto) {
+            $proyecto->requisitos = explode(',', $proyecto->requisitos);
+            return $proyecto;
+        });
+    }
+
     public function findByEmpresa($id)
     {
         $proyectos = Proyectos::where('id_empresa', $id)
