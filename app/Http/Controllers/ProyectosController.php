@@ -19,8 +19,7 @@ class ProyectosController extends Controller {
         ]);
     }
 
-    public function indexBelongs()
-    {
+    public function indexBelongs() {
         $proyectos = Proyectos::all()
             ->with('empresa_table')
             ->with('estado_oferta_table')
@@ -41,8 +40,7 @@ class ProyectosController extends Controller {
         });
     }
 
-    public function findByEmpresa($id)
-    {
+    public function findByEmpresa($id) {
         $proyectos = Proyectos::where('id_empresa', $id)
             ->with('empresa_table')
             ->with('estado_oferta_table')
@@ -246,6 +244,23 @@ class ProyectosController extends Controller {
         return response()->json([
             'success' => true,
             'message' => 'Proyecto eliminado'
+        ]);
+    }
+
+    public function getInteresados(Request $id){
+        // Solamente los coordinadores pueden ver los interesados en el proyecto
+        if (Auth::user()->id_tipo_usuario == 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
+        $interesados = ((new Proyectos())->getEstudiantesInteresadosEnProyecto($id));
+
+        return response()->json([
+            'success' => true,
+            'data' => $interesados
         ]);
     }
 }

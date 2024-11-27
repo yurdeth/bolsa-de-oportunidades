@@ -20,6 +20,14 @@
             >
                 Eliminar
             </button>
+            <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#staticInterested"
+                class="btn btn-info"
+                v-if="isTipoUsuario2" @click="viewInterested">
+                Ver interesados
+            </button>
         </td>
     </tr>
 </template>
@@ -30,6 +38,15 @@ export default {
         project: {
             type: Object,
             required: true
+        },
+        isTipoUsuario2: {
+            type: Boolean,
+            required: true
+        }
+    },
+    methods: {
+        viewInterested() {
+            this.$emit('view-interested', this.project.id);
         }
     }
 };

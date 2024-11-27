@@ -33,8 +33,10 @@
                     v-for="item in projects"
                     :key="item.id"
                     :project="item"
+                    :is-tipo-usuario-2="isTipoUsuario2"
                     @delete-project="confirmDelete"
                     @view-project="viewProject"
+                    @click="viewProject(item)"
                 />
                 </tbody>
             </table>
@@ -186,11 +188,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mostrar lista de estudiantes interesados en el proyecto -->
+        <!-- Mostrar lista de estudiantes interesados en el proyecto -->
+        <div class="modal fade" id="staticInterested" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="interestedLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="interestedLabel">Estudiantes interesados</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Carnet</th>
+                                <th>Email</th>
+                                <th>Carrera</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="student in interested" :key="student.carnet">
+                                <td>{{ student.nombres }}</td>
+                                <td>{{ student.apellidos }}</td>
+                                <td>{{ student.carnet }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>{{ student.nombre_carrera }}</td>
+                                <td>{{ student.telefono }}</td>
+                                <td>{{ student.direccion }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import {api} from "../../api";
+import { api } from "../../api";
 import ProjectItem from "@/pages/projects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/RequisitosItem.vue";
@@ -200,12 +243,19 @@ export default {
         ProjectItem,
         RequisitosItem
     },
+    computed: {
+        isTipoUsuario2() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            return user.id_tipo_usuario === 2;
+        }
+    },
     data() {
         return {
             loading: false,
             proyecto: [],
             projects: [],
             selectedProject: {},
+            interested: [],
             newProject: {
                 nombre: '',
                 email: '',
@@ -260,6 +310,21 @@ export default {
         this.loading = false;
     },
     methods: {
+        async loadInteresteds() {
+            try {
+                console.log("ID Proyecto: " + this.selectedProject.id);
+                const response = await api.get(`/proyectos/interesados/${this.selectedProject.id}`);
+                console.log(response.data.data);
+                this.interested = response.data.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        viewInterested() {
+            this.loadInteresteds();
+            const modal = new bootstrap.Modal(document.getElementById('staticInterested'));
+            modal.show();
+        },
         async confirmDelete(id) {
             const result = await Swal.fire({
                 title: '¿Estás seguro?',
