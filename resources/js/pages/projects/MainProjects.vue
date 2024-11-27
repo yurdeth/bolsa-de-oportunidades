@@ -11,7 +11,7 @@
             <button
                 class="btn btn-primary"
                 data-bs-toggle="modal"
-                data-bs-target="#addCompanyModal"
+                data-bs-target="#addProjectModal"
             >
                 Agregar Proyecto
             </button>
@@ -34,6 +34,7 @@
                     :key="item.id"
                     :project="item"
                     :is-tipo-usuario-2="isTipoUsuario2"
+                    :idTipoUsuario="idTipoUsuario"
                     @delete-project="confirmDelete"
                     @view-project="viewProject"
                     @click="viewProject(item)"
@@ -126,62 +127,139 @@
             </div>
         </div>
 
-        <!-- Agregar Empresa Modal -->
-        <div class="modal fade" id="addCompanyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="addCompanyModalLabel" aria-hidden="true">
+        <!-- Agregar Proyecto Modal -->
+        <div class="modal fade" id="addProjectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="addProjectModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="addCompanyModalLabel">Agregar Nueva Empresa</h1>
+                        <h1 class="modal-title fs-5" id="addProjectModalLabel">Agregar Nuevo Proyecto</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form @submit.prevent="addCompany">
+                        <form @submit.prevent="addProject">
                             <div class="row">
+                                <!-- Estado -->
                                 <div class="col-6 mb-3">
-                                    <label class="form-label">Nombre Comercial</label>
-                                    <input type="text" class="form-control" v-model="newProject.nombre" required>
+                                    <label class="form-label">Estado de Oferta</label>
+                                    <select class="form-select" v-model="newProject.id_estado_oferta" required>
+                                        <option value="">Seleccionar Estado</option>
+                                        <option v-for="estado in estados_oferta" :key="estado.id" :value="estado.id" >{{ estado.nombre_estado }}</option>
+                                    </select>
                                 </div>
-                                <div class="card-requisitos">
-                                    <h5 class="fw-bold mb-3">Requisitos</h5>
-                                    <ul class="p-0 m-0">
-                                        <requisitos-item v-for="(item, index) in newProject.nombre" :key="index"
-                                                         :valor="item"></requisitos-item>
-                                    </ul>
-                                </div>
+
+                                <!-- Modalidad -->
                                 <div class="col-6 mb-3">
-                                    <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" v-model="newProject.email" required>
+                                    <label class="form-label">Modalidad de Trabajo</label>
+                                    <select class="form-select" v-model="newProject.id_modalidad" required>
+                                        <option value="">Seleccionar Modalidad</option>
+                                        <option v-for="modalidad in modalidades" :key="modalidad.id" :value="modalidad.id" >{{ modalidad.nombre }}</option>
+                                    </select>
                                 </div>
-                                <div class="col-6 mb-3">
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control" v-model="newProject.telefono">
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label class="form-label">Dirección</label>
-                                    <input type="text" class="form-control" v-model="newProject.direccion">
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label class="form-label">Sector Comercial</label>
-                                    <input type="text" class="form-control" v-model="newProject.sector">
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label class="form-label">Sitio Web</label>
-                                    <input type="url" class="form-control" v-model="newProject.sitio_web">
-                                </div>
+
+                                <!-- Título -->
                                 <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" v-model="newProject.descripcion"></textarea>
+                                    <label class="form-label">Título del Proyecto</label>
+                                    <input type="text" class="form-control" v-model="newProject.titulo" required>
                                 </div>
+
+                                <!-- Descripción -->
                                 <div class="col-12 mb-3">
-                                    <label class="form-label">Logo</label>
-                                    <input type="file" class="form-control" @change="handleLogoUpload">
+                                    <label class="form-label">Descripción del Proyecto</label>
+                                    <textarea class="form-control" v-model="newProject.descripcion" required></textarea>
+                                </div>
+
+                                <!-- Requisitos -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Requisitos</label>
+                                    <div class="input-group mb-3">
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            v-model="currentRequirement"
+                                            @keyup.enter="addRequirement"
+                                            placeholder="Escribe un requisito y presiona Ctrl + Enter o haz click en Agregar"
+                                        >
+                                        <button class="btn btn-outline-secondary" type="button" @click="addRequirement">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                    <div v-if="newProject.requisitos && newProject.requisitos.length" class="mb-2">
+                                        <span
+                                            v-for="(req, index) in newProject.requisitos"
+                                            :key="index"
+                                            class="badge bg-secondary me-2 mb-1"
+                                        >
+                                            {{ req }}
+                                            <button
+                                                type="button"
+                                                class="btn-close btn-close-white"
+                                                aria-label="Eliminar"
+                                                @click="removeRequirement(index)"
+                                            ></button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Tipo de Proyecto</label>
+                                    <select class="form-select" v-model="newProject.id_tipo_proyecto" required>
+                                        <option value="">Seleccionar Tipo</option>
+                                        <option v-for="tipo in tipos_proyecto" :key="tipo.id" :value="tipo.id" >{{ tipo.nombre }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Carrera -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Carrera</label>
+                                    <select class="form-select" v-model="newProject.id_carrera" required>
+                                        <option value="">Seleccionar Carrera</option>
+                                        <option v-for="carrera in carreras" :key="carrera.id" :value="carrera.id" >{{ carrera.nombre_carrera }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Fechas -->
+                                <div class="col-4 mb-3">
+                                    <label class="form-label">Fecha de Inicio</label>
+                                    <input type="date" class="form-control" v-model="newProject.fecha_inicio" required>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <label class="form-label">Fecha de Fin</label>
+                                    <input type="date" class="form-control" v-model="newProject.fecha_fin" required>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <label class="form-label">Fecha Límite de Aplicación (Opcional)</label>
+                                    <input type="date" class="form-control" v-model="newProject.fecha_limite_aplicacion">
+                                </div>
+
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Estado de Proyecto</label>
+                                    <select class="form-select" v-model="newProject.estado_proyecto" required>
+                                        <option value="">Seleccionar Estado</option>
+                                        <option :value="1">Activo</option>
+                                        <option :value="0">Inactivo</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Cupos Disponibles</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        v-model.number="newProject.cupos_disponibles"
+                                        min="1"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Ubicación</label>
+                                    <input type="text" class="form-control" v-model="newProject.ubicacion">
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar
-                                </button>
-                                <button type="submit" class="btn btn-primary">Guardar Empresa</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
                             </div>
                         </form>
                     </div>
@@ -233,7 +311,7 @@
 </template>
 
 <script>
-import { api } from "../../api";
+import { api } from "@/api.js";
 import ProjectItem from "@/pages/projects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/RequisitosItem.vue";
@@ -247,6 +325,11 @@ export default {
         isTipoUsuario2() {
             const user = JSON.parse(localStorage.getItem('user'));
             return user.id_tipo_usuario === 2;
+        },
+
+        idTipoUsuario() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            return user.id_tipo_usuario;
         }
     },
     data() {
@@ -256,15 +339,27 @@ export default {
             projects: [],
             selectedProject: {},
             interested: [],
+            currentRequirement: '',
+            estados_oferta: [],
+            modalidades: [],
+            tipos_proyecto: [],
+            empresa_id: '',
+            carreras: [],
             newProject: {
-                nombre: '',
-                email: '',
-                telefono: '',
-                direccion: '',
-                sector: '',
-                sitio_web: '',
+                titulo: '',
                 descripcion: '',
-                logo: null
+                requisitos: [],
+                id_estado_oferta: '',
+                id_modalidad: '',
+                fecha_inicio: null,
+                fecha_fin: null,
+                fecha_limite_aplicacion: null,
+                estado_proyecto: '',
+                cupos_disponibles: 1,
+                id_tipo_proyecto: '',
+                ubicacion: '',
+                id_carrera: '',
+                id_empresa: ''
             }
         };
     },
@@ -295,7 +390,8 @@ export default {
                     empresa = await api.get(`/empresas/proyecto/${id_usuario}`);
                     console.log(empresa.data.data[0].id);
 
-                    response = await api.get(`/proyectos/${empresa.data.data[0].id}`);
+                    response = await api.get(`/proyectos/empresa/${empresa.data.data[0].id}`);
+                    this.empresa_id = empresa.data.data[0].id;
 
                     this.projects = response.data.data;
                     this.proyecto = response.data.data;
@@ -304,12 +400,149 @@ export default {
 
             this.projects = response.data.data;
             this.proyecto = response.data.data;
+
+            await this.cargarEstadosOferta();
+            await this.cargarModalidades();
+            await this.cargarTiposProyecto();
+            await this.cargarCarreras();
         } catch (error) {
             console.error(error);
         }
         this.loading = false;
     },
     methods: {
+
+        redirectToRoute() {
+            this.$router.push({ name: '/proyectos' });
+        },
+
+        async cargarEstadosOferta() {
+            try {
+                const response = await api.get("/estado-oferta");
+                this.estados_oferta = response.data.data;
+                console.log(this.estados_oferta);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async cargarModalidades() {
+            try {
+                const response = await api.get("/modalidades-trabajo");
+                this.modalidades = response.data.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async cargarTiposProyecto() {
+            try {
+                const response = await api.get("/tipos-proyecto");
+                this.tipos_proyecto = response.data.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async cargarCarreras() {
+            try {
+                const response = await api.get("/carreras");
+                this.carreras = response.data.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async addProject() {
+            this.loading = true;
+            try {
+
+                Object.keys(this.newProject).forEach(key => {
+                    if (key === 'requisitos') {
+                        this.newProject[key] = this.newProject[key].join(',');
+                    }
+                });
+
+                console.log("Empresa ID: " + this.empresa_id);
+                this.newProject.id_empresa = this.empresa_id;
+                console.log("Id de empresa" + this.newProject.id_empresa);
+                console.log("Titulo: " + this.newProject.titulo);
+                console.log("Descripcion: " + this.newProject.descripcion);
+                console.log("Requisitos: " + this.newProject.requisitos);
+                console.log("Estado de oferta: " + this.newProject.id_estado_oferta);
+                console.log("Modalidad: " + this.newProject.id_modalidad);
+                console.log("Fecha de inicio: " + this.newProject.fecha_inicio);
+                console.log("Fecha de fin: " + this.newProject.fecha_fin);
+                console.log("Fecha limite de aplicacion: " + this.newProject.fecha_limite_aplicacion);
+                console.log("Estado de proyecto: " + this.newProject.estado_proyecto);
+                console.log("Cupos disponibles: " + this.newProject.cupos_disponibles);
+                console.log("Tipo de proyecto: " + this.newProject.id_tipo_proyecto);
+                console.log("Ubicacion: " + this.newProject.ubicacion);
+                console.log("Carrera: " + this.newProject.id_carrera);
+
+                const response = await api.post("/proyectos", this.newProject);
+                //Redireccionar a la vista de proyectos
+
+                this.projects.push(response.data.data);
+
+                // Reset form and close modal
+                this.newProject = {
+                    titulo: '',
+                    descripcion: '',
+                    requisitos: [],
+                    id_estado_oferta: '',
+                    id_modalidad: '',
+                    fecha_inicio: null,
+                    fecha_fin: null,
+                    fecha_limite_aplicacion: null,
+                    estado_proyecto: '',
+                    cupos_disponibles: 1,
+                    id_tipo_proyecto: '',
+                    ubicacion: '',
+                    id_carrera: '',
+                };
+                this.currentRequirement = ''; // Reset current requirement input
+
+                document.getElementById('addProjectModal').querySelector('[data-bs-dismiss="modal"]').click();
+
+                Swal.fire(
+                    'Agregado',
+                    'El proyecto ha sido agregado exitosamente.',
+                    'success'
+                ).then(() => {
+                    window.location.reload();
+                });
+                // return this.$router.push({ name: 'proyectos' });
+            } catch (error) {
+                console.error(error);
+                Swal.fire(
+                    'Error',
+                    'No se pudo agregar el proyecto.' + error,
+                    'error'
+                );
+            }
+            this.newProject.requisitos = this.newProject.requisitos.split(',');
+            this.loading = false;
+        },
+
+        // Method to add requirements dynamically
+        addRequirement() {
+            if (this.currentRequirement && this.currentRequirement.trim() !== '') {
+                if (!this.newProject.requisitos) {
+                    this.newProject.requisitos = [];
+                }
+                this.newProject.requisitos.push(this.currentRequirement.trim());
+                this.currentRequirement = ''; // Clear input after adding
+            }
+        },
+
+        // Method to remove a requirement
+        removeRequirement(index) {
+            this.newProject.requisitos.splice(index, 1);
+        },
+        viewProject(project) {
+            this.selectedProject = project;
+        },
         async loadInteresteds() {
             try {
                 console.log("ID Proyecto: " + this.selectedProject.id);
@@ -343,7 +576,9 @@ export default {
                     'Eliminado',
                     'La empresa ha sido eliminado.',
                     'success'
-                );
+                ).then(() => {
+                    window.location.reload();
+                });
             }
         },
         async deleteProject(id) {
@@ -353,9 +588,6 @@ export default {
             } catch (error) {
                 console.error(error);
             }
-        },
-        viewProject(project) {
-            this.selectedProject = project;
         },
         handleLogoUpload(event) {
             this.newProject.logo = event.target.files[0];
@@ -399,7 +631,7 @@ export default {
                     cupos_disponibles: 1,
                     id_tipo_proyecto: 0,
                     ubicaion: '',
-                    id_carrera: 0,
+                    id_carrera: 0
                 };
 
                 document.getElementById('addCompanyModal').querySelector('[data-bs-dismiss="modal"]').click();
@@ -416,11 +648,14 @@ export default {
                     'No se pudo agregar el proyecto.',
                     'error'
                 );
+                window.location.reload();
+
             }
             this.loading = false;
         }
+    },
+
     }
-};
 </script>
 
 <style scoped>

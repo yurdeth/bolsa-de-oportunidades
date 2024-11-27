@@ -20,12 +20,7 @@ class ProyectosController extends Controller {
     }
 
     public function indexBelongs() {
-        $proyectos = Proyectos::all()
-            ->with('empresa_table')
-            ->with('estado_oferta_table')
-            ->with('modalidad_trabajo_table')
-            ->with('tipo_proyecto_table')
-            ->with('carrera_table');
+        $proyectos = Proyectos::all();
 
         if ($proyectos->isEmpty()) {
             return response()->json([
@@ -38,6 +33,11 @@ class ProyectosController extends Controller {
             $proyecto->requisitos = explode(',', $proyecto->requisitos);
             return $proyecto;
         });
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyectos
+        ]);
     }
 
     public function findByEmpresa($id) {
