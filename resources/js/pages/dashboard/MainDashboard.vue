@@ -203,6 +203,69 @@
             </div>
         </section>
     </div>
+    <div v-if="user_data && user_data.id_tipo_usuario == 2">
+        <h1>Panel de coordinador</h1>
+
+        <!-- Tarjetas de estadísticas principales -->
+        <section class="stats">
+            <div class="stat-card">
+                <i class="fas fa-paper-plane icon"></i>
+                <h2>Solicitudes Activas</h2>
+                <p>
+                    {{
+                        String(Number(activeRequests)).replace(
+                            /\B(?=(\d{3})+(?!\d))/g,
+                            ","
+                        )
+                    }}
+                </p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle icon"></i>
+                <h2>Proyectos Activos</h2>
+                <p>
+                    {{
+                        String(Number(activedProjects)).replace(
+                            /\B(?=(\d{3})+(?!\d))/g,
+                            ","
+                        )
+                    }}
+                </p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-graduate icon"></i>
+                <h2>Estudiantes Registrados</h2>
+                <p>
+                    {{
+                        String(Number(numStudents)).replace(
+                            /\B(?=(\d{3})+(?!\d))/g,
+                            ","
+                        )
+                    }}
+                </p>
+            </div>
+        </section>
+
+        <!-- Gráficos y Listados -->
+        <section class="row details">
+            <div class="col-12 col-md-6 px-3 mb-3">
+                <div class="chart">
+                    <h3>Proyectos por Estado</h3>
+                    <canvas
+                        id="estudiantesChart"
+                        width="400"
+                        height="200"
+                    ></canvas>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 px-3 mb-3">
+                <div class="chart">
+                    <h3>Solicitudes por Estado</h3>
+                    <canvas id="requestChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script>
@@ -237,6 +300,23 @@ export default {
                     label = dataUserbyRole.map((item) => item.rol),
                     data = dataUserbyRole.map((item) => item.total);
                 chart("#userChart", label, data);
+
+                let dataAplicacionesByStatus =
+                    response.data.dataAplicacionesByStatus;
+                label = dataAplicacionesByStatus.map((item) => item.status);
+                data = dataAplicacionesByStatus.map((item) => item.total);
+                chart("#requestChart", label, data);
+            }
+
+            if (this.user_data && this.user_data.id_tipo_usuario == 2) {
+                this.activeRequests = response.data.activeRequests;
+                this.activedProjects = response.data.activeProjects;
+                this.numStudents = response.data.totalStudent;
+
+                let estudiantes = response.data.dataProyectosbyStatus;
+                label = estudiantes.map((item) => item.carrera);
+                data = estudiantes.map((item) => item.total);
+                chart("#estudiantesChart", label, data);
 
                 let dataAplicacionesByStatus =
                     response.data.dataAplicacionesByStatus;

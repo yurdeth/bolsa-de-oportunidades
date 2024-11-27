@@ -46,6 +46,43 @@ class DashboardController extends Controller
             ], 200);
         }
 
+        if ($user->id_tipo_usuario == 2) {
+            $info_coordinador = $user->info_coordinador->first();
+
+            if ($info_coordinador == null) {
+                return response()->json([
+                    'message' => 'No tienes permisos para acceder a esta sección.'
+                ], 403);
+            }
+
+            $activeProjects = Proyectos::where('id_estado_oferta', 1)->where('id_carrera', $info_coordinador->id_carrera)->count();
+            $totalStudent = Estudiantes::where('id_carrera', $info_coordinador->id_carrera)->count();
+
+            $idsProyectos = Proyectos::where('id_carrera', $info_coordinador->id_carrera)->pluck('id');
+            $activeRequests = Aplicaciones::where('id_estado_aplicacion', 1)->whereIn('id_proyecto', $idsProyectos)->count();
+
+            /* Numeros de proyecto por estado(id_estado_oferta) */
+            $dataProyectosbyStatus = DB::table('proyectos')
+                ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
+                ->select('estados_oferta.nombre_estado as rol', DB::raw('count(*) as total'))
+                ->groupBy('estados_oferta.nombre_estado')
+                ->get();
+
+            $dataAplicacionesByStatus = DB::table('aplicaciones')
+                ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+                ->select('estados_aplicacion.nombre as status', DB::raw('count(*) as total'))
+                ->groupBy('estados_aplicacion.nombre')
+                ->get();
+
+            return response()->json([
+                'activeRequests' => $activeRequests,
+                'activeProjects' => $activeProjects,
+                'totalStudent' => $totalStudent,
+                'dataProyectosbyStatus' => $dataProyectosbyStatus,
+                'dataAplicacionesByStatus' => $dataAplicacionesByStatus
+            ], 200);
+        }
+
         return response()->json(['status' => 'success', 'message' => 'no se ha encontrado una ruta para el usuario'], 404);
     }
 }

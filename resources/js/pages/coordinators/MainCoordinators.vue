@@ -26,97 +26,204 @@
     <div>
         <table class="table table-striped">
             <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Carrera</th>
-                <th class="text-center">Acciones</th>
-            </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Carrera</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="coordinator in coordinators" :key="coordinator.id">
-                <td>{{ `${coordinator.nombres} ${coordinator.apellidos}` }}</td>
-                <td>{{ coordinator.email }}</td>
-                <td>{{ coordinator.nombre_carrera }}</td>
-                <td class="text-center">
-                    <button
-                        type="button"
-                        class="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
-                        @click="viewCoordinator(coordinator)"
-                    >
-                        Ver
-                    </button>
-                    <button
-                        class="btn btn-danger"
-                        @click="confirmDelete(coordinator.id)"
-                    >
-                        Eliminar
-                    </button>
-                </td>
-            </tr>
+                <tr v-for="coordinator in coordinators" :key="coordinator.id">
+                    <td>
+                        {{ `${coordinator.nombres} ${coordinator.apellidos}` }}
+                    </td>
+                    <td>{{ coordinator.email }}</td>
+                    <td>{{ coordinator.nombre_carrera }}</td>
+                    <td class="text-center">
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                            @click="viewCoordinator(coordinator)"
+                        >
+                            Ver
+                        </button>
+                        <button
+                            class="btn btn-danger"
+                            @click="confirmDelete(coordinator.id)"
+                        >
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div
+        class="modal fade"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        {{ createNew ? 'Agregar nuevo' : 'Información del' }} coordinador
+                        {{ createNew ? "Agregar nuevo" : "Información del" }}
+                        coordinador
                     </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
                 </div>
                 <div class="modal-body">
                     <form @submit.prevent="saveCoordinator">
                         <div>
                             <label for="nombre">Nombre: </label>
-                            <input class="form-control" type="text" v-model="form.nombres" placeholder="Nombres"
-                                   required>
+                            <input
+                                class="form-control"
+                                :class="{ 'is-invalid': errors.nombres }"
+                                type="text"
+                                v-model="form.nombres"
+                                placeholder="Nombres"
+                                required
+                            />
+                            <span
+                                v-if="errors.nombres"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>{{ errors.nombres[0] }}</strong>
+                            </span>
                         </div>
 
                         <div>
                             <label for="apellido">Apellido: </label>
-                            <input class="form-control" type="text" v-model="form.apellidos" placeholder="Apellidos"
-                                   required>
+                            <input
+                                class="form-control"
+                                :class="{ 'is-invalid': errors.apellidos }"
+                                type="text"
+                                v-model="form.apellidos"
+                                placeholder="Apellidos"
+                                required
+                            />
+                            <span
+                                v-if="errors.apellidos"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>{{ errors.apellidos[0] }}</strong>
+                            </span>
                         </div>
 
                         <div>
                             <label for="correo">Correo: </label>
-                            <input class="form-control" type="text" v-model="form.email"
-                                   :readonly="!createNew" placeholder="Correo institucional">
+                            <input
+                                class="form-control"
+                                :class="{ 'is-invalid': errors.email }"
+                                type="text"
+                                v-model="form.email"
+                                :readonly="!createNew"
+                                placeholder="Correo institucional"
+                            />
+                            <span
+                                v-if="errors.email"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>{{ errors.email[0] }}</strong>
+                            </span>
                         </div>
 
                         <div>
                             <label for="telefono">Teléfono: </label>
-                            <input class="form-control" type="text" v-model="form.telefono"
-                                   placeholder="Teléfono de contacto" required>
+                            <input
+                                class="form-control"
+                                type="text"
+                                v-model="form.telefono"
+                                placeholder="Teléfono de contacto"
+                                required
+                            />
                         </div>
 
                         <div>
                             <label for="password">Contraseña: </label>
                             <div class="input-group">
-                                <input :type="showPassword ? 'text' : 'password'" class="form-control"
-                                       v-model="form.password" placeholder="Contraseña" :required="createNew">
-                                <button type="button" class="btn btn-outline-secondary" @click="togglePassword">
-                                    {{ showPassword ? 'Ocultar' : 'Ver' }}
+                                <input
+                                    :type="showPassword ? 'text' : 'password'"
+                                    class="form-control"
+                                    :class="{ 'is-invalid': errors.password }"
+                                    v-model="form.password"
+                                    placeholder="Contraseña"
+                                    :required="createNew"
+                                />
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    @click="togglePassword"
+                                >
+                                    {{ showPassword ? "Ocultar" : "Ver" }}
                                 </button>
                             </div>
+                            <span
+                                v-if="errors.password"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>{{ errors.password[0] }}</strong>
+                            </span>
                         </div>
 
                         <div>
-                            <label for="password_confirmation">Confirmar contraseña: </label>
+                            <label for="password_confirmation"
+                                >Confirmar contraseña:
+                            </label>
                             <div class="input-group">
-                                <input :type="showRetypedPassword ? 'text' : 'password'" class="form-control"
-                                       v-model="form.password_confirmation" placeholder="Repita su contraseña" :required="createNew">
-                                <button type="button" class="btn btn-outline-secondary" @click="toggleRetypedPassword">
-                                    {{ showRetypedPassword ? 'Ocultar' : 'Ver' }}
+                                <input
+                                    :type="
+                                        showRetypedPassword
+                                            ? 'text'
+                                            : 'password'
+                                    "
+                                    class="form-control"
+                                    :class="{
+                                        'is-invalid':
+                                            form.password !==
+                                            form.password_confirmation,
+                                    }"
+                                    v-model="form.password_confirmation"
+                                    placeholder="Repita su contraseña"
+                                    :required="createNew"
+                                />
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    @click="toggleRetypedPassword"
+                                >
+                                    {{
+                                        showRetypedPassword ? "Ocultar" : "Ver"
+                                    }}
                                 </button>
                             </div>
+                            <span
+                                v-if="
+                                    form.password !== form.password_confirmation
+                                "
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>Las contraseñas no coinciden</strong>
+                            </span>
                         </div>
 
                         <div>
@@ -125,6 +232,9 @@
                                 <select
                                     id="id_departamento"
                                     class="form-control"
+                                    :class="{
+                                        'is-invalid': errors.id_departamento,
+                                    }"
                                     name="id_departamento"
                                     v-model="form.id_departamento"
                                     style="height: 40px"
@@ -142,6 +252,15 @@
                                     </option>
                                 </select>
                             </div>
+                            <span
+                                v-if="errors.id_departamento"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>
+                                    {{ errors.id_departamento[0] }}
+                                </strong>
+                            </span>
                         </div>
 
                         <div>
@@ -150,6 +269,7 @@
                                 <select
                                     id="id_carrera"
                                     class="form-control"
+                                    :class="{ 'is-invalid': errors.id_carrera }"
                                     name="id_carrera"
                                     v-model="form.id_carrera"
                                     style="height: 40px"
@@ -167,16 +287,27 @@
                                     </option>
                                 </select>
                             </div>
+                            <span
+                                v-if="errors.id_carrera"
+                                class="invalid-feedback d-block"
+                                role="alert"
+                            >
+                                <strong>{{ errors.id_carrera[0] }}</strong>
+                            </span>
                         </div>
 
-                        <div class="row p-3">
-                            <div class="col-8"></div>
-                            <div class="col-4">
-                                <button class="btn btn-success" type="submit">{{
-                                        createNew ? 'Registrar' : 'Actualizar'
-                                    }}
+                        <div class="d-flex justify-content-end p-3">
+                            <div class="btn-group btn-group-sm gap-2">
+                                <button class="btn btn-success" type="submit">
+                                    {{ createNew ? "Registrar" : "Actualizar" }}
                                 </button>
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Cerrar
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -187,7 +318,7 @@
 </template>
 
 <script>
-import {api} from "../../api";
+import { api } from "../../api";
 import Swal from "sweetalert2";
 
 export default {
@@ -202,73 +333,110 @@ export default {
             showPassword: false,
             showRetypedPassword: false,
             form: {
-                nombres: '',
-                apellidos: '',
-                email: '',
-                telefono: '',
-                password: '',
-                password_confirmation: '',
-                id_departamento: '',
-                id_carrera: ''
-            }
+                nombres: "",
+                apellidos: "",
+                email: "",
+                telefono: "",
+                password: "",
+                password_confirmation: "",
+                id_departamento: "",
+                id_carrera: "",
+            },
+            errors: {},
         };
     },
     async mounted() {
         this.loading = true;
         try {
-            const response = await api.get("/coordinadores");
-            this.coordinators = response.data.data;
+            await this.loadCoodinartor();
+            await this.loadDepartments();
         } catch (error) {
-            console.error(error);
+            Swal.fire(
+                "Error",
+                "Ha ocurrido un error al cargar los coordinadores.",
+                "error"
+            );
         } finally {
             this.loading = false;
         }
-
-        await this.loadDepartments();
     },
     watch: {
-        'form.id_departamento': function (newVal) {
+        "form.id_departamento": function (newVal) {
             if (newVal) {
                 this.loadCareers();
             }
-        }
+        },
     },
     methods: {
-        async registerCoordinator() {
+        async loadCoodinartor() {
             try {
-                const response = await api.post('/coordinadores', this.form);
+                const response = await api.get("/coordinadores");
+                this.coordinators = response.data.data;
+            } catch (error) {
+                Swal.fire(
+                    "Error",
+                    "Ha ocurrido un error al cargar los coordinadores.",
+                    "error"
+                );
+            }
+        },
+        async registerCoordinator() {
+            this.loading = true;
+            try {
+                const response = await api.post("/coordinadores", this.form);
                 this.coordinators.push(response.data.data);
                 Swal.fire(
-                    'Registrado',
-                    'El coordinador ha sido registrado.',
-                    'success'
+                    "Registrado",
+                    "El coordinador ha sido registrado.",
+                    "success"
                 ).then(() => {
                     window.location.reload();
                 });
-
             } catch (error) {
-                console.error(error);
+                // Manejo de errores desde el servidor
+                if (error.response && error.response.data.errors) {
+                    this.errors = error.response.data.errors;
+                } else {
+                    this.errors = {
+                        nombres: [
+                            "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+                        ],
+                    };
+                }
+            } finally {
+                this.loading = false;
             }
         },
         async confirmDelete(id) {
             const result = await Swal.fire({
-                title: '¿Estás seguro?',
-                text: 'No podrás revertir esto',
-                icon: 'warning',
+                title: "¿Estás seguro?",
+                text: "No podrás revertir esto",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminarlo',
-                cancelButtonText: 'Cancelar'
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminarlo",
+                cancelButtonText: "Cancelar",
             });
 
             if (result.isConfirmed) {
-                await this.deleteCoordinator(id);
-                Swal.fire(
-                    'Eliminado',
-                    'El coordinador ha sido eliminado.',
-                    'success'
-                );
+                this.loading = true;
+                try {
+                    await this.deleteCoordinator(id);
+                    Swal.fire(
+                        "Eliminado",
+                        "El coordinador ha sido eliminado.",
+                        "success"
+                    );
+                } catch (error) {
+                    Swal.fire(
+                        "Error",
+                        "Ha ocurrido un error al eliminar el coordinador.",
+                        "error"
+                    );
+                } finally {
+                    this.loading = false;
+                }
             }
         },
         async deleteCoordinator(id) {
@@ -283,16 +451,16 @@ export default {
         },
         viewCoordinator(coordinator) {
             this.selectedCoordinator = coordinator;
-            this.form = {...coordinator};
+            this.form = { ...coordinator };
             this.createNew = false;
         },
         createNewCoordinator() {
             this.form = {
-                nombres: '',
-                email: '',
-                telefono: '',
-                id_departamento: '',
-                id_carrera: ''
+                nombres: "",
+                email: "",
+                telefono: "",
+                id_departamento: "",
+                id_carrera: "",
             };
             this.createNew = true;
         },
@@ -322,22 +490,36 @@ export default {
         },
         async updateCoordinator() {
             const id = this.selectedCoordinator.id;
-            await api.patch(`/coordinadores/${id}`, this.form)
+            this.loading = true;
+            await api
+                .patch(`/coordinadores/${id}`, this.form)
                 .then(() => {
                     const index = this.coordinators.findIndex(
                         (coordinator) => coordinator.id === id
                     );
                     this.coordinators[index] = this.form;
                     Swal.fire(
-                        'Actualizado',
-                        'El coordinador ha sido actualizado.',
-                        'success'
+                        "Actualizado",
+                        "El coordinador ha sido actualizado.",
+                        "success"
                     ).then(() => {
                         window.location.reload();
                     });
                 })
                 .catch((error) => {
-                    console.error(error);
+                    // Manejo de errores desde el servidor
+                    if (error.response && error.response.data.errors) {
+                        this.errors = error.response.data.errors;
+                    } else {
+                        this.errors = {
+                            nombres: [
+                                "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+                            ],
+                        };
+                    }
+                })
+                .finally(() => {
+                    this.loading = false;
                 });
         },
         togglePassword() {
@@ -345,8 +527,8 @@ export default {
         },
         toggleRetypedPassword() {
             this.showRetypedPassword = !this.showRetypedPassword;
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -358,6 +540,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
+    z-index: 9999;
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
@@ -366,5 +549,10 @@ export default {
 .loader .spinner-border {
     width: 100px;
     height: 100px;
+}
+
+.invalid-feedback {
+    position: relative;
+    margin-top: 0.25rem;
 }
 </style>
