@@ -227,7 +227,7 @@ nav {
                     </h5>
                 </div>
                 <div class="links">
-                    <router-link to="/dashboard" @click="showMenu = false">
+                    <router-link v-if="Number(user_data.id_tipo_usuario) === 1" to="/dashboard" @click="showMenu = false">
                         Dashboard
                     </router-link>
                     <router-link

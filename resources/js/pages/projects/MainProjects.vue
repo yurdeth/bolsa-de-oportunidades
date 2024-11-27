@@ -213,7 +213,11 @@ export default {
     async mounted() {
         this.loading = true;
         try {
-            const response = await api.get("/proyectos/empresa/3");
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const id_empresa = user.info_empresa[0].id;
+
+            const response = await api.get(`/proyectos/${id_empresa}`);
             this.projects = response.data.data;
             this.proyecto = response.data.data;
         } catch (error) {
