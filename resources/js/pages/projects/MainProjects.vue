@@ -217,7 +217,7 @@ export default {
             const user = JSON.parse(localStorage.getItem('user'));
             const id_empresa = user.info_empresa[0].id;
 
-            const response = await api.get(`/proyectos/${id_empresa}`);
+            const response = await api.get(`/proyectos/empresa/${id_empresa}`);
             this.projects = response.data.data;
             this.proyecto = response.data.data;
         } catch (error) {
