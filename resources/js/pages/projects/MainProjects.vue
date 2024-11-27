@@ -77,15 +77,21 @@
                                     </p>
 
                                     <p><strong>Fecha Inicial:</strong>
-                                        {{ selectedProject.fecha_inicio ? new Date(selectedProject.fecha_inicio).toLocaleDateString() : 'No especificado' }}
+                                        {{
+                                            selectedProject.fecha_inicio ? new Date(selectedProject.fecha_inicio).toLocaleDateString() : 'No especificado'
+                                        }}
                                     </p>
 
                                     <p><strong>Fecha Final:</strong>
-                                        {{ selectedProject.fecha_fin ? new Date(selectedProject.fecha_fin).toLocaleDateString() : 'No especificado' }}
+                                        {{
+                                            selectedProject.fecha_fin ? new Date(selectedProject.fecha_fin).toLocaleDateString() : 'No especificado'
+                                        }}
                                     </p>
 
                                     <p><strong>Fecha Límite:</strong>
-                                        {{ selectedProject.fecha_limite_aplicacion ? new Date(selectedProject.fecha_limite_aplicacion).toLocaleDateString() : 'No especificado' }}
+                                        {{
+                                            selectedProject.fecha_limite_aplicacion ? new Date(selectedProject.fecha_limite_aplicacion).toLocaleDateString() : 'No especificado'
+                                        }}
                                     </p>
 
                                     <p><strong>Estado:</strong>
@@ -137,7 +143,8 @@
                                 <div class="card-requisitos">
                                     <h5 class="fw-bold mb-3">Requisitos</h5>
                                     <ul class="p-0 m-0">
-                                        <requisitos-item v-for="(item, index) in newProject.nombre" :key="index" :valor="item" ></requisitos-item>
+                                        <requisitos-item v-for="(item, index) in newProject.nombre" :key="index"
+                                                         :valor="item"></requisitos-item>
                                     </ul>
                                 </div>
                                 <div class="col-6 mb-3">
@@ -170,7 +177,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar
+                                </button>
                                 <button type="submit" class="btn btn-primary">Guardar Empresa</button>
                             </div>
                         </form>
@@ -182,7 +190,7 @@
 </template>
 
 <script>
-import { api } from "../../api";
+import {api} from "../../api";
 import ProjectItem from "@/pages/projects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/RequisitosItem.vue";
@@ -215,12 +223,35 @@ export default {
         try {
 
             const user = JSON.parse(localStorage.getItem('user'));
-            const id_usuario = user.info_empresa[0].id;
+            console.log(user.id_tipo_usuario);
+            let response;
+            let empresa;
 
-            const empresa = await api.get(`/empresas/proyecto/${id_usuario}`);
-            console.log(empresa.data.data);
+            switch (user.id_tipo_usuario) {
+                case 1:
+                    response = await api.get("/proyectos");
+                    this.projects = response.data.data;
+                    break;
+                case 2:
+                    empresa = await api.get(`/proyectos`);
 
-            const response = await api.get(`/proyectos/empresa/${empresa.data.data[0].id}`);
+                    response = await api.get(`/proyectos`);
+                    this.projects = response.data.data;
+                    this.proyecto = response.data.data;
+                    break;
+                case 4:
+                    const id_usuario = user.info_empresa[0].id;
+
+                    empresa = await api.get(`/empresas/proyecto/${id_usuario}`);
+                    console.log(empresa.data.data[0].id);
+
+                    response = await api.get(`/proyectos/${empresa.data.data[0].id}`);
+
+                    this.projects = response.data.data;
+                    this.proyecto = response.data.data;
+                    break;
+            }
+
             this.projects = response.data.data;
             this.proyecto = response.data.data;
         } catch (error) {
@@ -269,7 +300,7 @@ export default {
             return requisitos.split(/,\s*/);
         },
 
-        url(project){
+        url(project) {
             return project.empresa_table.logo_url;
         },
 

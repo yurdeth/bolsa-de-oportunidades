@@ -1,9 +1,9 @@
 <template>
     <tr>
-        <td>{{ project.titulo }}</td>
-        <td>{{ project.descripcion }}</td>
-        <td>{{ project.estado_oferta_table.nombre_estado }}</td>
-        <td>{{ project.modalidad_trabajo_table.nombre }}</td>
+        <td>{{ project.titulo_proyecto }}</td>
+        <td>{{ project.descripcion_proyeto }}</td>
+        <td>{{ project.estado_oferta }}</td>
+        <td>{{ project.modalidad }}</td>
         <td class="text-center">
             <button
                 type="button"
