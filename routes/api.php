@@ -22,6 +22,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
+Route::get('proyectos/empresa', [ProyectosController::class, 'indexBelongs'])->name('proyectos.belongs');
+
 //-------------------------------------------------------------------------
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
@@ -118,8 +121,6 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
-    Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
-    Route::get('proyectos/empresa', [ProyectosController::class, 'indexBelongs'])->name('proyectos.belongs');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');
