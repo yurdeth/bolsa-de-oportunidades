@@ -401,7 +401,9 @@ h2 {
                         <div class="input-group">
                             <input
                                 id="password_confirmation"
-                                :type="showPassword ? 'text' : 'password'"
+                                :type="
+                                    showConfirmPassword ? 'text' : 'password'
+                                "
                                 class="form-control"
                                 :class="{
                                     'is-invalid': errors.password_confirmation,
@@ -530,7 +532,7 @@ export default {
                     "user",
                     JSON.stringify(response.data.data.user)
                 );
-                this.$router.push("/inicio");
+                this.$router.push("/dashboard");
             } catch (error) {
                 if (
                     error.response &&

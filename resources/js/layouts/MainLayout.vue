@@ -227,7 +227,7 @@ nav {
                     </h5>
                 </div>
                 <div class="links">
-                    <router-link v-if="Number(user_data.id_tipo_usuario) === 1" to="/dashboard" @click="showMenu = false">
+                    <router-link to="/dashboard" @click="showMenu = false">
                         Dashboard
                     </router-link>
                     <router-link
@@ -253,8 +253,12 @@ nav {
                     </router-link>
                     <router-link
                         to="/proyectos"
-                        v-if="Number(user_data.id_tipo_usuario) === 4 || Number(user_data.id_tipo_usuario) === 2"
-                        @click="showMenu = false">
+                        v-if="
+                            Number(user_data.id_tipo_usuario) === 4 ||
+                            Number(user_data.id_tipo_usuario) === 2
+                        "
+                        @click="showMenu = false"
+                    >
                         Proyectos
                     </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
