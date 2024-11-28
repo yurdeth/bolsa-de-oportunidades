@@ -125,6 +125,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
     Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
+    Route::get('/proyectos/ver/cantidad', [ProyectosController::class, 'countProjects'])->name('proyectos.contar');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');

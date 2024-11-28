@@ -19,6 +19,15 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    public function countProjects(): JsonResponse {
+        $count_proyectos = Proyectos::count();
+
+        return response()->json([
+            'success' => true,
+            'cantidad' => $count_proyectos
+        ]);
+    }
+
     public function indexBelongs() {
         $proyectos = Proyectos::all();
 
@@ -247,7 +256,7 @@ class ProyectosController extends Controller {
         ]);
     }
 
-    public function getInteresados(Request $id){
+    public function getInteresados(Request $id) {
         // Solamente los coordinadores pueden ver los interesados en el proyecto
         if (Auth::user()->id_tipo_usuario == 2) {
             return response()->json([
