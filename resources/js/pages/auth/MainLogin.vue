@@ -25,7 +25,7 @@ body {
 }
 
 .logo-facultad {
-    max-width: 100px;
+    max-width: 170px;
 }
 
 h2 {
