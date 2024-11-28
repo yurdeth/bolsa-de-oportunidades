@@ -266,6 +266,22 @@
             </div>
         </section>
     </div>
+
+    <div v-if="user_data && user_data.id_tipo_usuario == 4">
+        <h1>Panel de empresa</h1>
+        <h3 class="mt-3">¡Bienvenido a la Bolsa de Oportunidades!</h3>
+
+        <p class="mt-2">
+            Este es el lugar donde comienzan las grandes experiencias. Aquí
+            encontrarás ofertas de servicio social y pasantías diseñadas para
+            potenciar tu desarrollo profesional y personal.
+        </p>
+
+        <p class="mt-2">
+            Explora las oportunidades, postúlate a las que se alineen con tus
+            intereses y da el primer paso hacia tu futuro. ¡El éxito te espera!
+        </p>
+    </div>
 </template>
 
 <script>
