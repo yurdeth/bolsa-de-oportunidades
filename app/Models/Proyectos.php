@@ -49,7 +49,7 @@ class Proyectos extends Model {
          * */
 
         if (!is_null($id)){
-            return DB::table('proyectos')
+            $data = DB::table('proyectos')
                 ->select(
                     'proyectos.id as id_proyecto',
                     'empresas.nombre as nombre_empresa',
@@ -74,9 +74,14 @@ class Proyectos extends Model {
                 ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
                 ->where('proyectos.id', $id)
                 ->get();
+
+            return $data->map(function ($item) {
+                $item->requisitos_proyecto = explode(',', $item->requisitos_proyecto);
+                return $item;
+            });
         }
 
-        return DB::table('proyectos')
+        $data =  DB::table('proyectos')
             ->select(
                 'proyectos.id as id_proyecto',
                 'empresas.nombre as nombre_empresa',
@@ -100,6 +105,11 @@ class Proyectos extends Model {
             ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
             ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
             ->get();
+
+        return $data->map(function ($item) {
+            $item->requisitos_proyecto = explode(',', $item->requisitos_proyecto);
+            return $item;
+        });
     }
 
     public function getEstudiantesInteresadosEnProyecto($id): Collection {
