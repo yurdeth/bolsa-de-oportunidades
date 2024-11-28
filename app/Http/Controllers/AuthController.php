@@ -52,6 +52,11 @@ class AuthController extends Controller {
                 $data['empresa_id'] = Empresas::where('id_usuario', $id_buscado)->first()->id;
             }
 
+            if ($user_current->id_tipo_usuario == 3) {
+                $id_buscado = Auth::user()->id;
+                $data['estudiante_id'] = Estudiantes::where('id_usuario', $id_buscado)->first()->id;
+            }
+
             $data['token'] = $tokenResult->accessToken;
             $data['token_type'] = 'Bearer';
             $data['expires_at'] = $tokenResult->token->expires_at;

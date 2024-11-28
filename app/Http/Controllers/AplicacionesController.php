@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aplicaciones;
+use App\Models\Proyectos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -49,6 +50,20 @@ class AplicacionesController extends Controller
             'success' => true,
             'data' => $aplicacion
         ], 201);
+    }
+
+    public function showByEstadoAplicaion($id_estudiante)
+    {
+        $aplicaciones_activas = Aplicaciones::where('id_estudiante', $id_estudiante)->where('id_estado_aplicacion', 1)->get();
+
+        if ($aplicaciones_activas->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay aplicaciones activas para el estudiante'
+            ], 404);
+        }
+
+        $proyectos_activos = Proyectos::whereIn('id', $aplicaciones_activas->pluck('id_proyecto'))->get();
     }
 
     public function show($id)
