@@ -88,7 +88,7 @@ class DashboardController extends Controller
         }
 
         if ($user->id_tipo_usuario == 4) {
-
+            return response()->json(['status' => 'success', 'message' => 'este espacio se encuentra en construccion', 200]);
         }
 
         return response()->json(['status' => 'success', 'message' => 'no se ha encontrado una ruta para el usuario'], 404);
