@@ -346,7 +346,8 @@ export default {
                     " " +
                     this.user_data.info_estudiante[0].apellidos;
             } else if (this.user_data.info_empresa.length > 0) {
-                return this.user_data.info_empresa[0].logo_url;
+                /* return this.user_data.info_empresa[0].logo_url; */
+                nombre = this.user_data.info_empresa[0].nombre;
             } else {
                 nombre = "Administrador";
             }
