@@ -24,8 +24,6 @@ Route::get('/', function () {
 });
 
 
-Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
-
 Route::get('proyectos/empresa', [ProyectosController::class, 'indexBelongs'])->name('proyectos.belongs');
 Route::get('/empresas/proyecto/{id}', [EmpresasController::class, 'showByProyecto'])->name('empresas.find');
 
@@ -55,7 +53,7 @@ Route::get('/tipos-proyecto', [TiposProyectoController::class, 'index'])->name('
 Route::get('/tipos-proyecto/{id}', [TiposProyectoController::class, 'show'])->name('tipos.proyectos.show');
 
 //-------------------------------------------------------------------------
-//Route::get('/estado-oferta', [EstadosOfertaController::class, 'index'])->name('estado.oferta.index');
+Route::get('/estado-oferta', [EstadosOfertaController::class, 'index'])->name('estado.oferta.index');
 Route::get('/estado-oferta/{id}', [EstadosOfertaController::class, 'show'])->name('estado.oferta.show');
 
 
@@ -115,7 +113,6 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::delete('/tipos-proyecto/{id}', [TiposProyectoController::class, 'destroy'])->name('tipos.proyectos.destroy');
 
     //-------------------------------------------------------------------------
-    Route::get('/estado-oferta', [EstadosOfertaController::class, 'index'])->name('estado.oferta.index');
     Route::post('/estado-oferta/{id}', [EstadosOfertaController::class, 'store'])->name('estado.oferta.store');
     Route::patch('/estado-oferta/{id}', [EstadosOfertaController::class, 'update'])->name('estado.oferta.update');
     Route::delete('/estado-oferta/{id}', [EstadosOfertaController::class, 'destroy'])->name('estado.oferta.destroy');
@@ -127,6 +124,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
+    Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
     Route::get('/proyectos/ver/cantidad', [ProyectosController::class, 'countProjects'])->name('proyectos.contar');
 
     //-------------------------------------------------------------------------
