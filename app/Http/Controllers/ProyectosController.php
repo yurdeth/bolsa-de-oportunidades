@@ -58,12 +58,12 @@ class ProyectosController extends Controller {
             ->with('carrera_table')
             ->get();
 
-        if ($proyectos->isEmpty()) {
+/*        if ($proyectos->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'No se encontraron proyectos'
             ], 404);
-        }
+        }*/
 
         $proyectos = $proyectos->map(function ($proyecto) {
             $proyecto->requisitos = explode(',', $proyecto->requisitos);

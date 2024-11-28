@@ -1,0 +1,57 @@
+Perfecto, me quedó mas claro, muchas gracias
+Ahora tengo una consulta, si tu te fijas en el código del archivo llamado MainCompanies.vue junto a CompanyItem.vue
+crean la lógica para crear una vista que muestra en una tabla todas las empresas, dichas empresas son obtenidas mediante
+ el consumo de una api en la cual trae las diferentes propiedades a mostrar.
+En la misma tabla está la opción de ver y eliminar la empresa, para la opción de ver, se abre un modal con los campos
+necesarios y para la acción de eliminar, se muestra una ventana proveniente de sweetalert2
+
+Estoy en lo correcto cierto?
+De ser la respuesta verdadera, o estar cerca de ella, quiero que me ayudes en algo
+Yo necesito crear algo parecido, solo que en este caso será para un apartado que se llama proyectos que en pocas palabras,
+se mostrará información creada por cada una de las empresas que se muestran en MainCompanies.vue, los tipos de proyectos
+existentes son horas sociales y pasantías pero esos no importan ya que vienen incluidos desde la api
+Estos son todos los campos de “proyectos”
+return DB::table('proyectos')
+    ->select(
+        'proyectos.id as id_proyecto',
+        'empresas.nombre as nombre_empresa',
+        'proyectos.titulo as titulo_proyecto',
+        'proyectos.descripcion as descripcion_proyeto',
+        'proyectos.requisitos as requisitos_proyecto',
+        'estados_oferta.nombre_estado as estado_oferta',
+        'modalidades_trabajo.nombre as modalidad',
+        'proyectos.fecha_inicio as fecha_inicio_proyecto',
+        'proyectos.fecha_fin as fecha_fin_proyecto',
+        'proyectos.fecha_limite_aplicacion as fecha_limite_aplicacion',
+        'proyectos.estado_proyecto as estado_proyecto',
+        'proyectos.cupos_disponibles as cupos_disponibles',
+        'tipos_proyecto.nombre as tipo_proyecto',
+        'proyectos.ubicacion as ubicacion_proyecto',
+        'carreras.nombre_carrera as nombre_carrera'
+    )
+    ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
+    ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
+    ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
+    ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
+    ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
+    ->get();
+
+Y la ruta para acceder a ellos es “/proyectos” de tipo get
+Entonces lo que yo quiero es algo parecido a ese archivo de MainCompanies.vue junto a CompanyItem.vue, pero para los proyectos
+En la parte de la tabla no se mostrarán todos los campos sino solo el título, tipo de proyecto, la modalidad, y el estado del proyecto
+Para el botón de ver, se tienen que mostrar todos los campos, para la parte de requisitos, estos vendrán en formato lineal
+y separados por comas, para esto, quiero que los separes y me los muestres en un tipo de listado
+Para el botón de eliminar, quiero que sea igual, solo que, con la opción para este contexto, la ruta para esto es /proyectos/{id}
+Ahora lo nuevo que esta vista implementará será el botón de editar, que hará algo parecido al botón de ver; es decir,
+abrirá un modal que tendrá la lógica que me permitirá editar la información que se incluirá como obligatorio los campos siguientes
+proyectos.titulo as titulo_proyecto,
+proyectos.descripcion as descripcion_proyeto,
+Este de editar solo dejalo como con la lógica, pero queda como algo extra ya que me falta pulir la api y los campos que
+ traigo en el modelo de la tabla en laravel, así que solo déjalo indicado, pero sí déjame la lógica del modal y la parte
+ del script en vue para realizarlo
+
+Y para la parte del diseño, puedes darme el código haciendo uso de tailwind css ya que es un paquete que tengo instalado
+en este proyecto de laravel
+
+Aparte de esto en las rutas, esto no quiero que se abra como children del dashboard sino aparte, entonces también indícame
+donde debo colocarlo
