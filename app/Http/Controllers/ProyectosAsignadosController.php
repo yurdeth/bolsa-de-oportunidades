@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProyectosAsignados;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProyectosAsignadosController extends Controller {
@@ -47,6 +48,18 @@ class ProyectosAsignadosController extends Controller {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()
+            ], 400);
+        }
+
+        $proyectoAsignado = DB::table('proyectos_asignados')
+            ->where('id_proyecto', $request->id_proyecto)
+            ->where('id_estudiante', $request->id_estudiante)
+            ->first();
+
+        if ($proyectoAsignado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El estudiante ya tiene asignado un proyecto'
             ], 400);
         }
 

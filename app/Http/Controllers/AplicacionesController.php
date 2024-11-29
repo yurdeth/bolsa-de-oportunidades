@@ -8,6 +8,7 @@ use App\Models\Proyectos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -36,12 +37,34 @@ class AplicacionesController extends Controller {
             'comentarios_empresa' => 'string',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'id_estudiante.integer' => 'El estudiante debe ser un número entero',
+            'id_estudiante.exists' => 'El estudiante no existe',
+            'id_proyecto.integer' => 'El proyecto debe ser un número entero',
+            'id_proyecto.exists' => 'El proyecto no existe',
+            'id_estado_aplicacion.integer' => 'El estado de la aplicación debe ser un número entero',
+            'id_estado_aplicacion.exists' => 'El estado de la aplicación no existe',
+            'comentarios_empresa.string' => 'Los comentarios de la empresa deben ser una cadena de texto',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()
+            ], 400);
+        }
+
+        $proyectoAsignado = DB::table('proyectos_asignados')
+            ->where('id_proyecto', $request->id_proyecto)
+            ->where('id_estudiante', $request->id_estudiante)
+            ->first();
+
+        if ($proyectoAsignado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El estudiante ya tiene asignado un proyecto'
             ], 400);
         }
 
@@ -217,7 +240,6 @@ class AplicacionesController extends Controller {
 
     public function actualizarCupos(Request $request): JsonResponse {
         $proyecto = Proyectos::find($request->id_proyecto);
-        Log::info($proyecto);
 
         if ($proyecto->cupos_disponibles == 0 && $proyecto->id_estado_oferta == 4) {
             return response()->json([
@@ -234,8 +256,6 @@ class AplicacionesController extends Controller {
         }
 
         $proyecto->cupos_disponibles = $proyecto->cupos_disponibles - 1;
-        Log::info($proyecto);
-        Log::info($proyecto->id_estado_oferta);
         $proyecto->id_estado_oferta = 4;
         $proyecto->save();
 
