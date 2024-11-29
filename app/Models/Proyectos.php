@@ -115,12 +115,14 @@ class Proyectos extends Model {
     public function getEstudiantesInteresadosEnProyecto($id): Collection {
         return DB::table('aplicaciones')
             ->select(
+                'estudiantes.id as id_estudiante',
                 'estudiantes.nombres',
                 'estudiantes.apellidos',
                 'usuarios.email',
                 'carreras.nombre_carrera',
                 'estudiantes.telefono',
-                'estudiantes.direccion'
+                'estudiantes.direccion',
+                'estudiantes.anio_estudio',
             )
             ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
             ->join('usuarios', 'estudiantes.id_usuario', '=', 'usuarios.id')

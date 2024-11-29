@@ -20,14 +20,6 @@
             >
                 Eliminar
             </button>
-            <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#staticInterested"
-                class="btn btn-info"
-                v-if="isTipoUsuario2" @click="viewInterested">
-                Ver interesados
-            </button>
         </td>
     </tr>
     <tr v-else >
@@ -50,14 +42,6 @@
                 @click="$emit('delete-project', project.id)"
             >
                 Eliminar
-            </button>
-            <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#staticInterested"
-                class="btn btn-info"
-                v-if="isTipoUsuario2" @click="viewInterested">
-                Ver interesados
             </button>
         </td>
     </tr>

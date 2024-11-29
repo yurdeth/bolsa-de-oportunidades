@@ -52,7 +52,7 @@
             aria-labelledby="staticBackdropLabel"
             aria-hidden="true"
         >
-            <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">
@@ -191,7 +191,16 @@
                     <div class="modal-footer">
                         <button
                             type="button"
+                            class="btn btn-primary"
+                            data-bs-target="#staticInterested"
+                            data-bs-toggle="modal"
+                        >
+                            Ver interesados
+                        </button>
+                        <button
+                            type="button"
                             class="btn btn-secondary"
+                            data-bs-target="#staticBackdrop"
                             data-bs-dismiss="modal"
                         >
                             Cerrar
@@ -507,40 +516,38 @@
                         ></button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Carnet</th>
-                                <th>Email</th>
-                                <th>Carrera</th>
-                                <th>Teléfono</th>
-                                <th>Dirección</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr
-                                v-for="student in interested"
-                                :key="student.carnet"
-                            >
-                                <td>{{ student.nombres }}</td>
-                                <td>{{ student.apellidos }}</td>
-                                <td>{{ student.carnet }}</td>
-                                <td>{{ student.email }}</td>
-                                <td>{{ student.nombre_carrera }}</td>
-                                <td>{{ student.telefono }}</td>
-                                <td>{{ student.direccion }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                        >
-                            Cerrar
-                        </button>
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion-item" v-for="(student, index) in interested" :key="student.id">
+                                <h2 class="accordion-header" :id="'heading' + index">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            :data-bs-target="'#collapse' + index" aria-expanded="true"
+                                            :aria-controls="'collapse' + index">
+                                        {{ student.nombres + " " + student.apellidos }}
+                                    </button>
+                                </h2>
+                                <div :id="'collapse' + index" class="accordion-collapse collapse"
+                                     :aria-labelledby="'heading' + index" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <p><strong>Correo institucional:</strong> {{ student.email }}</p>
+                                        <p><strong>Carrera:</strong> {{ student.nombre_carrera }}</p>
+                                        <p><strong>Año de estudio:</strong> {{ student.anio_estudio }}°</p>
+                                        <p><strong>Teléfono:</strong> {{ student.telefono }}</p>
+                                        <p><strong>Dirección:</strong> {{ student.direccion }}</p>
+                                        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                                                v-on:click="acceptStudent">
+                                            Aprobar candidato
+                                        </button>
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                                v-on:click="denyStudent">
+                                            Rechazar solicitud
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -795,9 +802,9 @@ export default {
         },
         viewProject(project) {
             this.selectedProject = project;
-            this.viewInterested(project.id);
+            this.loadInteresteds();
         },
-        async loadInteresteds(projectId) {
+        async loadInteresteds() {
             try {
                 const response = await api.get(
                     `/proyectos/interesados/${this.selectedProject.id}`
@@ -807,14 +814,6 @@ export default {
             } catch (error) {
                 console.error(error);
             }
-        },
-        viewInterested(projectId) {
-            this.selectedProject = this.projects.find(project => project.id === projectId);
-            this.loadInteresteds(this.selectedProject);
-            const modal = new bootstrap.Modal(
-                document.getElementById("staticInterested")
-            );
-            modal.show();
         },
         async confirmDelete(id) {
             const result = await Swal.fire({
@@ -910,6 +909,27 @@ export default {
                 window.location.reload();
             }
             this.loading = false;
+        },
+        //---------------------------
+        async acceptStudent() {
+            try {
+                const response = await api.post(
+                    `/proyectos/interesados/${this.selectedProject.id}`
+                );
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async denyStudent() {
+            try {
+                const response = await api.delete(
+                    `/proyectos/interesados/${this.selectedProject.id}`
+                );
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
         },
     },
 };
