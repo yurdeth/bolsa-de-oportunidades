@@ -256,16 +256,18 @@ class ProyectosController extends Controller {
         ]);
     }
 
-    public function getInteresados(Request $id) {
-        // Solamente los coordinadores pueden ver los interesados en el proyecto
-        if (Auth::user()->id_tipo_usuario == 2) {
+    public function getInteresados(Request $request): JsonResponse {
+        // Los estudiantes no pueden ver los interesados en un proyecto
+        if (Auth::user()->id_tipo_usuario == 3) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ruta no encontrada en este servidor'
             ]);
         }
 
-        $interesados = ((new Proyectos())->getEstudiantesInteresadosEnProyecto($id));
+        Log::info('Proyecto ID: ' . $request->id);
+
+        $interesados = ((new Proyectos())->getEstudiantesInteresadosEnProyecto($request->id));
 
         return response()->json([
             'success' => true,

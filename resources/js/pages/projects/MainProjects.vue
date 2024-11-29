@@ -20,25 +20,24 @@
         <div>
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Descripcion</th>
-                        <th>Estado</th>
-                        <th>Modalidad</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th>Modalidad</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <project-item
-                        v-for="item in projects"
-                        :key="item.id"
-                        :project="item"
-                        :is-tipo-usuario-2="isTipoUsuario2"
-                        :idTipoUsuario="idTipoUsuario"
-                        @delete-project="confirmDelete"
-                        @view-project="viewProject"
-                        @click="viewProject(item)"
-                    />
+                <project-item
+                    v-for="item in projects"
+                    :key="item.id"
+                    :project="item"
+                    :is-tipo-usuario-2="isTipoUsuario2"
+                    :idTipoUsuario="idTipoUsuario"
+                    @delete-project="confirmDelete"
+                    @view-project="viewProject"
+                />
                 </tbody>
             </table>
         </div>
@@ -116,8 +115,8 @@
                                         {{
                                             selectedProject.fecha_inicio
                                                 ? new Date(
-                                                      selectedProject.fecha_inicio
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_inicio
+                                                ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -127,8 +126,8 @@
                                         {{
                                             selectedProject.fecha_fin
                                                 ? new Date(
-                                                      selectedProject.fecha_fin
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_fin
+                                                ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -138,8 +137,8 @@
                                         {{
                                             selectedProject.fecha_limite_aplicacion
                                                 ? new Date(
-                                                      selectedProject.fecha_limite_aplicacion
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_limite_aplicacion
+                                                ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -231,7 +230,7 @@
                                 <!-- Estado -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Estado de Oferta</label
+                                    >Estado de Oferta</label
                                     >
                                     <select
                                         class="form-select"
@@ -254,7 +253,7 @@
                                 <!-- Modalidad -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Modalidad de Trabajo</label
+                                    >Modalidad de Trabajo</label
                                     >
                                     <select
                                         class="form-select"
@@ -277,7 +276,7 @@
                                 <!-- Título -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                        >Título del Proyecto</label
+                                    >Título del Proyecto</label
                                     >
                                     <input
                                         type="text"
@@ -290,7 +289,7 @@
                                 <!-- Descripción -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                        >Descripción del Proyecto</label
+                                    >Descripción del Proyecto</label
                                     >
                                     <textarea
                                         class="form-control"
@@ -347,7 +346,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Tipo de Proyecto</label
+                                    >Tipo de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -391,7 +390,7 @@
                                 <!-- Fechas -->
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha de Inicio</label
+                                    >Fecha de Inicio</label
                                     >
                                     <input
                                         type="date"
@@ -402,7 +401,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha de Fin</label
+                                    >Fecha de Fin</label
                                     >
                                     <input
                                         type="date"
@@ -413,7 +412,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha Límite de Aplicación
+                                    >Fecha Límite de Aplicación
                                         (Opcional)</label
                                     >
                                     <input
@@ -427,7 +426,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Estado de Proyecto</label
+                                    >Estado de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -444,7 +443,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Cupos Disponibles</label
+                                    >Cupos Disponibles</label
                                     >
                                     <input
                                         type="number"
@@ -485,7 +484,6 @@
         </div>
 
         <!-- Mostrar lista de estudiantes interesados en el proyecto -->
-        <!-- Mostrar lista de estudiantes interesados en el proyecto -->
         <div
             class="modal fade"
             id="staticInterested"
@@ -511,29 +509,29 @@
                     <div class="modal-body">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Carnet</th>
-                                    <th>Email</th>
-                                    <th>Carrera</th>
-                                    <th>Teléfono</th>
-                                    <th>Dirección</th>
-                                </tr>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Carnet</th>
+                                <th>Email</th>
+                                <th>Carrera</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="student in interested"
-                                    :key="student.carnet"
-                                >
-                                    <td>{{ student.nombres }}</td>
-                                    <td>{{ student.apellidos }}</td>
-                                    <td>{{ student.carnet }}</td>
-                                    <td>{{ student.email }}</td>
-                                    <td>{{ student.nombre_carrera }}</td>
-                                    <td>{{ student.telefono }}</td>
-                                    <td>{{ student.direccion }}</td>
-                                </tr>
+                            <tr
+                                v-for="student in interested"
+                                :key="student.carnet"
+                            >
+                                <td>{{ student.nombres }}</td>
+                                <td>{{ student.apellidos }}</td>
+                                <td>{{ student.carnet }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>{{ student.nombre_carrera }}</td>
+                                <td>{{ student.telefono }}</td>
+                                <td>{{ student.direccion }}</td>
+                            </tr>
                             </tbody>
                         </table>
                         <button
@@ -551,7 +549,7 @@
 </template>
 
 <script>
-import { api } from "@/api.js";
+import {api} from "@/api.js";
 import ProjectItem from "@/pages/projects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/RequisitosItem.vue";
@@ -652,7 +650,7 @@ export default {
     },
     methods: {
         redirectToRoute() {
-            this.$router.push({ name: "/proyectos" });
+            this.$router.push({name: "/proyectos"});
         },
 
         async cargarEstadosOferta() {
@@ -715,7 +713,7 @@ export default {
                 console.log("Fecha de fin: " + this.newProject.fecha_fin);
                 console.log(
                     "Fecha limite de aplicacion: " +
-                        this.newProject.fecha_limite_aplicacion
+                    this.newProject.fecha_limite_aplicacion
                 );
                 console.log(
                     "Estado de proyecto: " + this.newProject.estado_proyecto
@@ -797,21 +795,22 @@ export default {
         },
         viewProject(project) {
             this.selectedProject = project;
+            this.viewInterested(project.id);
         },
-        async loadInteresteds() {
+        async loadInteresteds(projectId) {
             try {
-                console.log("ID Proyecto: " + this.selectedProject.id);
                 const response = await api.get(
                     `/proyectos/interesados/${this.selectedProject.id}`
                 );
-                console.log(response.data.data);
+                console.log(response.data);
                 this.interested = response.data.data;
             } catch (error) {
                 console.error(error);
             }
         },
-        viewInterested() {
-            this.loadInteresteds();
+        viewInterested(projectId) {
+            this.selectedProject = this.projects.find(project => project.id === projectId);
+            this.loadInteresteds(this.selectedProject);
             const modal = new bootstrap.Modal(
                 document.getElementById("staticInterested")
             );
