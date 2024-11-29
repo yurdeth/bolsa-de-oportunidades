@@ -8,6 +8,7 @@ use App\Models\Proyectos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AplicacionesController extends Controller
@@ -169,15 +170,24 @@ class AplicacionesController extends Controller
         ]);
     }
 
-    public function solicitudesEmpresa(Request $request): JsonResponse {
-        if (Auth::user()->id_tipo_usuario != 4) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ruta no encontrada en este servidor'
-            ]);
+    public function gestionarSolicitures(Request $request): JsonResponse {
+        if (Auth::user()->id_tipo_usuario == 2){
+            $this->solicitudesCoordinador($request);
         }
 
+        if (Auth::user()->id_tipo_usuario == 4){
+            $this->solicitudesEmpresa($request);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ruta no encontrada en este servidor'
+        ]);
+    }
+
+    public function solicitudesEmpresa(Request $request): JsonResponse {
         $data = $request->all();
+        Log::info($data);
         $estadoSolicitud = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
             ->where('id_estudiante', $data['id_estudiante'])
             ->first();
@@ -193,6 +203,34 @@ class AplicacionesController extends Controller
             $estadoSolicitud->id_estado_aplicacion = 2; // <- Aprobada por la empresa
         } else {
             $estadoSolicitud->id_estado_aplicacion = 5; // <- Denegada por la empresa
+        }
+
+        $estadoSolicitud->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Solicitud actualizada'
+        ]);
+    }
+
+    public function solicitudesCoordinador(Request $request): JsonResponse {
+        $data = $request->all();
+        Log::info($data);
+        $estadoSolicitud = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
+            ->where('id_estudiante', $data['id_estudiante'])
+            ->first();
+
+        if (!$estadoSolicitud) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solicitud no encontrada'
+            ]);
+        }
+
+        if ($data['approved'] == 'true') {
+            $estadoSolicitud->id_estado_aplicacion = 3; // <- Aprobada por el coordinador
+        } else {
+            $estadoSolicitud->id_estado_aplicacion = 4; // <- Rechazada por el coordinador
         }
 
         $estadoSolicitud->save();

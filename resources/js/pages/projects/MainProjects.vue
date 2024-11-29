@@ -793,8 +793,6 @@ export default {
             this.newProject.requisitos = this.newProject.requisitos.split(",");
             this.loading = false;
         },
-
-        // Method to add requirements dynamically
         addRequirement() {
             if (
                 this.currentRequirement &&
@@ -817,7 +815,7 @@ export default {
             console.log(this.selectedProject);
         },
         async fetchInteresteds() {
-            if (this.id_tipo_usuario === 4){
+            if (this.id_tipo_usuario === 4) {
                 try {
                     const response = await api.get(
                         `/proyectos/interesados/${this.selectedProject.id}`
@@ -826,8 +824,7 @@ export default {
                 } catch (error) {
                     console.error(error);
                 }
-            }
-            else if (this.id_tipo_usuario === 2){
+            } else if (this.id_tipo_usuario === 2) {
                 try {
                     const response = await api.get(
                         `/proyectos/aprobados/${this.selectedProject.id_proyecto}`
@@ -935,17 +932,19 @@ export default {
         },
         //---------------------------
         setInfoAndApprove(id_estudiante) {
+            const id_tipo_usuario = this.idTipoUsuario;
             this.info_estudiante_interesado.id_estudiante = id_estudiante;
-            this.info_estudiante_interesado.id_proyecto = this.selectedProject.id;
-            this.approveStudent(id_estudiante);
+            this.info_estudiante_interesado.id_proyecto = id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto;
+            this.approveStudent(id_estudiante, id_tipo_usuario);
         },
-        async approveStudent(id_estudiante) {
+
+        async approveStudent(id_estudiante, id_tipo_usuario) {
             try {
                 const response = await api.put(
-                    `/empresas/solicitudes/${id_estudiante}`,
-                    this.info_estudiante_interesado = {
+                    `/aplicaciones/solicitudes/${id_estudiante}`,
+                    {
                         id_estudiante: id_estudiante,
-                        id_proyecto: this.selectedProject.id,
+                        id_proyecto: id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto,
                         approved: true,
                     }
                 );
