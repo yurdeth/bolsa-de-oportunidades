@@ -545,7 +545,7 @@
                                             Aprobar candidato
                                         </button>
                                         <button type="button" class="btn btn-danger"
-                                                @click="denyStudent(student.id_estudiante)">
+                                                @click="setInfoAndDeny(student.id_estudiante)">
                                             Rechazar solicitud
                                         </button>
                                     </div>
@@ -937,52 +937,61 @@ export default {
             this.approveStudent(id_estudiante, id_tipo_usuario);
         },
 
+        setInfoAndDeny(id_estudiante) {
+            const id_tipo_usuario = this.idTipoUsuario;
+            this.info_estudiante_interesado.id_estudiante = id_estudiante;
+            this.info_estudiante_interesado.id_proyecto = id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto;
+            this.denyStudent(id_estudiante, id_tipo_usuario);
+        },
+
         async approveStudent(id_estudiante, id_tipo_usuario) {
             try {
                 const response = await api.put(
-                    `/aplicaciones/solicitudes/${id_estudiante}`,
-                    {
+                    `/aplicaciones/solicitudes/${id_estudiante}`, {
                         id_estudiante: id_estudiante,
                         id_proyecto: id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto,
                         approved: true,
                     }
                 );
-                if (response.data.success) {
-                    Swal.fire(
-                        "Solicitud aprobada",
-                        "La solicitud del estudiante ha sido aprobada exitosamente.",
-                        "success"
-                    );
-                } else {
+
+                if (!response.data.success) {
                     Swal.fire(
                         "Error",
-                        "No se pudo aprobar al estudiante.",
+                        response.data.message || "No se pudo aprobar la solicitud del estudiante.",
                         "error"
-                    );
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async denyStudent(id_estudiante) {
-            try {
-                const response = await api.put(
-                    `/empresas/solicitudes/${id_estudiante}`,
-                    this.info_estudiante_interesado = {
-                        id_estudiante: id_estudiante,
-                        id_proyecto: this.selectedProject.id,
-                        approved: false,
-                    }
-                );
-                if (response.data.success) {
-                    Swal.fire(
-                        "Solicitud rechazada",
-                        "La solicitud ha sido rechazada correctamente",
-                        "success"
                     ).then(() => {
                         window.location.reload();
                     });
-                } else {
+                    return;
+                }
+
+                Swal.fire(
+                    "Solicitud aprobada",
+                    response.data.message || "La solicitud del estudiante ha sido aprobada.",
+                    "success"
+                ).then(() => {
+                    window.location.reload();
+                });
+            } catch (error) {
+                console.error(error);
+                Swal.fire(
+                    "Error",
+                    error.response?.data?.message || "Ocurrió un error al aprobar la solicitud del estudiante.",
+                    "error"
+                );
+            }
+        },
+        async denyStudent(id_estudiante, id_tipo_usuario) {
+            try {
+                const response = await api.put(
+                    `/aplicaciones/solicitudes/${id_estudiante}`,
+                    this.info_estudiante_interesado = {
+                        id_estudiante: id_estudiante,
+                        id_proyecto: id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto,
+                        approved: false,
+                    }
+                );
+                if (!response.data.success) {
                     Swal.fire(
                         "Error",
                         "No se pudo rechazar la solicitud del estudiante.",
@@ -990,7 +999,17 @@ export default {
                     ).then(() => {
                         window.location.reload();
                     });
+
+                    return;
                 }
+
+                Swal.fire(
+                    "Solicitud rechazada",
+                    "La solicitud ha sido rechazada correctamente",
+                    "success"
+                ).then(() => {
+                    window.location.reload();
+                });
             } catch (error) {
                 console.error(error);
             }

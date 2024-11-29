@@ -198,6 +198,16 @@ class AplicacionesController extends Controller {
             ]);
         }
 
+        $proyecto = Proyectos::find($data['id_proyecto']);
+        $cuposDisponibles = $proyecto->cupos_disponibles;
+
+        if ($data['approved'] == 'true' && $cuposDisponibles == 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay más cupos disponibles para este proyecto'
+            ], 400);
+        }
+
         $estadoSolicitud->id_estado_aplicacion = $data['approved'] == 'true' ? $estadoAprobado : $estadoDenegado;
         if ($data['approved'] && Auth::user()->id_tipo_usuario == 2){
             $this->asignarEstudianteProyecto($request);
