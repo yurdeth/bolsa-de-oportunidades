@@ -953,17 +953,13 @@ export default {
                         "Solicitud aprobada",
                         "La solicitud del estudiante ha sido aprobada exitosamente.",
                         "success"
-                    ).then(() => {
-                        window.location.reload();
-                    });
+                    );
                 } else {
                     Swal.fire(
                         "Error",
                         "No se pudo aprobar al estudiante.",
                         "error"
-                    ).then(() => {
-                        window.location.reload();
-                    });
+                    );
                 }
             } catch (error) {
                 console.error(error);

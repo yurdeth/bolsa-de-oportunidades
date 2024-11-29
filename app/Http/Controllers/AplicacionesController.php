@@ -176,6 +176,9 @@ class AplicacionesController extends Controller {
         }
 
         $estadoSolicitud->id_estado_aplicacion = $data['approved'] == 'true' ? $estadoAprobado : $estadoDenegado;
+        if ($data['approved'] && Auth::user()->id_tipo_usuario == 2){
+            $this->asignarEstudianteProyecto($request);
+        }
         $estadoSolicitud->save();
 
         return response()->json([
@@ -205,5 +208,9 @@ class AplicacionesController extends Controller {
 
     public function solicitudesCoordinador(Request $request): JsonResponse {
         return $this->actualizarEstadoSolicitud($request, 3, 4);
+    }
+
+    public function asignarEstudianteProyecto(Request $request) {
+        $result = ((new ProyectosAsignadosController())->store($request));
     }
 }
