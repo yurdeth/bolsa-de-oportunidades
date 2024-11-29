@@ -128,6 +128,7 @@ class Proyectos extends Model {
             ->join('usuarios', 'estudiantes.id_usuario', '=', 'usuarios.id')
             ->join('carreras', 'estudiantes.id_carrera', '=', 'carreras.id')
             ->where('aplicaciones.id_proyecto', $id)
+            ->where('id_estado_aplicacion', '=', '1')
             ->get();
     }
 

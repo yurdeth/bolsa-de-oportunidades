@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartamentosController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstadosOfertaController;
+use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\EstudiantesController;
 use App\Http\Controllers\ModalidadesTrabajoController;
 use App\Http\Controllers\ProyectosController;
@@ -134,4 +135,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::patch('/aplicaciones/{id}', [AplicacionesController::class, 'update'])->name('aplicaciones.update');
     Route::delete('/aplicaciones/{id}', [AplicacionesController::class, 'destroy'])->name('aplicaciones.destroy');
     Route::get('/aplicaciones/estudiante/{id}', [AplicacionesController::class, 'findByEstudiante'])->name('aplicaciones.find');
+
+    //-------------------------------------------------------------------------
+    Route::put('/empresas/solicitudes/{id}', [AplicacionesController::class, 'solicitudesEmpresa'])->name('proyectos.aplicaciones.store');
 });

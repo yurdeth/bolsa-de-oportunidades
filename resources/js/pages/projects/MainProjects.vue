@@ -517,7 +517,10 @@
                     </div>
                     <div class="modal-body">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                            <div class="accordion-item" v-for="(student, index) in interested" :key="student.id">
+                            <div v-if="interested.length === 0">
+                                Aun no hay estudiantes interesados para este proyecto.
+                            </div>
+                            <div class="accordion-item" v-else v-for="(student, index) in interested" :key="student.id">
                                 <h2 class="accordion-header" :id="'heading' + index">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                             :data-bs-target="'#collapse' + index" aria-expanded="true"
@@ -533,12 +536,14 @@
                                         <p><strong>Año de estudio:</strong> {{ student.anio_estudio }}°</p>
                                         <p><strong>Teléfono:</strong> {{ student.telefono }}</p>
                                         <p><strong>Dirección:</strong> {{ student.direccion }}</p>
-                                        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
-                                                v-on:click="acceptStudent">
+                                        <input type="hidden" v-model="info_estudiante_interesado.id_estudiante">
+                                        <input type="hidden" v-model="info_estudiante_interesado.id_proyecto">
+                                        <button type="button" class="btn btn-success"
+                                                @click="setInfoAndApprove(student.id_estudiante)">
                                             Aprobar candidato
                                         </button>
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                                                v-on:click="denyStudent">
+                                        <button type="button" class="btn btn-danger"
+                                                @click="denyStudent(student.id_estudiante)">
                                             Rechazar solicitud
                                         </button>
                                     </div>
@@ -605,6 +610,11 @@ export default {
                 ubicacion: "",
                 id_carrera: "",
                 id_empresa: "",
+            },
+            info_estudiante_interesado: {
+                id_estudiante: "",
+                id_proyecto: "",
+                aprobado: true,
             },
         };
     },
@@ -911,22 +921,69 @@ export default {
             this.loading = false;
         },
         //---------------------------
-        async acceptStudent() {
+        setInfoAndApprove(id_estudiante) {
+            this.info_estudiante_interesado.id_estudiante = id_estudiante;
+            this.info_estudiante_interesado.id_proyecto = this.selectedProject.id;
+            this.approveStudent(id_estudiante);
+        },
+        async approveStudent(id_estudiante) {
             try {
-                const response = await api.post(
-                    `/proyectos/interesados/${this.selectedProject.id}`
+                const response = await api.put(
+                    `/empresas/solicitudes/${id_estudiante}`,
+                    this.info_estudiante_interesado = {
+                        id_estudiante: id_estudiante,
+                        id_proyecto: this.selectedProject.id,
+                        approved: true,
+                    }
                 );
-                console.log(response.data);
+                if (response.data.success) {
+                    Swal.fire(
+                        "Solicitud aprobada",
+                        "La solicitud del estudiante ha sido aprobada exitosamente.",
+                        "success"
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        "Error",
+                        "No se pudo aprobar al estudiante.",
+                        "error"
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                }
             } catch (error) {
                 console.error(error);
             }
         },
-        async denyStudent() {
+        async denyStudent(id_estudiante) {
             try {
-                const response = await api.delete(
-                    `/proyectos/interesados/${this.selectedProject.id}`
+                const response = await api.put(
+                    `/empresas/solicitudes/${id_estudiante}`,
+                    this.info_estudiante_interesado = {
+                        id_estudiante: id_estudiante,
+                        id_proyecto: this.selectedProject.id,
+                        approved: false,
+                    }
                 );
-                console.log(response.data);
+                if (response.data.success) {
+                    Swal.fire(
+                        "Solicitud rechazada",
+                        "La solicitud ha sido rechazada correctamente",
+                        "success"
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        "Error",
+                        "No se pudo rechazar la solicitud del estudiante.",
+                        "error"
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                }
             } catch (error) {
                 console.error(error);
             }
