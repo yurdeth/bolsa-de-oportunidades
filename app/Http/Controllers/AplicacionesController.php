@@ -11,10 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class AplicacionesController extends Controller
-{
-    public function index()
-    {
+class AplicacionesController extends Controller {
+    public function index() {
         $aplicaciones = Aplicaciones::all();
 
         if ($aplicaciones->isEmpty()) {
@@ -30,8 +28,7 @@ class AplicacionesController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $rules = [
             'id_estudiante' => 'integer|exists:estudiantes,id',
             'id_proyecto' => 'integer|exists:proyectos,id',
@@ -56,8 +53,7 @@ class AplicacionesController extends Controller
         ], 201);
     }
 
-    public function showByEstadoAplicaion($id_estudiante)
-    {
+    public function showByEstadoAplicaion($id_estudiante) {
         $aplicaciones_activas = Aplicaciones::where('id_estudiante', $id_estudiante)->where('id_estado_aplicacion', 1)->get();
 
         if ($aplicaciones_activas->isEmpty()) {
@@ -70,8 +66,7 @@ class AplicacionesController extends Controller
         $proyectos_activos = Proyectos::whereIn('id', $aplicaciones_activas->pluck('id_proyecto'))->get();
     }
 
-    public function show($id)
-    {
+    public function show($id) {
         $aplicacion = Aplicaciones::find($id);
 
         if (is_null($aplicacion)) {
@@ -88,8 +83,7 @@ class AplicacionesController extends Controller
     }
 
 
-    public function findByEstudiante($id_estudiante)
-    {
+    public function findByEstudiante($id_estudiante) {
         $aplicaciones = Aplicaciones::where('id_estudiante', $id_estudiante)->get();
 
         if ($aplicaciones->isEmpty()) {
@@ -105,8 +99,7 @@ class AplicacionesController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $aplicacion = Aplicaciones::find($id);
 
         if (is_null($aplicacion)) {
@@ -151,8 +144,7 @@ class AplicacionesController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $aplicacion = Aplicaciones::find($id);
 
         if (is_null($aplicacion)) {
@@ -170,74 +162,48 @@ class AplicacionesController extends Controller
         ]);
     }
 
-    public function gestionarSolicitures(Request $request): JsonResponse {
-        if (Auth::user()->id_tipo_usuario == 2){
-            $this->solicitudesCoordinador($request);
+    private function actualizarEstadoSolicitud(Request $request, int $estadoAprobado, int $estadoDenegado): JsonResponse {
+        $data = $request->all();
+        $estadoSolicitud = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
+            ->where('id_estudiante', $data['id_estudiante'])
+            ->first();
+
+        if (!$estadoSolicitud) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solicitud no encontrada'
+            ]);
         }
 
-        if (Auth::user()->id_tipo_usuario == 4){
-            $this->solicitudesEmpresa($request);
-        }
+        $estadoSolicitud->id_estado_aplicacion = $data['approved'] == 'true' ? $estadoAprobado : $estadoDenegado;
+        $estadoSolicitud->save();
 
         return response()->json([
             'success' => true,
+            'message' => 'Solicitud actualizada'
+        ]);
+    }
+
+    public function gestionarSolicitudes(Request $request): JsonResponse {
+        if (Auth::user()->id_tipo_usuario == 2) {
+            return $this->solicitudesCoordinador($request);
+        }
+
+        if (Auth::user()->id_tipo_usuario == 4) {
+            return $this->solicitudesEmpresa($request);
+        }
+
+        return response()->json([
+            'success' => false,
             'message' => 'Ruta no encontrada en este servidor'
         ]);
     }
 
     public function solicitudesEmpresa(Request $request): JsonResponse {
-        $data = $request->all();
-        Log::info($data);
-        $estadoSolicitud = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
-            ->where('id_estudiante', $data['id_estudiante'])
-            ->first();
-
-        if (!$estadoSolicitud) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Solicitud no encontrada'
-            ]);
-        }
-
-        if ($data['approved'] == 'true') {
-            $estadoSolicitud->id_estado_aplicacion = 2; // <- Aprobada por la empresa
-        } else {
-            $estadoSolicitud->id_estado_aplicacion = 5; // <- Denegada por la empresa
-        }
-
-        $estadoSolicitud->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Solicitud actualizada'
-        ]);
+        return $this->actualizarEstadoSolicitud($request, 2, 5);
     }
 
     public function solicitudesCoordinador(Request $request): JsonResponse {
-        $data = $request->all();
-        Log::info($data);
-        $estadoSolicitud = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
-            ->where('id_estudiante', $data['id_estudiante'])
-            ->first();
-
-        if (!$estadoSolicitud) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Solicitud no encontrada'
-            ]);
-        }
-
-        if ($data['approved'] == 'true') {
-            $estadoSolicitud->id_estado_aplicacion = 3; // <- Aprobada por el coordinador
-        } else {
-            $estadoSolicitud->id_estado_aplicacion = 4; // <- Rechazada por el coordinador
-        }
-
-        $estadoSolicitud->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Solicitud actualizada'
-        ]);
+        return $this->actualizarEstadoSolicitud($request, 3, 4);
     }
 }

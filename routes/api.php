@@ -138,5 +138,5 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::get('/aplicaciones/estudiante/{id}', [AplicacionesController::class, 'findByEstudiante'])->name('aplicaciones.find');
 
     //-------------------------------------------------------------------------
-    Route::put('/aplicaciones/solicitudes/{id}', [AplicacionesController::class, 'gestionarSolicitures'])->name('proyectos.aplicaciones.manage');
+    Route::put('/aplicaciones/solicitudes/{id}', [AplicacionesController::class, 'gestionarSolicitudes'])->name('proyectos.aplicaciones.manage');
 });
