@@ -12,6 +12,7 @@
                 class="btn btn-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#addProjectModal"
+                v-if="idTipoUsuario === 4"
             >
                 Agregar Proyecto
             </button>
@@ -194,6 +195,7 @@
                             class="btn btn-primary"
                             data-bs-target="#staticInterested"
                             data-bs-toggle="modal"
+                            @click="fetchInteresteds"
                         >
                             Ver interesados
                         </button>
@@ -616,13 +618,13 @@ export default {
                 id_proyecto: "",
                 aprobado: true,
             },
+            id_tipo_usuario: JSON.parse(localStorage.getItem("user")).id_tipo_usuario,
         };
     },
     async mounted() {
         this.loading = true;
         try {
             const user = JSON.parse(localStorage.getItem("user"));
-            console.log(user.id_tipo_usuario);
             let response;
             let empresa;
             switch (user.id_tipo_usuario) {
@@ -812,17 +814,28 @@ export default {
         },
         viewProject(project) {
             this.selectedProject = project;
-            this.loadInteresteds();
+            console.log(this.selectedProject);
         },
-        async loadInteresteds() {
-            try {
-                const response = await api.get(
-                    `/proyectos/interesados/${this.selectedProject.id}`
-                );
-                console.log(response.data);
-                this.interested = response.data.data;
-            } catch (error) {
-                console.error(error);
+        async fetchInteresteds() {
+            if (this.id_tipo_usuario === 4){
+                try {
+                    const response = await api.get(
+                        `/proyectos/interesados/${this.selectedProject.id}`
+                    );
+                    this.interested = response.data.data;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            else if (this.id_tipo_usuario === 2){
+                try {
+                    const response = await api.get(
+                        `/proyectos/aprobados/${this.selectedProject.id_proyecto}`
+                    );
+                    this.interested = response.data.data;
+                } catch (error) {
+                    console.error(error);
+                }
             }
         },
         async confirmDelete(id) {

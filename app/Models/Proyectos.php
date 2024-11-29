@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Proyectos extends Model {
     protected $table = 'proyectos';
@@ -28,60 +30,22 @@ class Proyectos extends Model {
     ];
 
     public function getProyetos($id): Collection {
+        if (Auth::user()->id_tipo_usuario == 2) {
+            $infoCoordinador = Auth::user()->info_coordinador;
+            $idCarrera = !empty($infoCoordinador) ? $infoCoordinador[0]->id_carrera : null;
 
-        /*
-         * Campos obtenidos:
-         * - id_proyecto
-         * - nombre_empresa
-         * - titulo_proyecto
-         * - descripcion_proyeto
-         * - requisitos_proyecto
-         * - estado_oferta
-         * - modalidad
-         * - fecha_inicio_proyecto
-         * - fecha_fin_proyecto
-         * - fecha_limite_aplicacion
-         * - estado_proyecto
-         * - cupos_disponibles
-         * - tipo_proyeto (horas sociales o pasantía)
-         * - ubicacion_proyecto
-         * - nombre_carrera (carrera_ideal)
-         * */
+            if (!is_null($id)) {
+                return $this->fetchProyectos($id, $idCarrera);
+            }
 
-        if (!is_null($id)){
-            $data = DB::table('proyectos')
-                ->select(
-                    'proyectos.id as id_proyecto',
-                    'empresas.nombre as nombre_empresa',
-                    'proyectos.titulo as titulo_proyecto',
-                    'proyectos.descripcion as descripcion_proyeto',
-                    'proyectos.requisitos as requisitos_proyecto',
-                    'estados_oferta.nombre_estado as estado_oferta',
-                    'modalidades_trabajo.nombre as modalidad',
-                    'proyectos.fecha_inicio as fecha_inicio_proyecto',
-                    'proyectos.fecha_fin as fecha_fin_proyecto',
-                    'proyectos.fecha_limite_aplicacion as fecha_limite_aplicacion',
-                    'proyectos.estado_proyecto as estado_proyecto',
-                    'proyectos.cupos_disponibles as cupos_disponibles',
-                    'tipos_proyecto.nombre as tipo_proyecto',
-                    'proyectos.ubicacion as ubicacion_proyecto',
-                    'carreras.nombre_carrera as nombre_carrera'
-                )
-                ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
-                ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
-                ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
-                ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
-                ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
-                ->where('proyectos.id', $id)
-                ->get();
-
-            return $data->map(function ($item) {
-                $item->requisitos_proyecto = explode(',', $item->requisitos_proyecto);
-                return $item;
-            });
+            return $this->fetchProyectos(null, $idCarrera);
         }
 
-        $data =  DB::table('proyectos')
+        return $this->fetchProyectos();
+    }
+
+    private function fetchProyectos($id = null, $idCarrera = null): Collection {
+        $query = DB::table('proyectos')
             ->select(
                 'proyectos.id as id_proyecto',
                 'empresas.nombre as nombre_empresa',
@@ -103,8 +67,17 @@ class Proyectos extends Model {
             ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
             ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
             ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
-            ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
-            ->get();
+            ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id');
+
+        if (!is_null($id)) {
+            $query->where('proyectos.id', $id);
+        }
+
+        if (!is_null($idCarrera)) {
+            $query->where('proyectos.id_carrera', $idCarrera);
+        }
+
+        $data = $query->get();
 
         return $data->map(function ($item) {
             $item->requisitos_proyecto = explode(',', $item->requisitos_proyecto);
@@ -112,7 +85,7 @@ class Proyectos extends Model {
         });
     }
 
-    public function getEstudiantesInteresadosEnProyecto($id): Collection {
+    private function getEstudiantesEnProyecto($id, $estadoAplicacion): Collection {
         return DB::table('aplicaciones')
             ->select(
                 'estudiantes.id as id_estudiante',
@@ -128,32 +101,35 @@ class Proyectos extends Model {
             ->join('usuarios', 'estudiantes.id_usuario', '=', 'usuarios.id')
             ->join('carreras', 'estudiantes.id_carrera', '=', 'carreras.id')
             ->where('aplicaciones.id_proyecto', $id)
-            ->where('id_estado_aplicacion', '=', '1')
+            ->where('id_estado_aplicacion', '=', $estadoAplicacion)
             ->get();
     }
 
-    public function empresa_table(): BelongsTo
-    {
+    public function getEstudiantesInteresadosEnProyecto($id): Collection {
+        return $this->getEstudiantesEnProyecto($id, 1);
+    }
+
+    public function getEstudiantesAprobadosEnProyecto($id): Collection {
+        return $this->getEstudiantesEnProyecto($id, 2);
+    }
+
+    public function empresa_table(): BelongsTo {
         return $this->belongsTo(Empresas::class, 'id_empresa');
     }
 
-    public function estado_oferta_table(): BelongsTo
-    {
+    public function estado_oferta_table(): BelongsTo {
         return $this->belongsTo(EstadosOferta::class, 'id_estado_oferta');
     }
 
-    public function modalidad_trabajo_table(): BelongsTo
-    {
+    public function modalidad_trabajo_table(): BelongsTo {
         return $this->belongsTo(ModalidadesTrabajo::class, 'id_modalidad');
     }
 
-    public function tipo_proyecto_table(): BelongsTo
-    {
+    public function tipo_proyecto_table(): BelongsTo {
         return $this->belongsTo(TiposProyecto::class, 'id_tipo_proyecto');
     }
 
-    public function carrera_table(): BelongsTo
-    {
+    public function carrera_table(): BelongsTo {
         return $this->belongsTo(Carreras::class, 'id_carrera');
     }
 

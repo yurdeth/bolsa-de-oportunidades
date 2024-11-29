@@ -265,9 +265,23 @@ class ProyectosController extends Controller {
             ]);
         }
 
-        Log::info('Proyecto ID: ' . $request->id);
-
         $interesados = ((new Proyectos())->getEstudiantesInteresadosEnProyecto($request->id));
+
+        return response()->json([
+            'success' => true,
+            'data' => $interesados
+        ]);
+    }
+    public function getAprobados(Request $request): JsonResponse {
+        // Solamente el coordinador puede ver los estudiantes que han sido aprobados por la empresa
+        if (Auth::user()->id_tipo_usuario != 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ]);
+        }
+
+        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($request->id));
 
         return response()->json([
             'success' => true,
