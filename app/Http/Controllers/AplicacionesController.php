@@ -219,6 +219,13 @@ class AplicacionesController extends Controller {
         $proyecto = Proyectos::find($request->id_proyecto);
         Log::info($proyecto);
 
+        if ($proyecto->cupos_disponibles == 0 && $proyecto->id_estado_oferta == 4) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay cupos disponibles'
+            ], 400);
+        }
+
         if (is_null($proyecto)) {
             return response()->json([
                 'success' => false,
@@ -227,6 +234,9 @@ class AplicacionesController extends Controller {
         }
 
         $proyecto->cupos_disponibles = $proyecto->cupos_disponibles - 1;
+        Log::info($proyecto);
+        Log::info($proyecto->id_estado_oferta);
+        $proyecto->id_estado_oferta = 4;
         $proyecto->save();
 
         return response()->json([
