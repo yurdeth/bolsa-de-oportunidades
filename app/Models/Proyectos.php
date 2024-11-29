@@ -77,6 +77,10 @@ class Proyectos extends Model {
             $query->where('proyectos.id_carrera', $idCarrera);
         }
 
+        if (Auth::user()->id_tipo_usuario != 2 && Auth::user()->id_tipo_usuario != 4) {
+            $query->where('proyectos.cupos_disponibles', '>', 0);
+        }
+
         $data = $query->get();
 
         return $data->map(function ($item) {

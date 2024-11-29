@@ -812,7 +812,6 @@ export default {
         },
         viewProject(project) {
             this.selectedProject = project;
-            console.log(this.selectedProject);
         },
         async fetchInteresteds() {
             if (this.id_tipo_usuario === 4) {

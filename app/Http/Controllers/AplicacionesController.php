@@ -178,6 +178,7 @@ class AplicacionesController extends Controller {
         $estadoSolicitud->id_estado_aplicacion = $data['approved'] == 'true' ? $estadoAprobado : $estadoDenegado;
         if ($data['approved'] && Auth::user()->id_tipo_usuario == 2){
             $this->asignarEstudianteProyecto($request);
+            $this->actualizarCupos($request);
         }
         $estadoSolicitud->save();
 
@@ -211,6 +212,26 @@ class AplicacionesController extends Controller {
     }
 
     public function asignarEstudianteProyecto(Request $request) {
-        $result = ((new ProyectosAsignadosController())->store($request));
+        return ((new ProyectosAsignadosController())->store($request));
+    }
+
+    public function actualizarCupos(Request $request): JsonResponse {
+        $proyecto = Proyectos::find($request->id_proyecto);
+        Log::info($proyecto);
+
+        if (is_null($proyecto)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Proyecto no encontrado'
+            ], 404);
+        }
+
+        $proyecto->cupos_disponibles = $proyecto->cupos_disponibles - 1;
+        $proyecto->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyecto
+        ]);
     }
 }
