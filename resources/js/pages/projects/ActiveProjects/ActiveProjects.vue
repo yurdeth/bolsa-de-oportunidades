@@ -1,0 +1,144 @@
+<script setup>
+import {api} from "@/api.js";
+import Swal from "sweetalert2";
+import {onMounted, ref} from "vue";
+
+const loading = ref(false);
+const id_tipo_usuario = JSON.parse(localStorage.getItem("user")).id_tipo_usuario;
+
+const data = ref({
+    projects: []
+});
+
+const selectedProject = ref(null);
+
+const getActiveProjects = async () => {
+    loading.value = true;
+    try {
+        const response = await api.get("/proyectos-activos");
+        const projects = response.data.data;
+
+        // Group projects by id_proyecto and aggregate students
+        const groupedProjects = projects.reduce((acc, project) => {
+            if (!acc[project.id_proyecto]) {
+                acc[project.id_proyecto] = {
+                    ...project,
+                    estudiantes: []
+                };
+            }
+            acc[project.id_proyecto].estudiantes.push({
+                id_estudiante: project.id_estudiante,
+                nombres: project.nombres,
+                apellidos: project.apellidos,
+                email: project.email
+            });
+            return acc;
+        }, {});
+
+        data.value.projects = Object.values(groupedProjects);
+        console.log(data.value.projects);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
+    }
+};
+
+const openModal = (project) => {
+    selectedProject.value = project;
+};
+
+onMounted(() => {
+    getActiveProjects();
+});
+</script>
+
+<template>
+    <div class="loader" v-if="loading">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Cargando...</span>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Proyectos activos</h3>
+    </div>
+
+    <div>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item" v-for="project in data.projects" :key="project.id_proyecto">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            :data-bs-target="'#collapse' + project.id_proyecto" aria-expanded="true"
+                            :aria-controls="'collapse' + project.id_proyecto">
+                        {{ project.titulo }}
+                    </button>
+                </h2>
+                <div :id="'collapse' + project.id_proyecto" class="accordion-collapse collapse show"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Descripción</h5>
+                                <p>{{ project.descripcion }}</p>
+                            </div>
+                            <div class="col-12">
+                                <h5>Empresa</h5>
+                                <p>{{ project.empresa }}</p>
+                            </div>
+                            <div class="col-12">
+                                <h5>Estudiantes asignados al proyecto</h5>
+                                <ul>
+                                    <li v-for="estudiante in project.estudiantes" :key="estudiante.id_estudiante">
+                                        {{ estudiante.nombres + " " + estudiante.apellidos }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-12">
+                                <h5>Modalidad</h5>
+                                <p>{{ project.modalidad }}</p>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#retirarEstudiante" @click="openModal(project)">
+                                    Retirar un estudiante del proyecto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal para seleccionar el estudiante a retirar-->
+        <div class="modal fade" id="retirarEstudiante" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Seleccionar el estudiante que deseas retirar
+                            del proyecto</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" v-if="selectedProject">
+                        <div class="form-group">
+                            <label for="estudiantes">Estudiantes</label>
+                            <select class="form-select" id="estudiantes">
+                                <option selected disabled>Selecciona un estudiante</option>
+                                <option v-for="estudiante in selectedProject.estudiantes"
+                                        :key="estudiante.id_estudiante"
+                                        :value="estudiante.id_estudiante">
+                                    {{ estudiante.nombres + " " + estudiante.apellidos }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-danger">Retirar del proyecto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

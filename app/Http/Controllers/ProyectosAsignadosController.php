@@ -3,23 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProyectosAsignados;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ProyectosAsignadosController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        //
+    public function index(): JsonResponse {
+        // Solamente coordinadores y empresas pueden ver los proyectos asignados
+        if (Auth::user()->id_tipo_usuario == 1 || Auth::user()->id_tipo_usuario == 3) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ], 403);
+        }
+
+        $proyectosAsignados = (new ProyectosAsignados)->getProyectosAsignados();
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyectosAsignados
+        ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 2) { // <- Solamente el coordinador puede asignar proyectos
             return response()->json([
                 'success' => false,
@@ -75,8 +90,28 @@ class ProyectosAsignadosController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(string $id) {
-        //
+    public function show(string $id): JsonResponse {
+        // Solamente coordinadores y empresas pueden ver los proyectos asignados
+        if (Auth::user()->id_tipo_usuario != 2 || Auth::user()->id_tipo_usuario != 4) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ], 403);
+        }
+
+        $proyectoAsignado = (new ProyectosAsignados)->getProyectosAsignados($id);
+
+        if (!$proyectoAsignado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Proyecto asignado no encontrado'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyectoAsignado
+        ], 200);
     }
 
     /**

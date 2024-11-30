@@ -261,6 +261,16 @@ nav {
                     >
                         Proyectos
                     </router-link>
+                    <router-link
+                        to="/proyectos-activos"
+                        v-if="
+                            Number(user_data.id_tipo_usuario) === 4 ||
+                            Number(user_data.id_tipo_usuario) === 2
+                        "
+                        @click="showMenu = false"
+                    >
+                        Proyectos Activos
+                    </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>

@@ -10,6 +10,7 @@ use App\Http\Controllers\EstadosOfertaController;
 use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\EstudiantesController;
 use App\Http\Controllers\ModalidadesTrabajoController;
+use App\Http\Controllers\ProyectosAsignadosController;
 use App\Http\Controllers\ProyectosController;
 use App\Http\Controllers\SectoresIndustriaController;
 use App\Http\Controllers\TiposProyectoController;
@@ -121,13 +122,18 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     //-------------------------------------------------------------------------
     Route::get('/proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
     Route::get('/proyectos/{id}', [ProyectosController::class, 'show'])->name('proyectos.show');
-    Route::get('/proyectos/interesados/{id}', [ProyectosController::class, 'getInteresados'])->name('proyectos.interesados');
-    Route::get('/proyectos/aprobados/{id}', [ProyectosController::class, 'getAprobados'])->name('proyectos.aprobados');
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');
     Route::delete('/proyectos/{id}', [ProyectosController::class, 'destroy'])->name('proyectos.destroy');
+
     Route::get('/proyectos/empresa/{id}', [ProyectosController::class, 'findByEmpresa'])->name('proyectos.find');
     Route::get('/proyectos/ver/cantidad', [ProyectosController::class, 'countProjects'])->name('proyectos.contar');
+    Route::get('/proyectos/interesados/{id}', [ProyectosController::class, 'getInteresados'])->name('proyectos.interesados');
+    Route::get('/proyectos/aprobados/{id}', [ProyectosController::class, 'getAprobados'])->name('proyectos.aprobados');
+
+    //-------------------------------------------------------------------------
+    Route::get('/proyectos-activos/', [ProyectosAsignadosController::class, 'index'])->name('proyectos.activos');
+    Route::get('/proyectos-activos/{id}', [ProyectosAsignadosController::class, 'show'])->name('proyectos.activos.show');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');

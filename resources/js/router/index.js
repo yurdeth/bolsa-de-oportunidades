@@ -38,8 +38,12 @@ const routes = [
             },
             {
                 path: "/proyectos",
-                component: () => import("../pages/projects/MainProjects.vue"),
-            }
+                component: () => import("../pages/projects/MainProjects/MainProjects.vue"),
+            },
+            {
+                path: "/proyectos-activos",
+                component: () => import("../pages/projects/ActiveProjects/ActiveProjects.vue"),
+            },
         ],
     },
     {

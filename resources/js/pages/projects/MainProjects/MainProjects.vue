@@ -564,9 +564,9 @@
 
 <script>
 import {api} from "@/api.js";
-import ProjectItem from "@/pages/projects/ProjectItem.vue";
+import ProjectItem from "@/pages/projects/MainProjects/ProjectItem.vue";
 import Swal from "sweetalert2";
-import RequisitosItem from "@/pages/projects/RequisitosItem.vue";
+import RequisitosItem from "@/pages/projects/MainProjects/RequisitosItem.vue";
 
 export default {
     components: {
