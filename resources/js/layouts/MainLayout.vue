@@ -271,7 +271,7 @@ nav {
                     >
                         Proyectos Activos
                     </router-link>
-                    <router-link
+<!--                    <router-link
                         to="/notificaciones"
                         v-if="
                             Number(user_data.id_tipo_usuario) === 4 ||
@@ -280,7 +280,7 @@ nav {
                         @click="showMenu = false"
                     >
                         Notificaciones <span class="badge text-bg-info">{{ notifications }}</span>
-                    </router-link>
+                    </router-link>-->
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
