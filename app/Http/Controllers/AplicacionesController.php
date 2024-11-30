@@ -56,6 +56,27 @@ class AplicacionesController extends Controller {
             ], 400);
         }
 
+        $estadoOferta = Proyectos::find($request->id_proyecto)->id_estado_oferta;
+        Log::info($estadoOferta);
+
+        if ($estadoOferta != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La oferta de este proyecto no está activa'
+            ], 400);
+        }
+
+        $estudianteAplica = Aplicaciones::where('id_estudiante', $request->id_estudiante)
+            ->where('id_proyecto', $request->id_proyecto)
+            ->first();
+
+        if ($estudianteAplica) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya has aplicado a este proyecto'
+            ], 400);
+        }
+
         $proyectoAsignado = DB::table('proyectos_asignados')
             ->where('id_proyecto', $request->id_proyecto)
             ->where('id_estudiante', $request->id_estudiante)
@@ -140,13 +161,17 @@ class AplicacionesController extends Controller {
             'comentarios_empresa' => 'string',
         ];
 
-        foreach ($rules as $key => $value) {
-            if ($request->has($key)) {
-                $validations[$key] = $value;
-            }
-        }
+        $messages = [
+            'id_estudiante.integer' => 'El estudiante debe ser un número entero',
+            'id_estudiante.exists' => 'El estudiante no existe',
+            'id_proyecto.integer' => 'El proyecto debe ser un número entero',
+            'id_proyecto.exists' => 'El proyecto no existe',
+            'id_estado_aplicacion.integer' => 'El estado de la aplicación debe ser un número entero',
+            'id_estado_aplicacion.exists' => 'El estado de la aplicación no existe',
+            'comentarios_empresa.string' => 'Los comentarios de la empresa deben ser una cadena de texto',
+        ];
 
-        $validator = Validator::make($request->all(), $validations);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -155,9 +180,10 @@ class AplicacionesController extends Controller {
             ], 400);
         }
 
-        foreach ($validations as $key => $value) {
-            $aplicacion->$key = $request->$key;
-        }
+        $aplicacion->id_estudiante = $request->id_estudiante;
+        $aplicacion->id_proyecto = $request->id_proyecto;
+        $aplicacion->id_estado_aplicacion = $request->id_estado_aplicacion;
+        $aplicacion->comentarios_empresa = $request->comentarios_empresa;
 
         $aplicacion->save();
 
@@ -202,17 +228,28 @@ class AplicacionesController extends Controller {
         $cuposDisponibles = $proyecto->cupos_disponibles;
 
         if ($data['approved'] == 'true' && $cuposDisponibles == 0) {
+            // Rechazar todas las solicitudes que no fueron aprobadas
+            $solicitudesNoAprobadas = Aplicaciones::where('id_proyecto', $data['id_proyecto'])
+                ->where('id_estado_aplicacion', '!=', $estadoAprobado)
+                ->get();
+
+            $solicitudesNoAprobadas->each(function ($solicitud) use ($estadoDenegado) {
+                $solicitud->id_estado_aplicacion = $estadoDenegado;
+                $solicitud->save();
+            });
+
             return response()->json([
                 'success' => false,
-                'message' => 'No hay más cupos disponibles para este proyecto'
+                'message' => 'No hay más cupos disponibles para este proyecto. Se han rechazado todas las solicitudes'
             ], 400);
         }
 
         $estadoSolicitud->id_estado_aplicacion = $data['approved'] == 'true' ? $estadoAprobado : $estadoDenegado;
-        if ($data['approved'] && Auth::user()->id_tipo_usuario == 2){
+        if ($data['approved'] == 'true' && Auth::user()->id_tipo_usuario == 2) {
             $this->asignarEstudianteProyecto($request);
             $this->actualizarCupos($request);
         }
+
         $estadoSolicitud->save();
 
         return response()->json([
