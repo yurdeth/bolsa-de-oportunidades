@@ -47,30 +47,60 @@ const getActiveProjects = async () => {
 
 const retirarEstudiante = async () => {
     try {
-        const response = await api.post("/retirar-estudiante", {
-            id_estudiante: selectedStudent.value,
-            id_proyecto: selectedProject.value.id_proyecto
-        });
+        let url = "";
 
-        if (response.data.success) {
-            Swal.fire({
-                title: "Estudiante retirado",
-                text: response.data.message,
-                icon: "success",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.reload();
-            });
+        if (id_tipo_usuario === 2){
+            url = "/expulsar-estudiante";
         } else {
-            Swal.fire({
-                title: "Error",
-                text: response.data.message,
-                icon: "error",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.reload();
-            });
+            url = "/retirar-estudiante";
         }
+
+        alert(url);
+
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "El estudiante será retirado del proyecto",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, retirar",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await api.post(url, {
+                    id_estudiante: selectedStudent.value,
+                    id_proyecto: selectedProject.value.id_proyecto
+                });
+
+                if (response.data.success) {
+                    Swal.fire({
+                        title: "Éxito",
+                        text: response.data.message,
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: response.data.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            } else {
+                Swal.fire({
+                    title: "Operación cancelada",
+                    text: "El estudiante no fue retirado del proyecto",
+                    icon: "success",
+                    confirmButtonText: "Aceptar"
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        });
     } catch (error) {
         console.error(error);
     }

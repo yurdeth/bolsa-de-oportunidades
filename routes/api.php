@@ -10,6 +10,7 @@ use App\Http\Controllers\EstadosOfertaController;
 use App\Http\Controllers\EstadoSolicitudController;
 use App\Http\Controllers\EstudiantesController;
 use App\Http\Controllers\ModalidadesTrabajoController;
+use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\ProyectosAsignadosController;
 use App\Http\Controllers\ProyectosController;
 use App\Http\Controllers\SectoresIndustriaController;
@@ -135,6 +136,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::get('/proyectos-activos/', [ProyectosAsignadosController::class, 'index'])->name('proyectos.activos');
     Route::get('/proyectos-activos/{id}', [ProyectosAsignadosController::class, 'show'])->name('proyectos.activos.show');
     Route::post('/retirar-estudiante', [ProyectosAsignadosController::class, 'retirar'])->name('proyectos.activos.retirar');
+    Route::post('/expulsar-estudiante', [ProyectosAsignadosController::class, 'confirmarExpulsion'])->name('proyectos.activos.expulsar');
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');
@@ -146,4 +148,9 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
 
     //-------------------------------------------------------------------------
     Route::put('/aplicaciones/solicitudes/{id}', [AplicacionesController::class, 'gestionarSolicitudes'])->name('proyectos.aplicaciones.manage');
+
+    //-------------------------------------------------------------------------
+    Route::get('/notificaciones', [NotificacionesController::class, 'index'])->name('notificaciones.index');
+    Route::get('/notificaciones/contar', [NotificacionesController::class, 'contarNotificaciones'])->name('notificaciones.contar');
+    Route::post('/notificaciones', [NotificacionesController::class, 'store'])->name('notificaciones.store');
 });

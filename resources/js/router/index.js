@@ -44,6 +44,10 @@ const routes = [
                 path: "/proyectos-activos",
                 component: () => import("../pages/projects/ActiveProjects/ActiveProjects.vue"),
             },
+            {
+                path: "/notificaciones",
+                component: () => import("../pages/notifications/MainNotifications.vue"),
+            },
         ],
     },
     {

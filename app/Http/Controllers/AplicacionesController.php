@@ -82,6 +82,10 @@ class AplicacionesController extends Controller {
             ->where('id_estudiante', $request->id_estudiante)
             ->first();
 
+        $id_usuario = DB::table('estudiantes')
+            ->where('id', $request->id_estudiante)
+            ->value('id_usuario');
+
         if ($proyectoAsignado) {
             return response()->json([
                 'success' => false,
@@ -90,6 +94,7 @@ class AplicacionesController extends Controller {
         }
 
         $aplicacion = Aplicaciones::create($request->all());
+        ((new NotificacionesController())->store(4, $id_usuario, 'Tu solicitud ha sido enviada'));
 
         return response()->json([
             'success' => true,
@@ -125,7 +130,6 @@ class AplicacionesController extends Controller {
             'data' => $aplicacion
         ]);
     }
-
 
     public function findByEstudiante($id_estudiante) {
         $aplicaciones = Aplicaciones::where('id_estudiante', $id_estudiante)->get();

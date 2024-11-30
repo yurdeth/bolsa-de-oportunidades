@@ -139,7 +139,40 @@ class ProyectosAsignadosController extends Controller {
         $id_estudiante = $request->id_estudiante;
         $id = $request->id_proyecto;
 
-        if (Auth::user()->id_tipo_usuario == 3){
+        if (Auth::user()->id_tipo_usuario != 4){
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ], 403);
+        }
+
+        $proyectoAsignado = DB::table('proyectos_asignados')
+            ->where('id_proyecto', $id)
+            ->first();
+
+        if (!$proyectoAsignado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Proyecto asignado no encontrado'
+            ], 404);
+        }
+
+        DB::table('aplicaciones')
+            ->where('id_proyecto', $id)
+            ->where('id_estudiante', $id_estudiante)
+            ->update(['id_estado_aplicacion' => 6]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'La solicitud de expulsión ha sido enviada correctamente al coordinador de la carrera'
+        ]);
+    }
+
+    public function confirmarExpulsion(Request $request) {
+        $id_estudiante = $request->id_estudiante;
+        $id = $request->id_proyecto;
+
+        if (Auth::user()->id_tipo_usuario != 2){
             return response()->json([
                 'success' => false,
                 'message' => 'Ruta no encontrada en este servidor'

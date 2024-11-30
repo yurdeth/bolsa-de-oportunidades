@@ -23,7 +23,7 @@ class TipoNotificacionSeeder extends Seeder {
             ['id' => 7, 'nombre' => 'Solicitud denegada', 'descripcion' => 'Tu solicitud ha sido denegada por la empresa', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 8, 'nombre' => 'Solicitud rechazada', 'descripcion' => 'Tu solicitud ha sido rechazada por el coordinador', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 9, 'nombre' => 'Solicitud de expulsión', 'descripcion' => 'Se ha solicitado la expulsión del estudiante de este proyecto', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 9, 'nombre' => 'Expulsado', 'descripcion' => 'Has sido expulsado de este proyecto', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 9, 'nombre' => 'Expulsión', 'descripcion' => 'Has sido expulsado de este proyecto', 'created_at' => now(), 'updated_at' => now()],
         ];
 
         DB::table($table)->insert($tipo_notificacion);

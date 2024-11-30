@@ -18,6 +18,7 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('mensaje', 255);
+            $table->boolean('leido')->default(false);
             $table->timestamps();
         });
     }

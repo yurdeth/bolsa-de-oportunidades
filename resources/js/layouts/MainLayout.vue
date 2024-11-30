@@ -271,6 +271,16 @@ nav {
                     >
                         Proyectos Activos
                     </router-link>
+                    <router-link
+                        to="/notificaciones"
+                        v-if="
+                            Number(user_data.id_tipo_usuario) === 4 ||
+                            Number(user_data.id_tipo_usuario) === 2
+                        "
+                        @click="showMenu = false"
+                    >
+                        Notificaciones <span class="badge text-bg-info">{{ notifications }}</span>
+                    </router-link>
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
@@ -309,6 +319,7 @@ export default {
             loading: true,
             user_data: null,
             showMenu: false,
+            notifications: 0,
         };
     },
     async mounted() {
@@ -329,6 +340,7 @@ export default {
                     JSON.stringify(response.data.data.user)
                 );
                 this.user_data = response.data.data.user;
+                await this.countNotifications();
                 this.loading = false;
             } catch (error) {
                 localStorage.removeItem("token");
@@ -377,6 +389,14 @@ export default {
             } catch (error) {
                 Alert("Error", error.response.data.message, "error");
                 this.loading = false;
+            }
+        },
+        async countNotifications() {
+            try {
+                let response = await api.get("/notificaciones/contar");
+                this.notifications = response.data.data;
+            } catch (error) {
+                console.error(error);
             }
         },
     },
