@@ -15,20 +15,27 @@ class ProyectosAsignadosController extends Controller {
      * Display a listing of the resource.
      */
     public function index(): JsonResponse {
-        // Solamente coordinadores y empresas pueden ver los proyectos asignados
-        if (Auth::user()->id_tipo_usuario == 1 || Auth::user()->id_tipo_usuario == 3) {
+        if (Auth::user()->id_tipo_usuario == 3) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ruta no encontrada en este servidor'
             ], 403);
         }
 
-        $proyectosAsignados = (new ProyectosAsignados)->getProyectosAsignados();
+        $id_empresa = DB::table('empresas')
+            ->where('id_usuario', Auth::user()->id)
+            ->value('id');
+
+        if (Auth::user()->id_tipo_usuario == 4){
+            $proyectosAsignados = (new ProyectosAsignados)->filterByEmpresa($id_empresa);
+        } else{
+            $proyectosAsignados = (new ProyectosAsignados)->getProyectosAsignados();
+        }
 
         return response()->json([
             'success' => true,
             'data' => $proyectosAsignados
-        ], 200);
+        ]);
     }
 
     /**
@@ -124,7 +131,49 @@ class ProyectosAsignadosController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) {
+    public function destroy(string $id, string $id_estudiante) {
         //
+    }
+
+    public function retirar(Request $request) {
+        $id_estudiante = $request->id_estudiante;
+        $id = $request->id_proyecto;
+
+        if (Auth::user()->id_tipo_usuario == 3){
+            return response()->json([
+                'success' => false,
+                'message' => 'Ruta no encontrada en este servidor'
+            ], 403);
+        }
+
+        $proyectoAsignado = DB::table('proyectos_asignados')
+            ->where('id_proyecto', $id)
+            ->first();
+
+        if (!$proyectoAsignado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Proyecto asignado no encontrado'
+            ], 404);
+        }
+
+        DB::table('proyectos_asignados')
+            ->where('id_proyecto', $id)
+            ->where('id_estudiante', $id_estudiante)
+            ->delete();
+
+        DB::table('aplicaciones')
+            ->where('id_proyecto', $id)
+            ->where('id_estudiante', $id_estudiante)
+            ->update(['id_estado_aplicacion' => 5]);
+
+        DB::table('proyectos')
+            ->where('id', $id)
+            ->increment('cupos_disponibles');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estudiante eliminado del proyecto'
+        ], 200);
     }
 }

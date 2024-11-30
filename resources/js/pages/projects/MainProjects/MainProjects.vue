@@ -8,6 +8,9 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3>Proyectos</h3>
+            <div class="input-group mb-3 w-25">
+                <input type="text" class="form-control" placeholder="Buscar proyecto" aria-label="Buscar proyecto" aria-describedby="button-addon2">
+            </div>
             <button
                 class="btn btn-primary"
                 data-bs-toggle="modal"

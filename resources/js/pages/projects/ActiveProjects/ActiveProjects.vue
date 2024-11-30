@@ -11,6 +11,7 @@ const data = ref({
 });
 
 const selectedProject = ref(null);
+const selectedStudent = ref(null);
 
 const getActiveProjects = async () => {
     loading.value = true;
@@ -44,8 +45,40 @@ const getActiveProjects = async () => {
     }
 };
 
+const retirarEstudiante = async () => {
+    try {
+        const response = await api.post("/retirar-estudiante", {
+            id_estudiante: selectedStudent.value,
+            id_proyecto: selectedProject.value.id_proyecto
+        });
+
+        if (response.data.success) {
+            Swal.fire({
+                title: "Estudiante retirado",
+                text: response.data.message,
+                icon: "success",
+                confirmButtonText: "Aceptar"
+            }).then(() => {
+                window.location.reload();
+            });
+        } else {
+            Swal.fire({
+                title: "Error",
+                text: response.data.message,
+                icon: "error",
+                confirmButtonText: "Aceptar"
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const openModal = (project) => {
     selectedProject.value = project;
+    selectedStudent.value = null;
 };
 
 onMounted(() => {
@@ -62,6 +95,10 @@ onMounted(() => {
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Proyectos activos</h3>
+        <div class="input-group mb-3 w-25">
+            <input type="text" class="form-control" placeholder="Buscar proyecto" aria-label="Buscar proyecto"
+                   aria-describedby="button-addon2">
+        </div>
     </div>
 
     <div>
@@ -99,6 +136,10 @@ onMounted(() => {
                                 <p>{{ project.modalidad }}</p>
                             </div>
                             <div class="col-12">
+                                <h5>Tipo de proyecto</h5>
+                                <p>{{ project.tipo_proyecto }}</p>
+                            </div>
+                            <div class="col-12">
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#retirarEstudiante" @click="openModal(project)">
                                     Retirar un estudiante del proyecto
@@ -123,7 +164,7 @@ onMounted(() => {
                     <div class="modal-body" v-if="selectedProject">
                         <div class="form-group">
                             <label for="estudiantes">Estudiantes</label>
-                            <select class="form-select" id="estudiantes">
+                            <select class="form-select" id="estudiantes" v-model="selectedStudent">
                                 <option selected disabled>Selecciona un estudiante</option>
                                 <option v-for="estudiante in selectedProject.estudiantes"
                                         :key="estudiante.id_estudiante"
@@ -135,7 +176,9 @@ onMounted(() => {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-danger">Retirar del proyecto</button>
+                        <button type="button" class="btn btn-danger" @click="retirarEstudiante">
+                            Retirar del proyecto
+                        </button>
                     </div>
                 </div>
             </div>
