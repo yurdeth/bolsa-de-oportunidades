@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TipoNotificacionSeeder extends Seeder {
     /**
@@ -24,6 +25,8 @@ class TipoNotificacionSeeder extends Seeder {
             ['id' => 9, 'nombre' => 'Solicitud de expulsión', 'descripcion' => 'Se ha solicitado la expulsión del estudiante de este proyecto', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 9, 'nombre' => 'Expulsado', 'descripcion' => 'Has sido expulsado de este proyecto', 'created_at' => now(), 'updated_at' => now()],
         ];
+
+        DB::table($table)->insert($tipo_notificacion);
 
     }
 }
