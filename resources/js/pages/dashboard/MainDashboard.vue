@@ -288,7 +288,7 @@
                 class="btn btn-primary btn-lg"
                 style="
                     width: 100%;
-                    max-width: 300px;
+                    max-width: 500px;
                     height: 5rem;
                     font-size: 18px;
                     display: flex;
@@ -296,7 +296,8 @@
                     gap: 1rem;
                 "
             >
-                <i class="fab fa-google-play"></i> Descargar para Android
+                <i class="fab fa-google-play" style="font-size: 22px"></i>
+                Descargar para Android
             </a>
             <a
                 href="https://apps.apple.com/us/app/bolsa-de-oportunidades/id1580190134"
@@ -304,7 +305,7 @@
                 class="btn btn-primary ms-2 btn-lg"
                 style="
                     width: 100%;
-                    max-width: 300px;
+                    max-width: 500px;
                     height: 5rem;
                     font-size: 18px;
                     display: flex;
@@ -312,7 +313,8 @@
                     gap: 1rem;
                 "
             >
-                <i class="fab fa-apple"></i> Descargar para iOS
+                <i class="fab fa-apple" style="font-size: 22px"></i> Descargar
+                para iOS
             </a>
         </div>
     </div>
