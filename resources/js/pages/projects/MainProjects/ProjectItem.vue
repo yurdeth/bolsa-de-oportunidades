@@ -4,7 +4,7 @@
         <td>{{ project.descripcion_proyeto }}</td>
         <td>{{ project.estado_oferta }}</td>
         <td>{{ project.modalidad }}</td>
-        <td class="text-center">
+        <td class="text-center" style="width: 200px">
             <div
                 class="d-flex justify-content-center gap-2 align-items-center flex-wrap"
             >
