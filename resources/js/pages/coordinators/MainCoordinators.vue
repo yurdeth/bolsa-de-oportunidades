@@ -302,12 +302,12 @@
 
                         <div class="d-flex justify-content-end p-3">
                             <div class="btn-group btn-group-sm gap-2">
-                                <button class="btn btn-success" type="submit">
+                                <button class="btn btn-primary" type="submit">
                                     {{ createNew ? "Registrar" : "Actualizar" }}
                                 </button>
                                 <button
                                     type="button"
-                                    class="btn btn-danger"
+                                    class="btn btn-secondary"
                                     data-bs-dismiss="modal"
                                 >
                                     Cerrar
