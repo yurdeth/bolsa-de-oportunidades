@@ -135,8 +135,8 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     //-------------------------------------------------------------------------
     Route::get('/proyectos-activos/', [ProyectosAsignadosController::class, 'index'])->name('proyectos.activos');
     Route::get('/proyectos-activos/{id}', [ProyectosAsignadosController::class, 'show'])->name('proyectos.activos.show');
-    Route::post('/retirar-estudiante', [ProyectosAsignadosController::class, 'retirar'])->name('proyectos.activos.retirar');
-    Route::post('/expulsar-estudiante', [ProyectosAsignadosController::class, 'confirmarExpulsion'])->name('proyectos.activos.expulsar');
+    /*Route::post('/retirar-estudiante', [ProyectosAsignadosController::class, 'retirar'])->name('proyectos.activos.retirar');
+    Route::post('/expulsar-estudiante', [ProyectosAsignadosController::class, 'confirmarExpulsion'])->name('proyectos.activos.expulsar');*/
 
     //-------------------------------------------------------------------------
     Route::get('/aplicaciones', [AplicacionesController::class, 'index'])->name('aplicaciones.index');

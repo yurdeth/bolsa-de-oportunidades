@@ -88,6 +88,12 @@ class ProyectosAsignadosController extends Controller {
         // Asignar el proyecto al estudiante
         $proyectoAsignado = ProyectosAsignados::create($request->all());
 
+        // Eliminar las aplicaciones del estudiante a los demás proyectos
+        DB::table('aplicaciones')
+            ->where('id_estudiante', $request->id_estudiante)
+            ->where('id_proyecto', '!=', $request->id_proyecto)
+            ->delete();
+
         return response()->json([
             'success' => true,
             'data' => $proyectoAsignado
