@@ -296,7 +296,7 @@
                     gap: 1rem;
                 "
             >
-                <i class="fab fa-google-play" style="font-size: 22px"></i>
+                <i class="fab fa-google-play" style="font-size: 40px"></i>
                 Descargar para Android
             </a>
             <a
@@ -313,7 +313,7 @@
                     gap: 1rem;
                 "
             >
-                <i class="fab fa-apple" style="font-size: 22px"></i> Descargar
+                <i class="fab fa-apple" style="font-size: 40px"></i> Descargar
                 para iOS
             </a>
         </div>
