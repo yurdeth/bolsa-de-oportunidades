@@ -330,13 +330,13 @@ export default {
                 this.numStudents = response.data.totalStudent;
 
                 let estudiantes = response.data.dataProyectosbyStatus,
-                    label = estudiantes.map((item) => item.status),
+                    label = estudiantes.map((item) => item.rol),
                     data = estudiantes.map((item) => item.total);
                 chart("#estudiantesChart", label, data);
 
                 let dataAplicacionesByStatus =
                     response.data.dataAplicacionesByStatus;
-                label = dataAplicacionesByStatus.map((item) => item.rol);
+                label = dataAplicacionesByStatus.map((item) => item.status);
                 data = dataAplicacionesByStatus.map((item) => item.total);
                 chart("#requestChart", label, data);
             }
