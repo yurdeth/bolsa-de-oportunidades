@@ -196,7 +196,7 @@ h2 {
                     >
                 </div>
                 <a href="/reset-password" class="text-danger"
-                    ><!-- ¿Ha olvidado tu contraseña? --></a
+                    ><!-- ¿Ha olvidado tu contraseña?  --></a
                 >
             </div>
 
