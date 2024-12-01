@@ -286,6 +286,15 @@
                 href="https://play.google.com/store/apps/details?id=com.fmo.bolsa_oportunidades"
                 target="_blank"
                 class="btn btn-primary btn-lg"
+                style="
+                    width: 100%;
+                    max-width: 300px;
+                    height: 5rem;
+                    font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                "
             >
                 <i class="fab fa-google-play"></i> Descargar para Android
             </a>
@@ -293,6 +302,15 @@
                 href="https://apps.apple.com/us/app/bolsa-de-oportunidades/id1580190134"
                 target="_blank"
                 class="btn btn-primary ms-2 btn-lg"
+                style="
+                    width: 100%;
+                    max-width: 300px;
+                    height: 5rem;
+                    font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                "
             >
                 <i class="fab fa-apple"></i> Descargar para iOS
             </a>
