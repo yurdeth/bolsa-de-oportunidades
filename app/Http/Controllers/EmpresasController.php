@@ -270,11 +270,12 @@ class EmpresasController extends Controller
 
         if ($request->has('logo_url')) {
             /* si existe la imagen replazar por la que ya esta y borrar la anterior */
-            $url = $request->logo_url;
             if ($empresa->logo_url != null) {
-                Storage::delete($empresa->logo_url);
+                $nameImg = str_replace("img/imagen-empresa/", "", $empresa->logo_url);
+                Storage::disk('imagen-empresa')->delete($nameImg);
             }
 
+            $url = $request->logo_url;
             $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
             $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
             $imagenName = Str::uuid() . '.' . $extension;
@@ -318,8 +319,9 @@ class EmpresasController extends Controller
             ], 404);
         }
 
-        if ($empresa->logo_url != null) {
-            Storage::delete($empresa->logo_url);
+        if (isset($empresa->info_empresa[0]->logo_url)) {
+            $nameImg = str_replace("img/imagen-empresa/", "", $empresa->info_empresa[0]->logo_url);
+            Storage::disk('imagen-empresa')->delete($nameImg);
         }
 
         $empresa->delete();
