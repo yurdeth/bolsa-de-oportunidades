@@ -9,7 +9,13 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3>Proyectos</h3>
             <div class="input-group mb-3 w-25">
-                <input type="text" class="form-control" placeholder="Buscar proyecto" aria-label="Buscar proyecto" aria-describedby="button-addon2">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar proyecto"
+                    aria-label="Buscar proyecto"
+                    aria-describedby="button-addon2"
+                />
             </div>
             <button
                 class="btn btn-primary"
@@ -21,27 +27,29 @@
             </button>
         </div>
 
-        <div>
+        <div class="responsive-table">
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th>Titulo</th>
-                    <th>Descripcion</th>
-                    <th>Estado</th>
-                    <th>Modalidad</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
+                    <tr>
+                        <th>Titulo</th>
+                        <th>Descripcion</th>
+                        <th>Estado</th>
+                        <th>Modalidad</th>
+                        <th class="text-center" style="width: 220px">
+                            Acciones
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                <project-item
-                    v-for="item in projects"
-                    :key="item.id"
-                    :project="item"
-                    :is-tipo-usuario-2="isTipoUsuario2"
-                    :idTipoUsuario="idTipoUsuario"
-                    @delete-project="confirmDelete"
-                    @view-project="viewProject"
-                />
+                    <project-item
+                        v-for="item in projects"
+                        :key="item.id"
+                        :project="item"
+                        :is-tipo-usuario-2="isTipoUsuario2"
+                        :idTipoUsuario="idTipoUsuario"
+                        @delete-project="confirmDelete"
+                        @view-project="viewProject"
+                    />
                 </tbody>
             </table>
         </div>
@@ -119,8 +127,8 @@
                                         {{
                                             selectedProject.fecha_inicio
                                                 ? new Date(
-                                                    selectedProject.fecha_inicio
-                                                ).toLocaleDateString()
+                                                      selectedProject.fecha_inicio
+                                                  ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -130,8 +138,8 @@
                                         {{
                                             selectedProject.fecha_fin
                                                 ? new Date(
-                                                    selectedProject.fecha_fin
-                                                ).toLocaleDateString()
+                                                      selectedProject.fecha_fin
+                                                  ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -141,8 +149,8 @@
                                         {{
                                             selectedProject.fecha_limite_aplicacion
                                                 ? new Date(
-                                                    selectedProject.fecha_limite_aplicacion
-                                                ).toLocaleDateString()
+                                                      selectedProject.fecha_limite_aplicacion
+                                                  ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -244,7 +252,7 @@
                                 <!-- Estado -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                    >Estado de Oferta</label
+                                        >Estado de Oferta</label
                                     >
                                     <select
                                         class="form-select"
@@ -267,7 +275,7 @@
                                 <!-- Modalidad -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                    >Modalidad de Trabajo</label
+                                        >Modalidad de Trabajo</label
                                     >
                                     <select
                                         class="form-select"
@@ -290,7 +298,7 @@
                                 <!-- Título -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                    >Título del Proyecto</label
+                                        >Título del Proyecto</label
                                     >
                                     <input
                                         type="text"
@@ -303,7 +311,7 @@
                                 <!-- Descripción -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                    >Descripción del Proyecto</label
+                                        >Descripción del Proyecto</label
                                     >
                                     <textarea
                                         class="form-control"
@@ -360,7 +368,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                    >Tipo de Proyecto</label
+                                        >Tipo de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -404,7 +412,7 @@
                                 <!-- Fechas -->
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                    >Fecha de Inicio</label
+                                        >Fecha de Inicio</label
                                     >
                                     <input
                                         type="date"
@@ -415,7 +423,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                    >Fecha de Fin</label
+                                        >Fecha de Fin</label
                                     >
                                     <input
                                         type="date"
@@ -426,7 +434,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                    >Fecha Límite de Aplicación
+                                        >Fecha Límite de Aplicación
                                         (Opcional)</label
                                     >
                                     <input
@@ -440,7 +448,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                    >Estado de Proyecto</label
+                                        >Estado de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -457,7 +465,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                    >Cupos Disponibles</label
+                                        >Cupos Disponibles</label
                                     >
                                     <input
                                         type="number"
@@ -521,34 +529,100 @@
                         ></button>
                     </div>
                     <div class="modal-body">
-                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div
+                            class="accordion accordion-flush"
+                            id="accordionFlushExample"
+                        >
                             <div v-if="interested.length === 0">
-                                Aun no hay estudiantes interesados para este proyecto.
+                                Aun no hay estudiantes interesados para este
+                                proyecto.
                             </div>
-                            <div class="accordion-item" v-else v-for="(student, index) in interested" :key="student.id">
-                                <h2 class="accordion-header" :id="'heading' + index">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            :data-bs-target="'#collapse' + index" aria-expanded="true"
-                                            :aria-controls="'collapse' + index">
-                                        {{ student.nombres + " " + student.apellidos }}
+                            <div
+                                class="accordion-item"
+                                v-else
+                                v-for="(student, index) in interested"
+                                :key="student.id"
+                            >
+                                <h2
+                                    class="accordion-header"
+                                    :id="'heading' + index"
+                                >
+                                    <button
+                                        class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        :data-bs-target="'#collapse' + index"
+                                        aria-expanded="true"
+                                        :aria-controls="'collapse' + index"
+                                    >
+                                        {{
+                                            student.nombres +
+                                            " " +
+                                            student.apellidos
+                                        }}
                                     </button>
                                 </h2>
-                                <div :id="'collapse' + index" class="accordion-collapse collapse"
-                                     :aria-labelledby="'heading' + index" data-bs-parent="#accordionFlushExample">
+                                <div
+                                    :id="'collapse' + index"
+                                    class="accordion-collapse collapse"
+                                    :aria-labelledby="'heading' + index"
+                                    data-bs-parent="#accordionFlushExample"
+                                >
                                     <div class="accordion-body">
-                                        <p><strong>Correo institucional:</strong> {{ student.email }}</p>
-                                        <p><strong>Carrera:</strong> {{ student.nombre_carrera }}</p>
-                                        <p><strong>Año de estudio:</strong> {{ student.anio_estudio }}°</p>
-                                        <p><strong>Teléfono:</strong> {{ student.telefono }}</p>
-                                        <p><strong>Dirección:</strong> {{ student.direccion }}</p>
-                                        <input type="hidden" v-model="info_estudiante_interesado.id_estudiante">
-                                        <input type="hidden" v-model="info_estudiante_interesado.id_proyecto">
-                                        <button type="button" class="btn btn-success"
-                                                @click="setInfoAndApprove(student.id_estudiante)">
+                                        <p>
+                                            <strong
+                                                >Correo institucional:</strong
+                                            >
+                                            {{ student.email }}
+                                        </p>
+                                        <p>
+                                            <strong>Carrera:</strong>
+                                            {{ student.nombre_carrera }}
+                                        </p>
+                                        <p>
+                                            <strong>Año de estudio:</strong>
+                                            {{ student.anio_estudio }}°
+                                        </p>
+                                        <p>
+                                            <strong>Teléfono:</strong>
+                                            {{ student.telefono }}
+                                        </p>
+                                        <p>
+                                            <strong>Dirección:</strong>
+                                            {{ student.direccion }}
+                                        </p>
+                                        <input
+                                            type="hidden"
+                                            v-model="
+                                                info_estudiante_interesado.id_estudiante
+                                            "
+                                        />
+                                        <input
+                                            type="hidden"
+                                            v-model="
+                                                info_estudiante_interesado.id_proyecto
+                                            "
+                                        />
+                                        <button
+                                            type="button"
+                                            class="btn btn-success"
+                                            @click="
+                                                setInfoAndApprove(
+                                                    student.id_estudiante
+                                                )
+                                            "
+                                        >
                                             Aprobar candidato
                                         </button>
-                                        <button type="button" class="btn btn-danger"
-                                                @click="setInfoAndDeny(student.id_estudiante)">
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger"
+                                            @click="
+                                                setInfoAndDeny(
+                                                    student.id_estudiante
+                                                )
+                                            "
+                                        >
                                             Rechazar solicitud
                                         </button>
                                     </div>
@@ -557,7 +631,13 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            Cerrar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -566,7 +646,7 @@
 </template>
 
 <script>
-import {api} from "@/api.js";
+import { api } from "@/api.js";
 import ProjectItem from "@/pages/projects/MainProjects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/MainProjects/RequisitosItem.vue";
@@ -621,7 +701,8 @@ export default {
                 id_proyecto: "",
                 aprobado: true,
             },
-            id_tipo_usuario: JSON.parse(localStorage.getItem("user")).id_tipo_usuario,
+            id_tipo_usuario: JSON.parse(localStorage.getItem("user"))
+                .id_tipo_usuario,
         };
     },
     async mounted() {
@@ -672,7 +753,7 @@ export default {
     },
     methods: {
         redirectToRoute() {
-            this.$router.push({name: "/proyectos"});
+            this.$router.push({ name: "/proyectos" });
         },
 
         async cargarEstadosOferta() {
@@ -735,7 +816,7 @@ export default {
                 console.log("Fecha de fin: " + this.newProject.fecha_fin);
                 console.log(
                     "Fecha limite de aplicacion: " +
-                    this.newProject.fecha_limite_aplicacion
+                        this.newProject.fecha_limite_aplicacion
                 );
                 console.log(
                     "Estado de proyecto: " + this.newProject.estado_proyecto
@@ -936,23 +1017,33 @@ export default {
         setInfoAndApprove(id_estudiante) {
             const id_tipo_usuario = this.idTipoUsuario;
             this.info_estudiante_interesado.id_estudiante = id_estudiante;
-            this.info_estudiante_interesado.id_proyecto = id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto;
+            this.info_estudiante_interesado.id_proyecto =
+                id_tipo_usuario === 4
+                    ? this.selectedProject.id
+                    : this.selectedProject.id_proyecto;
             this.approveStudent(id_estudiante, id_tipo_usuario);
         },
 
         setInfoAndDeny(id_estudiante) {
             const id_tipo_usuario = this.idTipoUsuario;
             this.info_estudiante_interesado.id_estudiante = id_estudiante;
-            this.info_estudiante_interesado.id_proyecto = id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto;
+            this.info_estudiante_interesado.id_proyecto =
+                id_tipo_usuario === 4
+                    ? this.selectedProject.id
+                    : this.selectedProject.id_proyecto;
             this.denyStudent(id_estudiante, id_tipo_usuario);
         },
 
         async approveStudent(id_estudiante, id_tipo_usuario) {
             try {
                 const response = await api.put(
-                    `/aplicaciones/solicitudes/${id_estudiante}`, {
+                    `/aplicaciones/solicitudes/${id_estudiante}`,
+                    {
                         id_estudiante: id_estudiante,
-                        id_proyecto: id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto,
+                        id_proyecto:
+                            id_tipo_usuario === 4
+                                ? this.selectedProject.id
+                                : this.selectedProject.id_proyecto,
                         approved: true,
                     }
                 );
@@ -960,7 +1051,8 @@ export default {
                 if (!response.data.success) {
                     Swal.fire(
                         "Error",
-                        response.data.message || "No se pudo aprobar la solicitud del estudiante.",
+                        response.data.message ||
+                            "No se pudo aprobar la solicitud del estudiante.",
                         "error"
                     ).then(() => {
                         window.location.reload();
@@ -970,7 +1062,8 @@ export default {
 
                 Swal.fire(
                     "Solicitud aprobada",
-                    response.data.message || "La solicitud del estudiante ha sido aprobada.",
+                    response.data.message ||
+                        "La solicitud del estudiante ha sido aprobada.",
                     "success"
                 ).then(() => {
                     window.location.reload();
@@ -979,7 +1072,8 @@ export default {
                 console.error(error);
                 Swal.fire(
                     "Error",
-                    error.response?.data?.message || "Ocurrió un error al aprobar la solicitud del estudiante.",
+                    error.response?.data?.message ||
+                        "Ocurrió un error al aprobar la solicitud del estudiante.",
                     "error"
                 );
             }
@@ -988,11 +1082,14 @@ export default {
             try {
                 const response = await api.put(
                     `/aplicaciones/solicitudes/${id_estudiante}`,
-                    this.info_estudiante_interesado = {
+                    (this.info_estudiante_interesado = {
                         id_estudiante: id_estudiante,
-                        id_proyecto: id_tipo_usuario === 4 ? this.selectedProject.id : this.selectedProject.id_proyecto,
+                        id_proyecto:
+                            id_tipo_usuario === 4
+                                ? this.selectedProject.id
+                                : this.selectedProject.id_proyecto,
                         approved: false,
-                    }
+                    })
                 );
                 if (!response.data.success) {
                     Swal.fire(
