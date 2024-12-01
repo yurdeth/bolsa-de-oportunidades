@@ -4,22 +4,26 @@
         <td>{{ company.email }}</td>
         <td>{{ company.sector }}</td>
         <td>{{ company.sitio_web }}</td>
-        <td class="text-center">
-            <button
-                type="button"
-                class="btn btn-success"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-                @click="$emit('view-company', company)"
+        <td class="text-center" style="width: 220px">
+            <div
+                class="d-flex justify-content-center gap-2 align-items-center flex-wrap"
             >
-                Ver
-            </button>
-            <button
-                class="btn btn-danger"
-                @click="$emit('delete-company', company.id)"
-            >
-                Eliminar
-            </button>
+                <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                    @click="$emit('view-company', company)"
+                >
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button
+                    class="btn btn-danger btn-sm"
+                    @click="$emit('delete-company', company.id)"
+                >
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </td>
     </tr>
 </template>
@@ -29,8 +33,8 @@ export default {
     props: {
         company: {
             type: Object,
-            required: true
-        }
-    }
+            required: true,
+        },
+    },
 };
 </script>

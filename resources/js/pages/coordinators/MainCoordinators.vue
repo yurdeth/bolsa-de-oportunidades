@@ -23,14 +23,14 @@
         </div>
     </div>
 
-    <div>
+    <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Carrera</th>
-                    <th class="text-center">Acciones</th>
+                    <th class="text-center" style="width: 220px">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,22 +40,26 @@
                     </td>
                     <td>{{ coordinator.email }}</td>
                     <td>{{ coordinator.nombre_carrera }}</td>
-                    <td class="text-center">
-                        <button
-                            type="button"
-                            class="btn btn-success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop"
-                            @click="viewCoordinator(coordinator)"
+                    <td class="text-center" style="width: 220px">
+                        <div
+                            class="d-flex justify-content-center gap-2 align-items-center flex-wrap"
                         >
-                            Ver
-                        </button>
-                        <button
-                            class="btn btn-danger"
-                            @click="confirmDelete(coordinator.id)"
-                        >
-                            Eliminar
-                        </button>
+                            <button
+                                type="button"
+                                class="btn btn-success btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"
+                                @click="viewCoordinator(coordinator)"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button
+                                class="btn btn-danger btn-sm"
+                                @click="confirmDelete(coordinator.id)"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
