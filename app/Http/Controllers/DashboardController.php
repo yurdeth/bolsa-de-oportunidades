@@ -87,7 +87,7 @@ class DashboardController extends Controller
         }
 
         if ($user->id_tipo_usuario == 3) {
-            return response()->json(['status' => 'success', 'message' => 'este no puede acceder a esta ruta'], 403);
+            return response()->json(['status' => 'success', 'message' => 'este no puede acceder a esta ruta'], 200);
         }
 
         if ($user->id_tipo_usuario == 4) {
