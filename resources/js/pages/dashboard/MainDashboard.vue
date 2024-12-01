@@ -267,6 +267,38 @@
         </section>
     </div>
 
+    <div v-if="user_data && user_data.id_tipo_usuario == 3">
+        <h1 class="mt-3">¡Bienvenido a la Bolsa de Oportunidades!</h1>
+
+        <h3 class="mb-2">¡Atención estudiantes!</h3>
+        <p class="mb-3">
+            Queremos informarles que para disfrutar de todos los beneficios y
+            funcionalidades de nuestro servicio, será necesario que descarguen
+            nuestra aplicación móvil, disponible tanto para dispositivos Android
+            como iOS. A través de esta app, podrán acceder de manera rápida,
+            sencilla y segura a todas las herramientas y recursos que hemos
+            diseñado especialmente para ustedes.
+        </p>
+
+        <h3 class="mb-2">¡Descarga la app y comienza a disfrutar!</h3>
+        <div class="d-flex justify-content-center">
+            <a
+                href="https://play.google.com/store/apps/details?id=com.fmo.bolsa_oportunidades"
+                target="_blank"
+                class="btn btn-primary"
+            >
+                <i class="fab fa-google-play"></i> Descargar para Android
+            </a>
+            <a
+                href="https://apps.apple.com/us/app/bolsa-de-oportunidades/id1580190134"
+                target="_blank"
+                class="btn btn-primary ms-2"
+            >
+                <i class="fab fa-apple"></i> Descargar para iOS
+            </a>
+        </div>
+    </div>
+
     <div v-if="user_data && user_data.id_tipo_usuario == 4">
         <h1>Panel de empresa</h1>
         <h3 class="mt-3">¡Bienvenido a la Bolsa de Oportunidades!</h3>
