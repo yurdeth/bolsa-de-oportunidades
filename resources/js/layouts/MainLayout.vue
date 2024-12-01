@@ -1,23 +1,23 @@
 <style>
 :root {
-    --mdb-primary: #731010;
-    --mdb-secondary: #9fa6b2;
-    --mdb-success: #368053ff;
-    --mdb-danger: #8e1e1eff;
-    --mdb-warning: #e4a11b;
-    --mdb-info: #54b4d3;
-    --mdb-light: #fbfbfb;
-    --mdb-dark: #332d2d;
-    --mdb-primary-rgb: 115, 16, 16;
-    --mdb-secondary-rgb: 159, 166, 178;
-    --mdb-success-rgb: 54, 128, 83;
-    --mdb-danger-rgb: 142, 30, 30;
-    --mdb-warning-rgb: 228, 161, 27;
-    --mdb-info-rgb: 84, 180, 211;
-    --mdb-light-rgb: 251, 251, 251;
-    --mdb-dark-rgb: 51, 45, 45;
-    --mdb-white-rgb: 255, 255, 255;
-    --mdb-black-rgb: 0, 0, 0;
+    --mdb-primary: #731010 !important;
+    --mdb-secondary: #9fa6b2 !important;
+    --mdb-success: #368053ff !important;
+    --mdb-danger: #8e1e1eff !important;
+    --mdb-warning: #e4a11b !important;
+    --mdb-info: #54b4d3 !important;
+    --mdb-light: #fbfbfb !important;
+    --mdb-dark: #332d2d !important;
+    --mdb-primary-rgb: 115, 16, 16 !important;
+    --mdb-secondary-rgb: 159, 166, 178 !important;
+    --mdb-success-rgb: 54, 128, 83 !important;
+    --mdb-danger-rgb: 142, 30, 30 !important;
+    --mdb-warning-rgb: 228, 161, 27 !important;
+    --mdb-info-rgb: 84, 180, 211 !important;
+    --mdb-light-rgb: 251, 251, 251 !important;
+    --mdb-dark-rgb: 51, 45, 45 !important;
+    --mdb-white-rgb: 255, 255, 255 !important;
+    --mdb-black-rgb: 0, 0, 0 !important;
 }
 
 html,
