@@ -40,6 +40,19 @@ class Proyectos extends Model {
             return $this->fetchProyectos(null, $idCarrera);
         }
 
+        if (Auth::user()->id_tipo_usuario == 4) {
+            $idEmpresa = Auth::user()->info_empresa[0]->id;
+            if (!is_null($id)) {
+                return $this->fetchProyectos($id, null);
+            }
+
+            return $this->fetchProyectos(null, null);
+        }
+
+        if (!is_null($id)) {
+            return $this->fetchProyectos($id, null);
+        }
+
         return $this->fetchProyectos();
     }
 
