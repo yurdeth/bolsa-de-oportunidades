@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Proyectos extends Model {
     protected $table = 'proyectos';
@@ -31,7 +32,7 @@ class Proyectos extends Model {
     public function getProyectos($id): Collection {
         if (Auth::user()->id_tipo_usuario == 2) {
             $infoCoordinador = Auth::user()->info_coordinador;
-            $idCarrera = !empty($infoCoordinador) ? $infoCoordinador[0]->id_carrera : null;
+            $idCarrera = $infoCoordinador[0]->id_carrera;
 
             if (!is_null($id)) {
                 return $this->fetchProyectos($id, $idCarrera);
@@ -101,7 +102,28 @@ class Proyectos extends Model {
         });
     }
 
-    private function getEstudiantesEnProyecto($id_proyecto, $estadoAplicacion): Collection {
+    private function getEstudiantesEnProyecto($id_proyecto, $estadoAplicacion, $id_carrera = null): Collection {
+        if(!is_null($id_carrera)) {
+            return DB::table('aplicaciones')
+                ->select(
+                    'estudiantes.id as id_estudiante',
+                    'estudiantes.nombres',
+                    'estudiantes.apellidos',
+                    'usuarios.email',
+                    'carreras.nombre_carrera',
+                    'estudiantes.telefono',
+                    'estudiantes.direccion',
+                    'estudiantes.anio_estudio',
+                )
+                ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+                ->join('usuarios', 'estudiantes.id_usuario', '=', 'usuarios.id')
+                ->join('carreras', 'estudiantes.id_carrera', '=', 'carreras.id')
+                ->where('aplicaciones.id_proyecto', $id_proyecto)
+                ->where('id_estado_aplicacion', '=', $estadoAplicacion)
+                ->where('estudiantes.id_carrera', $id_carrera)
+                ->get();
+        }
+
         return DB::table('aplicaciones')
             ->select(
                 'estudiantes.id as id_estudiante',
@@ -125,8 +147,8 @@ class Proyectos extends Model {
         return $this->getEstudiantesEnProyecto($id_proyecto, 1);
     }
 
-    public function getEstudiantesAprobadosEnProyecto($id_proyecto): Collection {
-        return $this->getEstudiantesEnProyecto($id_proyecto, 2);
+    public function getEstudiantesAprobadosEnProyecto($id_proyecto, $id_carrera): Collection {
+        return $this->getEstudiantesEnProyecto($id_proyecto, 2, $id_carrera);
     }
 
     public function empresa_table(): BelongsTo {

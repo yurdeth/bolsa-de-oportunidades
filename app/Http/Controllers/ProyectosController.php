@@ -6,11 +6,9 @@ use App\Models\Proyectos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\Exception\MessagingException;
 
 
 class ProyectosController extends Controller {
@@ -309,7 +307,10 @@ class ProyectosController extends Controller {
             ]);
         }
 
-        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($request->id));
+        $infoCoordinador = Auth::user()->info_coordinador;
+        $id_carrera = $infoCoordinador[0]->id_carrera;
+
+        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($request->id, $id_carrera));
 
         return response()->json([
             'success' => true,

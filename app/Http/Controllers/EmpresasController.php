@@ -131,18 +131,18 @@ class EmpresasController extends Controller
         $id_usuario = $user->id;
 
         $url = "";
-        if ($request->has('logo_url')) {
-            $url = $request->logo_url;
-            // --------------- put img on storage ---------------------
-            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
-            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
-            $replace = substr($url, 0, strpos($url, ',') + 1);
-            $image = str_replace($replace, '', $url);
-            $image = str_replace(' ', '+', $image);
-            $imageName = Str::uuid() . '.' . $extension;
-            Storage::disk('imagen-empresa')->put($imageName, base64_decode($image));
-            $url = Storage::disk('imagen-empresa')->url($imageName);
-        }
+//        if ($request->has('logo_url')) {
+//            $url = $request->logo_url;
+//            // --------------- put img on storage ---------------------
+//            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
+//            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
+//            $replace = substr($url, 0, strpos($url, ',') + 1);
+//            $image = str_replace($replace, '', $url);
+//            $image = str_replace(' ', '+', $image);
+//            $imageName = Str::uuid() . '.' . $extension;
+//            Storage::disk('imagen-empresa')->put($imageName, base64_decode($image));
+//            $url = Storage::disk('imagen-empresa')->url($imageName);
+//        }
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
