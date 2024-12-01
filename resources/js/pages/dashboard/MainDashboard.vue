@@ -294,7 +294,7 @@
                     display: flex;
                     align-items: center;
                     gap: 1rem;
-                    text-align: center;
+                    justify-content: center;
                 "
             >
                 <i class="fab fa-google-play" style="font-size: 40px"></i>
@@ -312,7 +312,7 @@
                     display: flex;
                     align-items: center;
                     gap: 1rem;
-                    text-align: center;
+                    justify-content: center;
                 "
             >
                 <i class="fab fa-apple" style="font-size: 40px"></i> Descargar
