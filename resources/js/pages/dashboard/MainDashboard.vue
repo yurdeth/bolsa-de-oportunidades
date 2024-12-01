@@ -329,9 +329,9 @@ export default {
                 this.activedProjects = response.data.activeProjects;
                 this.numStudents = response.data.totalStudent;
 
-                let estudiantes = response.data.dataProyectosbyStatus;
-                label = estudiantes.map((item) => item.carrera);
-                data = estudiantes.map((item) => item.total);
+                let estudiantes = response.data.dataProyectosbyStatus,
+                    label = estudiantes.map((item) => item.carrera),
+                    data = estudiantes.map((item) => item.total);
                 chart("#estudiantesChart", label, data);
 
                 let dataAplicacionesByStatus =
