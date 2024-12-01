@@ -315,7 +315,7 @@
                     justify-content: center;
                 "
             >
-                <i class="fab fa-apple" style="font-size: 40px"></i> Descargar
+                <i class="fab fa-apple" style="font-size: 50px"></i> Descargar
                 para iOS
             </a>
         </div>
