@@ -1,13 +1,15 @@
 <script setup>
-import {api} from "@/api.js";
+import { api } from "@/api.js";
 import Swal from "sweetalert2";
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 
 const loading = ref(false);
-const id_tipo_usuario = JSON.parse(localStorage.getItem("user")).id_tipo_usuario;
+const id_tipo_usuario = JSON.parse(
+    localStorage.getItem("user")
+).id_tipo_usuario;
 
 const data = ref({
-    projects: []
+    projects: [],
 });
 
 const selectedProject = ref(null);
@@ -24,14 +26,14 @@ const getActiveProjects = async () => {
             if (!acc[project.id_proyecto]) {
                 acc[project.id_proyecto] = {
                     ...project,
-                    estudiantes: []
+                    estudiantes: [],
                 };
             }
             acc[project.id_proyecto].estudiantes.push({
                 id_estudiante: project.id_estudiante,
                 nombres: project.nombres,
                 apellidos: project.apellidos,
-                email: project.email
+                email: project.email,
             });
             return acc;
         }, {});
@@ -61,12 +63,12 @@ const retirarEstudiante = async () => {
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Sí, retirar",
-            cancelButtonText: "Cancelar"
+            cancelButtonText: "Cancelar",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const response = await api.post(url, {
                     id_estudiante: selectedStudent.value,
-                    id_proyecto: selectedProject.value.id_proyecto
+                    id_proyecto: selectedProject.value.id_proyecto,
                 });
 
                 if (response.data.success) {
@@ -74,7 +76,7 @@ const retirarEstudiante = async () => {
                         title: "Éxito",
                         text: response.data.message,
                         icon: "success",
-                        confirmButtonText: "Aceptar"
+                        confirmButtonText: "Aceptar",
                     }).then(() => {
                         window.location.reload();
                     });
@@ -83,7 +85,7 @@ const retirarEstudiante = async () => {
                         title: "Error",
                         text: response.data.message,
                         icon: "error",
-                        confirmButtonText: "Aceptar"
+                        confirmButtonText: "Aceptar",
                     }).then(() => {
                         window.location.reload();
                     });
@@ -93,7 +95,7 @@ const retirarEstudiante = async () => {
                     title: "Operación cancelada",
                     text: "El estudiante no fue retirado del proyecto",
                     icon: "success",
-                    confirmButtonText: "Aceptar"
+                    confirmButtonText: "Aceptar",
                 }).then(() => {
                     window.location.reload();
                 });
@@ -124,23 +126,40 @@ onMounted(() => {
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Proyectos activos</h3>
         <div class="input-group mb-3 w-25">
-            <input type="text" class="form-control" placeholder="Buscar proyecto" aria-label="Buscar proyecto"
-                   aria-describedby="button-addon2">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar proyecto"
+                aria-label="Buscar proyecto"
+                aria-describedby="button-addon2"
+            />
         </div>
     </div>
 
     <div>
         <div class="accordion" id="accordionExample">
-            <div class="accordion-item" v-for="project in data.projects" :key="project.id_proyecto">
+            <div
+                class="accordion-item"
+                v-for="project in data.projects"
+                :key="project.id_proyecto"
+            >
                 <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            :data-bs-target="'#collapse' + project.id_proyecto" aria-expanded="true"
-                            :aria-controls="'collapse' + project.id_proyecto">
+                    <button
+                        class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        :data-bs-target="'#collapse' + project.id_proyecto"
+                        aria-expanded="true"
+                        :aria-controls="'collapse' + project.id_proyecto"
+                    >
                         {{ project.titulo }}
                     </button>
                 </h2>
-                <div :id="'collapse' + project.id_proyecto" class="accordion-collapse collapse show"
-                     data-bs-parent="#accordionExample">
+                <div
+                    :id="'collapse' + project.id_proyecto"
+                    class="accordion-collapse collapse show"
+                    data-bs-parent="#accordionExample"
+                >
                     <div class="accordion-body">
                         <div class="row">
                             <div class="col-12">
@@ -154,8 +173,15 @@ onMounted(() => {
                             <div class="col-12">
                                 <h5>Estudiantes asignados al proyecto</h5>
                                 <ul>
-                                    <li v-for="estudiante in project.estudiantes" :key="estudiante.id_estudiante">
-                                        {{ estudiante.nombres + " " + estudiante.apellidos }}
+                                    <li
+                                        v-for="estudiante in project.estudiantes"
+                                        :key="estudiante.id_estudiante"
+                                    >
+                                        {{
+                                            estudiante.nombres +
+                                            " " +
+                                            estudiante.apellidos
+                                        }}
                                     </li>
                                 </ul>
                             </div>
@@ -167,8 +193,8 @@ onMounted(() => {
                                 <h5>Tipo de proyecto</h5>
                                 <p>{{ project.tipo_proyecto }}</p>
                             </div>
-<!--                            A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
-<!--                            <div class="col-12" v-if="id_tipo_usuario === 2">
+                            <!--                            A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
+                            <!--                            <div class="col-12" v-if="id_tipo_usuario === 2">
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#retirarEstudiante" @click="openModal(project)">
                                     Retirar un estudiante del proyecto
@@ -181,24 +207,50 @@ onMounted(() => {
         </div>
 
         <!--Modal para seleccionar el estudiante a retirar-->
-        <div class="modal fade" id="retirarEstudiante" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div
+            class="modal fade"
+            id="retirarEstudiante"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Seleccionar el estudiante que deseas retirar
-                            del proyecto</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Seleccionar el estudiante que deseas retirar del
+                            proyecto
+                        </h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
                     </div>
                     <div class="modal-body" v-if="selectedProject">
                         <div class="form-group">
                             <label for="estudiantes">Estudiantes</label>
-                            <select class="form-select" id="estudiantes" v-model="selectedStudent">
-                                <option selected disabled>Selecciona un estudiante</option>
-                                <option v-for="estudiante in selectedProject.estudiantes"
-                                        :key="estudiante.id_estudiante"
-                                        :value="estudiante.id_estudiante">
-                                    {{ estudiante.nombres + " " + estudiante.apellidos }}
+                            <select
+                                class="form-select"
+                                id="estudiantes"
+                                v-model="selectedStudent"
+                            >
+                                <option selected disabled>
+                                    Selecciona un estudiante
+                                </option>
+                                <option
+                                    v-for="estudiante in selectedProject.estudiantes"
+                                    :key="estudiante.id_estudiante"
+                                    :value="estudiante.id_estudiante"
+                                >
+                                    {{
+                                        estudiante.nombres +
+                                        " " +
+                                        estudiante.apellidos
+                                    }}
                                 </option>
                             </select>
                         </div>
@@ -215,3 +267,22 @@ onMounted(() => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.loader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.loader .spinner-border {
+    width: 100px;
+    height: 100px;
+}
+</style>
