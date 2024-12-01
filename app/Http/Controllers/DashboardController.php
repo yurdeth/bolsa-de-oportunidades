@@ -64,12 +64,15 @@ class DashboardController extends Controller
             /* Numeros de proyecto por estado(id_estado_oferta) */
             $dataProyectosbyStatus = DB::table('proyectos')
                 ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
+                ->where('proyectos.id_carrera', $info_coordinador->id_carrera)
                 ->select('estados_oferta.nombre_estado as rol', DB::raw('count(*) as total'))
                 ->groupBy('estados_oferta.nombre_estado')
                 ->get();
 
             $dataAplicacionesByStatus = DB::table('aplicaciones')
                 ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+                ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+                ->where('proyectos.id_carrera', $info_coordinador->id_carrera)
                 ->select('estados_aplicacion.nombre as status', DB::raw('count(*) as total'))
                 ->groupBy('estados_aplicacion.nombre')
                 ->get();
