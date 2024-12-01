@@ -66,7 +66,6 @@ class AuthController extends Controller {
                 ->first();
 
             $id_proyecto_asignado = $queried_user->id_proyecto_asignado;
-            Log::info($id_proyecto_asignado);
 
             $data['token'] = $tokenResult->accessToken;
             $data['token_type'] = 'Bearer';
