@@ -9,20 +9,19 @@ use App\Models\Empresas;
 use App\Models\Estudiantes;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     /*
         Recibir: email, password
         Retornar: token, token_type, expires_at, información del usuario
     */
-    public function login(Request $r)
-    {
+    public function login(Request $r) {
         $user = $r->email;
         $pass = $r->password;
 
@@ -75,8 +74,7 @@ class AuthController extends Controller
     }
 
     /* Verifica que el token almacenado este vigente y sea valido y este relacionado a un usuario */
-    public function access_token(Request $r)
-    {
+    public function access_token(Request $r) {
         // Obtener el usuario autenticado
         $user = $r->user();
 
@@ -99,19 +97,24 @@ class AuthController extends Controller
         return response()->json(['data' => $data, 'status' => true], 200);
     }
 
-    public function logout(Request $r)
-    {
+    public function logout(Request $r) {
         $r->user()->token()->revoke();
         return response()->json(['message' => 'Sesión finalizada', 'status' => true], 200);
     }
 
-    public function me(Request $r)
-    {
-        return response()->json(['user' => $r->user(), 'status' => true], 200);
+    public function me(Request $r) {
+        $user = $r->user();
+        $queried_user = User::select('usuarios.*', 'proyectos_asignados.id as id_proyecto')
+            ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
+            ->leftJoin('proyectos_asignados', 'estudiantes.id', '=', 'proyectos_asignados.id_estudiante')
+            ->where('usuarios.id', $user->id)
+            ->first();
+
+//        return response()->json(['user' => $r->user(), 'status' => true], 200);
+        return response()->json(['user' => $queried_user, 'status' => true]);
     }
 
-    public function register(Request $r)
-    {
+    public function register(Request $r) {
         /*
             Recibir: user_type (estudiante = 3, empresa = 4)
         */
