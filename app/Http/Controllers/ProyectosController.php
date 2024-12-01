@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Exception\MessagingException;
+
+
 class ProyectosController extends Controller {
     public function index() {
-        $proyectos = ((new Proyectos())->getProyectos(null));
-
-        Log::info($proyectos);
+        $proyectos = ((new Proyectos())->getProyetos(null));
 
         return response()->json([
             'success' => true,
@@ -60,6 +62,13 @@ class ProyectosController extends Controller {
             ->with('carrera_table')
             ->get();
 
+        /*        if ($proyectos->isEmpty()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No se encontraron proyectos'
+                    ], 404);
+                }*/
+
         $proyectos = $proyectos->map(function ($proyecto) {
             $proyecto->requisitos = explode(',', $proyecto->requisitos);
             return $proyecto;
@@ -71,6 +80,27 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    private function sendMessage($title, $body) {
+        $serviceAccount = resource_path('bolsadeoportunidades-7c88c-firebase-adminsdk-3gn0r-35810b4c83.json');
+        $databaseURL = 'https://bolsadeoportunidades-7c88c.firebaseio.com';
+
+        $factory = (new Factory())
+            ->withServiceAccount($serviceAccount)
+            ->withDatabaseUri($databaseURL);
+
+        $messaging = $factory->createMessaging();
+
+        $message = [
+            'notification' => [
+                'title' => $title,
+                'body' => $body,
+            ],
+            'topic' => 'all'
+        ];
+
+        $response = $messaging->send($message);
+        echo json_encode($response, JSON_PRETTY_PRINT);
+    }
     public function store(Request $request) {
         if (Auth::user()->id_tipo_usuario != 4) { // <- Solamente las empresas pueden crear proyectos
             return response()->json([
@@ -136,10 +166,13 @@ class ProyectosController extends Controller {
 
         $proyecto = Proyectos::create($request->all());
 
+        $this->sendMessage(strval($proyecto->titulo), strval($proyecto->descripcion));
+
         return response()->json([
             'success' => true,
             'data' => $proyecto
         ], 201);
+
     }
 
     public function show($id): JsonResponse {
@@ -267,7 +300,7 @@ class ProyectosController extends Controller {
             'data' => $interesados
         ]);
     }
-    public function getAprobados($id): JsonResponse {
+    public function getAprobados(Request $request): JsonResponse {
         // Solamente el coordinador puede ver los estudiantes que han sido aprobados por la empresa
         if (Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
@@ -276,11 +309,12 @@ class ProyectosController extends Controller {
             ]);
         }
 
-        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($id));
+        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($request->id));
 
         return response()->json([
             'success' => true,
             'data' => $interesados
         ]);
     }
+
 }
