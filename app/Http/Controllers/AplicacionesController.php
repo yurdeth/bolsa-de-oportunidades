@@ -57,7 +57,6 @@ class AplicacionesController extends Controller {
         }
 
         $estadoOferta = Proyectos::find($request->id_proyecto)->id_estado_oferta;
-        Log::info($estadoOferta);
 
         if ($estadoOferta != 1) {
             return response()->json([
@@ -94,7 +93,6 @@ class AplicacionesController extends Controller {
         }
 
         $aplicacion = Aplicaciones::create($request->all());
-        ((new NotificacionesController())->store(4, $id_usuario, 'Tu solicitud ha sido enviada'));
 
         return response()->json([
             'success' => true,

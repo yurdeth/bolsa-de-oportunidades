@@ -153,4 +153,6 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::get('/notificaciones', [NotificacionesController::class, 'index'])->name('notificaciones.index');
     Route::get('/notificaciones/contar', [NotificacionesController::class, 'contarNotificaciones'])->name('notificaciones.contar');
     Route::post('/notificaciones', [NotificacionesController::class, 'store'])->name('notificaciones.store');
+    Route::patch('/notificaciones/{id}', [NotificacionesController::class, 'update'])->name('notificaciones.update');
+    Route::patch('/notificaciones/leida/{id}', [NotificacionesController::class, 'marcarComoLeida'])->name('notificaciones.leida');
 });
