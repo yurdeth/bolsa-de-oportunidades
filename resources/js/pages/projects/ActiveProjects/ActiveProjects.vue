@@ -49,7 +49,7 @@ const retirarEstudiante = async () => {
     try {
         let url = "";
 
-        if (id_tipo_usuario === 2){
+        if (id_tipo_usuario === 2) {
             url = "/expulsar-estudiante";
         } else {
             url = "/retirar-estudiante";
@@ -167,12 +167,13 @@ onMounted(() => {
                                 <h5>Tipo de proyecto</h5>
                                 <p>{{ project.tipo_proyecto }}</p>
                             </div>
-                            <div class="col-12" v-if="id_tipo_usuario === 2">
+<!--                            A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
+<!--                            <div class="col-12" v-if="id_tipo_usuario === 2">
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#retirarEstudiante" @click="openModal(project)">
                                     Retirar un estudiante del proyecto
                                 </button>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -202,12 +203,13 @@ onMounted(() => {
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-danger" @click="retirarEstudiante">
-                            Retirar del proyecto
-                        </button>
-                    </div>
+                    <!--                    A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
+                    <!--                    <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="button" class="btn btn-danger" @click="retirarEstudiante">
+                                                Retirar del proyecto
+                                            </button>
+                                        </div>-->
                 </div>
             </div>
         </div>
