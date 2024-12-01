@@ -15,13 +15,13 @@
                     data-bs-target="#staticBackdrop"
                     @click="$emit('view-project', project)"
                 >
-                    Ver
+                    <i class="fas fa-eye"></i>
                 </button>
                 <button
                     class="btn btn-danger btn-sm"
                     @click="$emit('delete-project', project.id)"
                 >
-                    Eliminar
+                    <i class="fas fa-trash"></i>
                 </button>
             </div>
         </td>

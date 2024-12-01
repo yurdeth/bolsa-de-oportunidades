@@ -12,76 +12,125 @@
         </div>
     </div>
 
-    <div>
+    <div class="table-responsive">
         <table class="table table-striped">
             <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
-                <th>Correo</th>
-                <th>Carrera</th>
-                <th class="text-center">Acciones</th>
-            </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Carnet</th>
+                    <th>Correo</th>
+                    <th>Carrera</th>
+                    <th class="text-center" style="width: 200px">Acciones</th>
+                </tr>
             </thead>
             <tbody>
-            <tr v-for="student in students" :key="student.id">
-                <td>{{ `${student.nombres} ${student.apellidos}` }}</td>
-                <td>{{ student.carnet }}</td>
-                <td>{{ student.email }}</td>
-                <td>{{ student.nombre_carrera }}</td>
-                <td class="text-center">
-                    <button
-                        type="button"
-                        class="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
-                        @click="viewStudent(student)"
-                    >
-                        Ver
-                    </button>
-                    <button
-                        class="btn btn-danger"
-                        @click="confirmDelete(student.id)"
-                    >
-                        Eliminar
-                    </button>
-                </td>
-            </tr>
+                <tr v-for="student in students" :key="student.id">
+                    <td>{{ `${student.nombres} ${student.apellidos}` }}</td>
+                    <td>{{ student.carnet }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.nombre_carrera }}</td>
+                    <td class="text-center" style="width: 200px">
+                        <div
+                            class="d-flex justify-content-center gap-2 align-items-center flex-wrap"
+                        >
+                            <button
+                                type="button"
+                                class="btn btn-success btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"
+                                @click="viewStudent(student)"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button
+                                class="btn btn-danger btn-sm"
+                                @click="confirmDelete(student.id)"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div
+        class="modal fade"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Información del estudiante</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        Información del estudiante
+                    </h1>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-6">
-                                <img src="../../img/Logo_Nuevo.png"
-                                     alt="Logo de la FMO" class="img-thumbnail">
+                                <img
+                                    src="../../img/Logo_Nuevo.png"
+                                    alt="Logo de la FMO"
+                                    class="img-thumbnail"
+                                />
                             </div>
                             <div class="col-6">
-                                <p><strong>Nombre completo:</strong>
-                                    {{ `${selectedStudent.nombres} ${selectedStudent.apellidos}` }} </p>
-                                <p><strong>Correo institucional:</strong> {{ selectedStudent.email }} </p>
-                                <p><strong>Carnet:</strong> {{ selectedStudent.carnet }} </p>
-                                <p><strong>Carrera:</strong> {{ selectedStudent.nombre_carrera }} </p>
-                                <p><strong>Año de estudio:</strong> {{ selectedStudent.anio_estudio }}° </p>
-                                <p><strong>Dirección:</strong> {{ selectedStudent.direccion }} </p>
-                                <p><strong>Teléfono:</strong> {{ selectedStudent.telefono }} </p>
+                                <p>
+                                    <strong>Nombre completo:</strong>
+                                    {{
+                                        `${selectedStudent.nombres} ${selectedStudent.apellidos}`
+                                    }}
+                                </p>
+                                <p>
+                                    <strong>Correo institucional:</strong>
+                                    {{ selectedStudent.email }}
+                                </p>
+                                <p>
+                                    <strong>Carnet:</strong>
+                                    {{ selectedStudent.carnet }}
+                                </p>
+                                <p>
+                                    <strong>Carrera:</strong>
+                                    {{ selectedStudent.nombre_carrera }}
+                                </p>
+                                <p>
+                                    <strong>Año de estudio:</strong>
+                                    {{ selectedStudent.anio_estudio }}°
+                                </p>
+                                <p>
+                                    <strong>Dirección:</strong>
+                                    {{ selectedStudent.direccion }}
+                                </p>
+                                <p>
+                                    <strong>Teléfono:</strong>
+                                    {{ selectedStudent.telefono }}
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cerrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -89,7 +138,7 @@
 </template>
 
 <script>
-import {api} from "../../api";
+import { api } from "../../api";
 import Swal from "sweetalert2";
 
 export default {
@@ -114,22 +163,22 @@ export default {
     methods: {
         async confirmDelete(id) {
             const result = await Swal.fire({
-                title: '¿Estás seguro?',
-                text: 'No podrás revertir esto',
-                icon: 'warning',
+                title: "¿Estás seguro?",
+                text: "No podrás revertir esto",
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminarlo',
-                cancelButtonText: 'Cancelar'
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminarlo",
+                cancelButtonText: "Cancelar",
             });
 
             if (result.isConfirmed) {
                 await this.deleteStudent(id);
                 Swal.fire(
-                    'Eliminado',
-                    'El estudiante ha sido eliminado.',
-                    'success'
+                    "Eliminado",
+                    "El estudiante ha sido eliminado.",
+                    "success"
                 );
             }
         },
@@ -144,9 +193,9 @@ export default {
             }
         },
         viewStudent(student) {
-            this.selectedStudent = {...student};
+            this.selectedStudent = { ...student };
         },
-    }
+    },
 };
 </script>
 
