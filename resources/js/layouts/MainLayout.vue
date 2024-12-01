@@ -259,7 +259,7 @@ nav {
                         "
                         @click="showMenu = false"
                     >
-                        Proyectos <span class="badge text-bg-info">{{ notifications }}</span>
+                        Proyectos <span v-if="notifications > 0" class="badge text-bg-info">{{ notifications }}</span>
                     </router-link>
                     <router-link
                         to="/proyectos-activos"
@@ -390,7 +390,6 @@ export default {
             try {
                 let response = await api.get("/notificaciones/contar");
                 this.notifications = response.data.data;
-                console.log("Notificaciones: " + this.notifications);
             } catch (error) {
                 console.error(error);
             }

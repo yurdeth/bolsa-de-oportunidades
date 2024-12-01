@@ -55,8 +55,6 @@ const retirarEstudiante = async () => {
             url = "/retirar-estudiante";
         }
 
-        alert(url);
-
         Swal.fire({
             title: "¿Estás seguro?",
             text: "El estudiante será retirado del proyecto",
@@ -169,7 +167,7 @@ onMounted(() => {
                                 <h5>Tipo de proyecto</h5>
                                 <p>{{ project.tipo_proyecto }}</p>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12" v-if="id_tipo_usuario === 2">
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#retirarEstudiante" @click="openModal(project)">
                                     Retirar un estudiante del proyecto

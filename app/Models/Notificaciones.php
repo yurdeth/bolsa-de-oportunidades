@@ -33,26 +33,18 @@ class Notificaciones extends Model {
             ->get();
     }
 
-    public function getNotificacionesCoordinador($id_empresa): Collection {
-        return DB::table('notificaciones')
-            ->select('notificaciones.id as id_notificacion',
-                'tipo_notificacion.nombre as estado_solicitud',
+    public function getNotificacionesCoordinador($id_carrera): Collection {
+        return DB::table('aplicaciones')
+            ->select('aplicaciones.id as id_aplicacion',
                 'estudiantes.nombres',
                 'estudiantes.apellidos',
-                'estudiantes.telefono',
-                'estudiantes.direccion',
-                'carreras.nombre_carrera',
-                'proyectos.id as id_proyecto',
                 'proyectos.titulo',
-                'empresas.nombre')
-            ->join('tipo_notificacion', 'notificaciones.id_tipo_notificacion', '=', 'tipo_notificacion.id')
-            ->join('usuarios', 'notificaciones.id_usuario', '=', 'usuarios.id')
-            ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
-            ->join('carreras', 'estudiantes.id_carrera', '=', 'carreras.id')
-            ->join('proyectos', 'notificaciones.id_proyecto', '=', 'proyectos.id')
-            ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
-            ->where('notificaciones.leido', false)
-            ->where('proyectos.id_empresa', $id_empresa)
+                'estados_aplicacion.nombre as estado_aplicacion')
+            ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+            ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+            ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+            ->where('estudiantes.id_carrera', $id_carrera)
+            ->where('aplicaciones.id_estado_aplicacion', 2)
             ->get();
     }
 }

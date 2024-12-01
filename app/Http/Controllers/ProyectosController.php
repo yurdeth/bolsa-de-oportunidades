@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Validator;
 
 class ProyectosController extends Controller {
     public function index() {
-        $proyectos = ((new Proyectos())->getProyetos(null));
+        $proyectos = ((new Proyectos())->getProyectos(null));
+
+        Log::info($proyectos);
 
         return response()->json([
             'success' => true,
@@ -57,13 +59,6 @@ class ProyectosController extends Controller {
             ->with('tipo_proyecto_table')
             ->with('carrera_table')
             ->get();
-
-/*        if ($proyectos->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se encontraron proyectos'
-            ], 404);
-        }*/
 
         $proyectos = $proyectos->map(function ($proyecto) {
             $proyecto->requisitos = explode(',', $proyecto->requisitos);
@@ -148,7 +143,7 @@ class ProyectosController extends Controller {
     }
 
     public function show($id): JsonResponse {
-        $proyecto = ((new Proyectos())->getProyetos($id));
+        $proyecto = ((new Proyectos())->getProyectos($id));
 
         return response()->json([
             'success' => true,
@@ -272,7 +267,7 @@ class ProyectosController extends Controller {
             'data' => $interesados
         ]);
     }
-    public function getAprobados(Request $request): JsonResponse {
+    public function getAprobados($id): JsonResponse {
         // Solamente el coordinador puede ver los estudiantes que han sido aprobados por la empresa
         if (Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
@@ -281,7 +276,7 @@ class ProyectosController extends Controller {
             ]);
         }
 
-        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($request->id));
+        $interesados = ((new Proyectos())->getEstudiantesAprobadosEnProyecto($id));
 
         return response()->json([
             'success' => true,

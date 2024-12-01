@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aplicaciones;
 use App\Models\Notificaciones;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class NotificacionesController extends Controller {
@@ -15,8 +15,37 @@ class NotificacionesController extends Controller {
      * Display a listing of the resource.
      */
     public function index(): JsonResponse {
-        $id_empresa = $this->getIdEmpresa();
-        $notificaciones = (new Notificaciones)->getNotificacionesEmpresa($id_empresa);
+        if (Auth::user()->id_tipo_usuario == 4){
+            $id_empresa = $this->getIdEmpresa();
+            $notificaciones = (new Notificaciones)->getNotificacionesEmpresa($id_empresa);
+
+            return response()->json([
+                'success' => true,
+                'data' => $notificaciones
+            ]);
+        }
+
+        if (Auth::user()->id_tipo_usuario == 2){
+            $id_coordinador = $this->getIdCoordinador();
+            $notificaciones = (new Notificaciones)->getNotificacionesCoordinador($id_coordinador);
+
+            return response()->json([
+                'success' => true,
+                'data' => $notificaciones
+            ]);
+        }
+
+        $notificaciones = Aplicaciones::select('aplicaciones.id_estado_aplicacion',
+            'aplicaciones.id as id_aplicacion',
+            'estudiantes.nombres',
+            'estudiantes.apellidos',
+            'estados_aplicacion.nombre as estado_aplicacion',
+            'proyectos.titulo')
+            ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+            ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+            ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+            ->where('aplicaciones.id_estado_aplicacion', 1)
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -25,19 +54,18 @@ class NotificacionesController extends Controller {
     }
 
     public function contarNotificaciones(): JsonResponse {
-        $id_tipo_notificacion_empresa = [4, 5, 7, 9];
-        $id_tipo_notificacion_coordinador = [6, 8, 10];
-
         if (Auth::user()->id_tipo_usuario == 2){
-            $notificaciones = Notificaciones::where('leido', false)
-                ->whereIn('id_tipo_notificacion', $id_tipo_notificacion_coordinador)
-                ->count();
+            $id_coordinador = $this->getIdCoordinador();
+            $notificaciones = (new Notificaciones)->getNotificacionesCoordinador($id_coordinador);
+            $notificaciones = count($notificaciones);
 
             return response()->json([
                 'success' => true,
                 'data' => $notificaciones
             ]);
-        } else if (Auth::user()->id_tipo_usuario == 4){
+        }
+
+        if (Auth::user()->id_tipo_usuario == 4){
             $id_empresa = $this->getIdEmpresa();
             $notificaciones = (new Notificaciones)->getNotificacionesEmpresa($id_empresa);
             $notificaciones = count($notificaciones);
@@ -48,9 +76,19 @@ class NotificacionesController extends Controller {
             ]);
         }
 
-        $notificaciones = Notificaciones::where('leido', false)
-            ->where('id_usuario', Auth::user()->id)
-            ->count();
+        $notificaciones = Aplicaciones::select('aplicaciones.id_estado_aplicacion',
+            'aplicaciones.id as id_aplicacion',
+            'estudiantes.nombres',
+            'estudiantes.apellidos',
+            'estados_aplicacion.nombre as estado_aplicacion',
+            'proyectos.titulo')
+            ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+            ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+            ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+            ->where('aplicaciones.id_estado_aplicacion', 1)
+            ->get();
+
+        $notificaciones = count($notificaciones);
 
         return response()->json([
             'success' => true,
@@ -175,5 +213,15 @@ class NotificacionesController extends Controller {
             ->first();
 
         return $id_empresa->id_empresa;
+    }
+
+    private function getIdCoordinador() {
+        $id_coordinador = DB::table('usuarios')
+            ->select('coordinadores.id as id_coordinador')
+            ->join('coordinadores', 'usuarios.id', '=', 'coordinadores.id_usuario')
+            ->where('usuarios.id', Auth::user()->id)
+            ->first();
+
+        return $id_coordinador->id_coordinador;
     }
 }

@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder {
             ModalidadesTrabajoSeeder::class,
             EstadoOfertasSeeder::class,
             EstadosAplicacionSeeder::class,
-            TipoNotificacionSeeder::class,
         ]);
     }
 }
