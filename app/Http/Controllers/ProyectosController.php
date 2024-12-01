@@ -82,7 +82,7 @@ class ProyectosController extends Controller {
 
     private function sendMessage($title, $body) {
         $serviceAccount = resource_path('bolsadeoportunidades-7c88c-firebase-adminsdk-3gn0r-35810b4c83.json');
-        $databaseURL = 'https://bolsadeoportunidades-7c88c.firebaseio.com';
+        $databaseURL = env('FIREBASE_DB_URL');
 
         $factory = (new Factory())
             ->withServiceAccount($serviceAccount)
