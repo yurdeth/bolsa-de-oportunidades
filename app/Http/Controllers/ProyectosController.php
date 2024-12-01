@@ -15,7 +15,7 @@ use Kreait\Firebase\Exception\MessagingException;
 
 class ProyectosController extends Controller {
     public function index() {
-        $proyectos = ((new Proyectos())->getProyetos(null));
+        $proyectos = ((new Proyectos())->getProyectos(null));
 
         return response()->json([
             'success' => true,
