@@ -104,7 +104,7 @@ class AuthController extends Controller {
 
     public function me(Request $r) {
         $user = $r->user();
-        $queried_user = User::select('usuarios.*', 'proyectos_asignados.id as id_proyecto')
+        $queried_user = User::select('usuarios.*', 'proyectos_asignados.id_proyecto as id_proyecto_asignado')
             ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
             ->leftJoin('proyectos_asignados', 'estudiantes.id', '=', 'proyectos_asignados.id_estudiante')
             ->where('usuarios.id', $user->id)
