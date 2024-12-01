@@ -58,9 +58,20 @@ class AuthController extends Controller {
                 $data['estudiante_id'] = Estudiantes::where('id_usuario', $id_buscado)->first()->id;
             }
 
+            $user = $r->user();
+            $queried_user = User::select('usuarios.*', 'proyectos_asignados.id_proyecto as id_proyecto_asignado')
+                ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
+                ->leftJoin('proyectos_asignados', 'estudiantes.id', '=', 'proyectos_asignados.id_estudiante')
+                ->where('usuarios.id', $user->id)
+                ->first();
+
+            $id_proyecto_asignado = $queried_user->id_proyecto_asignado;
+            Log::info($id_proyecto_asignado);
+
             $data['token'] = $tokenResult->accessToken;
             $data['token_type'] = 'Bearer';
             $data['expires_at'] = $tokenResult->token->expires_at;
+            $data['id_proyecto_asignado'] = $id_proyecto_asignado;
 
             return response()->json(['data' => $data, 'status' => true], 200);
         } else {
