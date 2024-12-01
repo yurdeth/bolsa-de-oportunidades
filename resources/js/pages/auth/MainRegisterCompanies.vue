@@ -38,8 +38,8 @@ h2 {
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 800px;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 800px;
     padding: 20px;
 }
 
@@ -123,7 +123,7 @@ h2 {
         <!-- Formulario -->
         <form class="login-card" @submit.prevent="register" v-if="!loading">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="nombre" class="form-label"
                             >Nombre comercial</label
@@ -151,7 +151,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="email" class="form-label"
                             >Correo Electrónico</label
@@ -179,7 +179,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="direccion" class="form-label"
                             >Dirección</label
@@ -207,7 +207,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="telefono" class="form-label"
                             >Teléfono</label
@@ -235,7 +235,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="sitio_web" class="form-label"
                             >Sitio Web</label
@@ -263,7 +263,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="id_sector" class="form-label"
                             >Sector de la industria</label
@@ -299,7 +299,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="descripcion" class="form-label"
                             >Descripción</label
@@ -327,7 +327,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="logo_url" class="form-label">Logo</label>
                         <div class="input-group">
@@ -352,7 +352,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="password" class="form-label"
                             >Contraseña</label
@@ -393,7 +393,7 @@ h2 {
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="form-group mb-4">
                         <label for="password_confirmation" class="form-label"
                             >Repita su contraseña</label
