@@ -280,8 +280,8 @@
             diseñado especialmente para ustedes.
         </p>
 
-        <h4 class="mb-2">¡Descarga la app y comienza a disfrutar!</h4>
-        <div class="d-flex justify-content-center mt-4">
+        <h4 class="mb-4">¡Descarga la app y comienza a disfrutar!</h4>
+        <div class="d-flex justify-content-center mt-5">
             <a
                 href="https://play.google.com/store/apps/details?id=com.fmo.bolsa_oportunidades"
                 target="_blank"
