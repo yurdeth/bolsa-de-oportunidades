@@ -16,9 +16,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
-class EmpresasController extends Controller {
-    public function index(): JsonResponse {
+class EmpresasController extends Controller
+{
+    public function index(): JsonResponse
+    {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
                 'success' => false,
@@ -35,16 +38,17 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request): JsonResponse
+    {
         $rules = [
-//            'id_usuario' => 'required|integer|exists:usuarios,id',
+            //            'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
             'nombre' => 'required|string|max:200',
             'direccion' => 'string',
             'telefono' => ['string', 'max:20', 'unique:empresas', new PhoneNumberRule()],
             'sitio_web' => 'string|max:255',
             'descripcion' => 'string',
-            'logo_url' => 'string|max:255',
+            'logo_url' => 'required|string',
             'verificada' => 'boolean',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
@@ -66,7 +70,7 @@ class EmpresasController extends Controller {
             'sitio_web.max' => 'El campo sitio web debe tener un máximo de 255 caracteres',
             'descripcion.string' => 'El campo descripción debe ser una cadena de texto',
             'logo_url.string' => 'El campo logo debe ser una cadena de texto',
-            'logo_url.max' => 'El campo logo debe tener un máximo de 255 caracteres',
+            'logo_url.required' => 'El campo logo es obligatorio',
             'verificada.boolean' => 'El campo verificada debe ser un valor booleano',
             'email.required' => 'El campo correo electrónico es obligatorio',
             'email.string' => 'El campo correo electrónico debe ser una cadena de texto',
@@ -111,7 +115,8 @@ class EmpresasController extends Controller {
         if ($user) {
             return response()->json([
                 'message' => 'El teléfono ingresado ya está en uso',
-                'status' => false
+                'status' => false,
+                'errors' => ['telefono' => ['El teléfono ingresado ya está en uso']]
             ], 400);
         }
 
@@ -124,6 +129,20 @@ class EmpresasController extends Controller {
         ]);
 
         $id_usuario = $user->id;
+
+        $url = "";
+        if ($request->has('logo_url')) {
+            $url = $request->logo_url;
+            // --------------- put img on storage ---------------------
+            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
+            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
+            $replace = substr($url, 0, strpos($url, ',') + 1);
+            $image = str_replace($replace, '', $url);
+            $image = str_replace(' ', '+', $image);
+            $imageName = Str::uuid() . '.' . $extension;
+            Storage::disk('imagen-empresa')->put($imageName, base64_decode($image));
+            $url = Storage::disk('imagen-empresa')->url($imageName);
+        }
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
@@ -158,7 +177,8 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function show($id): JsonResponse {
+    public function show($id): JsonResponse
+    {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
@@ -201,7 +221,8 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function update(Request $request, $id): JsonResponse {
+    public function update(Request $request, $id): JsonResponse
+    {
         if (Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
@@ -227,7 +248,7 @@ class EmpresasController extends Controller {
             'telefono' => 'string|max:20|unique:empresas,telefono,' . $id,
             'sitio_web' => 'string|max:255',
             'descripcion' => 'required|string',
-            'logo_url' => 'string|max:255',
+            'logo_url' => 'string',
             'verificada' => 'boolean'
         ];
 
@@ -247,8 +268,26 @@ class EmpresasController extends Controller {
             ], 400);
         }
 
+        if ($request->has('logo_url')) {
+            /* si existe la imagen replazar por la que ya esta y borrar la anterior */
+            if ($empresa->logo_url != null) {
+                $nameImg = str_replace("img/imagen-empresa/", "", $empresa->logo_url);
+                Storage::disk('imagen-empresa')->delete($nameImg);
+            }
+
+            $url = $request->logo_url;
+            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
+            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
+            $imagenName = Str::uuid() . '.' . $extension;
+            $replace = substr($url, 0, strpos($url, ',') + 1);
+            $url = str_replace($replace, '', $url);
+            $url = str_replace(' ', '+', $url);
+            Storage::disk('imagen-empresa')->put($imagenName, base64_decode($url));
+            $empresa->logo_url = Storage::disk('imagen-empresa')->url($imagenName);
+        }
+
         foreach ($validations as $key => $value) {
-            if ($request->has($key)) {
+            if ($request->has($key) && $key != 'logo_url') {
                 $empresa->$key = $request->$key;
             }
         }
@@ -262,7 +301,8 @@ class EmpresasController extends Controller {
         ]);
     }
 
-    public function destroy($id): JsonResponse {
+    public function destroy($id): JsonResponse
+    {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
@@ -277,6 +317,11 @@ class EmpresasController extends Controller {
                 'message' => 'Empresa no encontrada',
                 'status' => false
             ], 404);
+        }
+
+        if (isset($empresa->info_empresa[0]->logo_url)) {
+            $nameImg = str_replace("img/imagen-empresa/", "", $empresa->info_empresa[0]->logo_url);
+            Storage::disk('imagen-empresa')->delete($nameImg);
         }
 
         $empresa->delete();

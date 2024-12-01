@@ -339,7 +339,7 @@ h2 {
                                 name="logo_url"
                                 placeholder="Ingrese el logo de su empresa"
                                 style="height: 40px"
-                                v-on:change="form.logo_url"
+                                v-on:change="converterLogoBase64"
                                 autofocus
                             />
                         </div>
@@ -479,7 +479,7 @@ export default {
                 sitio_web: "",
                 id_sector: "",
                 descripcion: "",
-                logo_url: "",
+                logo_url: null,
                 password: "",
                 password_confirmation: "",
                 id_tipo_usuario: 4,
@@ -520,6 +520,14 @@ export default {
         await this.loadSectors();
     },
     methods: {
+        converterLogoBase64(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.form.logo_url = reader.result;
+            };
+            reader.readAsDataURL(file);
+        },
         togglePassword() {
             this.showPassword = !this.showPassword;
         },

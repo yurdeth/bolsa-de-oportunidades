@@ -197,20 +197,20 @@ nav {
                     </button>
                 </div>
                 <div class="avatar">
-                    <img :src="getPhotoAvata()" alt="Logo Facultad"/>
+                    <img :src="getPhotoAvata()" alt="Logo Facultad" />
                     <h3>
                         {{
                             user_data.info_coordinador.length > 0
                                 ? user_data.info_coordinador[0].nombres +
-                                " " +
-                                user_data.info_coordinador[0].apellidos
+                                  " " +
+                                  user_data.info_coordinador[0].apellidos
                                 : user_data.info_estudiante.length > 0
-                                    ? user_data.info_estudiante[0].nombres +
-                                    " " +
-                                    user_data.info_estudiante[0].apellidos
-                                    : user_data.info_empresa.length > 0
-                                        ? user_data.info_empresa[0].nombre
-                                        : "Administrador"
+                                ? user_data.info_estudiante[0].nombres +
+                                  " " +
+                                  user_data.info_estudiante[0].apellidos
+                                : user_data.info_empresa.length > 0
+                                ? user_data.info_empresa[0].nombre
+                                : "Administrador"
                         }}
                     </h3>
                     <h4>{{ user_data.email }}</h4>
@@ -219,10 +219,10 @@ nav {
                             user_data.info_coordinador.length > 0
                                 ? "Coordinador"
                                 : user_data.info_estudiante.length > 0
-                                    ? "Estudiante"
-                                    : user_data.info_empresa.length > 0
-                                        ? "Empresa"
-                                        : "Administrador"
+                                ? "Estudiante"
+                                : user_data.info_empresa.length > 0
+                                ? "Empresa"
+                                : "Administrador"
                         }}
                     </h5>
                 </div>
@@ -259,7 +259,7 @@ nav {
                         "
                         @click="showMenu = false"
                     >
-                        Proyectos <span v-if="notifications > 0" class="badge text-bg-info">{{ notifications }}</span>
+                        Proyectos
                     </router-link>
                     <router-link
                         to="/proyectos-activos"
@@ -271,6 +271,16 @@ nav {
                     >
                         Proyectos Activos
                     </router-link>
+<!--                    <router-link
+                        to="/notificaciones"
+                        v-if="
+                            Number(user_data.id_tipo_usuario) === 4 ||
+                            Number(user_data.id_tipo_usuario) === 2
+                        "
+                        @click="showMenu = false"
+                    >
+                        Notificaciones <span class="badge text-bg-info">{{ notifications }}</span>
+                    </router-link>-->
                     <button type="button" @click="logout">Cerrar Sesión</button>
                 </div>
             </div>
@@ -294,18 +304,13 @@ nav {
             </div>
         </nav>
         <main class="content py-4 px-5">
-            <div v-if="notifications > 0"
-                 class="alert alert-warning alert-dismissible fade show w-25 fixed" role="alert">
-                <strong>Tienes notificaciones nuevas</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
             <router-view></router-view>
         </main>
     </div>
 </template>
 
 <script>
-import {api} from "../api";
+import { api } from "../api";
 import Alert from "../helpers/Alert";
 
 export default {
