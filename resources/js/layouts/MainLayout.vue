@@ -20,6 +20,20 @@
     --mdb-black-rgb: 0, 0, 0 !important;
 }
 
+.btn-primary {
+    --mdb-btn-bg: #731010;
+    --mdb-btn-color: #fff;
+    --mdb-btn-box-shadow: 0 4px 9px -4px #731010;
+    --mdb-btn-hover-bg: #731010;
+    --mdb-btn-hover-color: #fff;
+    --mdb-btn-focus-bg: #731010;
+    --mdb-btn-focus-color: #fff;
+    --mdb-btn-active-bg: #731010;
+    --mdb-btn-active-color: #fff;
+    --mdb-btn-box-shadow-state: 0 8px 9px -4px rgba(59, 113, 202, 0.3),
+        0 4px 18px 0 rgba(59, 113, 202, 0.2);
+}
+
 html,
 body {
     margin: 0;
