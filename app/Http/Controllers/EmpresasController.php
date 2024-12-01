@@ -45,7 +45,7 @@ class EmpresasController extends Controller
             'id_sector' => 'required|integer|exists:sectores_industria,id',
             'nombre' => 'required|string|max:200',
             'direccion' => 'string',
-            'telefono' => ['string', 'max:20', 'unique:empresas', new PhoneNumberRule()],
+            'telefono' => ['string', 'max:20', 'unique:empresas'],
             'sitio_web' => 'string|max:255',
             'descripcion' => 'string',
             'logo_url' => 'required|string',

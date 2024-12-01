@@ -12,11 +12,11 @@ class EstadoOfertasSeeder extends Seeder {
      */
     public function run(): void {
         $estados_oferta = [
-            ['id' => 1, 'nombre_estado' => 'Activa', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'nombre_estado' => 'Inactiva', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'nombre_estado' => 'Finalizada', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'nombre_estado' => 'Tomada', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 5, 'nombre_estado' => 'Cancelada', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'nombre_estado' => 'Actio', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'nombre_estado' => 'Inactivo', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'nombre_estado' => 'Finalizado', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'nombre_estado' => 'Tomado', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'nombre_estado' => 'Cancelado', 'created_at' => now(), 'updated_at' => now()],
         ];
 
         DB::table('estados_oferta')->insert($estados_oferta);
