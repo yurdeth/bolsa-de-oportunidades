@@ -17,16 +17,16 @@
                 >
                     <i class="fas fa-eye"></i>
                 </button>
-                <button
+<!--                <button
                     type="button"
                     class="btn btn-primary btn-sm"
                     @click="$emit('edit-project', project)"
                 >
                     <i class="fas fa-edit"></i>
-                </button>
+                </button>-->
                 <button
                     class="btn btn-danger btn-sm"
-                    @click="$emit('delete-project', project.id)"
+                    @click="$emit('delete-project', project.id_proyecto)"
                 >
                     <i class="fas fa-trash"></i>
                 </button>
@@ -41,25 +41,25 @@
         <td class="text-center">
             <button
                 type="button"
-                class="btn btn-success"
+                class="btn btn-success btn-sm"
                 data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop"
                 @click="$emit('view-project', project)"
             >
-                Ver
+                <i class="fas fa-eye"></i>
             </button>
             <button
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-primary btn-sm"
                 @click="$emit('edit-project', project)"
             >
-                Editar
+                <i class="fas fa-edit"></i>
             </button>
             <button
-                class="btn btn-danger"
+                class="btn btn-danger btn-sm"
                 @click="$emit('delete-project', project.id)"
             >
-                Eliminar
+                <i class="fas fa-trash"></i>
             </button>
         </td>
     </tr>

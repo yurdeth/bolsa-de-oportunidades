@@ -58,6 +58,46 @@ class Proyectos extends Model {
     }
 
     private function fetchProyectos($id = null, $idCarrera = null): Collection {
+        $infoCoordinador = Auth::user()->info_coordinador;
+        $id_carrera = $infoCoordinador[0]->id_carrera;
+
+        if (Auth::user()->id_tipo_usuario == 2){
+            $query = DB::table('proyectos')
+                ->select(
+                    'proyectos.id as id_proyecto',
+                    'empresas.nombre as nombre_empresa',
+                    'proyectos.titulo as titulo_proyecto',
+                    'proyectos.descripcion as descripcion_proyeto',
+                    'proyectos.requisitos as requisitos_proyecto',
+                    'estados_oferta.nombre_estado as estado_oferta',
+                    'modalidades_trabajo.nombre as modalidad',
+                    'proyectos.fecha_inicio as fecha_inicio_proyecto',
+                    'proyectos.fecha_fin as fecha_fin_proyecto',
+                    'proyectos.fecha_limite_aplicacion as fecha_limite_aplicacion',
+                    'proyectos.estado_proyecto as estado_proyecto',
+                    'proyectos.cupos_disponibles as cupos_disponibles',
+                    'tipos_proyecto.nombre as tipo_proyecto',
+                    'proyectos.ubicacion as ubicacion_proyecto',
+                    'carreras.nombre_carrera as nombre_carrera'
+                )
+                ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
+                ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
+                ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
+                ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
+                ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
+                ->join('aplicaciones', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+                ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+                ->where('aplicaciones.id_estado_aplicacion', 2)
+                ->where('estudiantes.id_carrera', $id_carrera);
+
+            $data = $query->get();
+
+            return $data->map(function ($item) {
+                $item->requisitos_proyecto = explode(',', $item->requisitos_proyecto);
+                return $item;
+            });
+        }
+
         $query = DB::table('proyectos')
             ->select(
                 'proyectos.id as id_proyecto',
@@ -94,6 +134,10 @@ class Proyectos extends Model {
             $query->where('proyectos.cupos_disponibles', '>', 0);
         }
 
+        if (Auth::user()->id_tipo_usuario == 2){
+            $query->where('proyectos.id_carrera', $id_carrera);
+        }
+
         $data = $query->get();
 
         return $data->map(function ($item) {
@@ -103,6 +147,9 @@ class Proyectos extends Model {
     }
 
     private function getEstudiantesEnProyecto($id_proyecto, $estadoAplicacion, $id_carrera = null): Collection {
+        $infoCoordinador = Auth::user()->info_coordinador;
+        $id_carrera = $infoCoordinador[0]->id_carrera;
+
         if(!is_null($id_carrera)) {
             return DB::table('aplicaciones')
                 ->select(

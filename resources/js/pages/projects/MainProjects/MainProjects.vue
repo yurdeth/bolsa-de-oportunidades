@@ -1264,7 +1264,27 @@ export default {
                     : this.selectedProject.id_proyecto;
             this.denyStudent(id_estudiante, id_tipo_usuario);
         },
-
+        async fetchInteresteds() {
+            if (this.id_tipo_usuario === 4) {
+                try {
+                    const response = await api.get(
+                        `/proyectos/interesados/${this.selectedProject.id}`
+                    );
+                    this.interested = response.data.data;
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (this.id_tipo_usuario === 2) {
+                try {
+                    const response = await api.get(
+                        `/proyectos/aprobados/${this.selectedProject.id_proyecto}`
+                    );
+                    this.interested = response.data.data;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        },
         async approveStudent(id_estudiante, id_tipo_usuario) {
             try {
                 const response = await api.put(
