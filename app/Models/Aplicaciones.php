@@ -4,10 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Aplicaciones extends Model
-{
+/**
+ * Modelo para la tabla 'aplicaciones'
+ */
+class Aplicaciones extends Model {
     protected $table = 'aplicaciones';
 
+    /**
+     * Atributos que son asignables masivamente
+     *
+     * @var array
+     */
     protected $fillable = [
         'id_estudiante',
         'id_proyecto',

@@ -7,11 +7,32 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
+/**
+ * @property int id
+ * @property int id_empresa
+ * @property string titulo
+ * @property string descripcion
+ * @property string requisitos
+ * @property int id_estado_oferta
+ * @property int id_modalidad
+ * @property string fecha_inicio
+ * @property string fecha_fin
+ * @property string fecha_limite_aplicacion
+ * @property string estado_proyecto
+ * @property int cupos_disponibles
+ * @property int id_tipo_proyecto
+ * @property string ubicacion
+ * @property int id_carrera
+ */
 class Proyectos extends Model {
     protected $table = 'proyectos';
 
+    /**
+     * Elementos que pueden ser asignados masivamente
+     *
+     * @var array
+     */
     protected $fillable = [
         'id_empresa',
         'titulo',
@@ -29,6 +50,12 @@ class Proyectos extends Model {
         'id_carrera',
     ];
 
+    /**
+     * Obtiene los proyectos
+     *
+     * @param int|null $id
+     * @return Collection
+     */
     public function getProyectos($id): Collection {
         if (Auth::user()->id_tipo_usuario == 2) {
             $infoCoordinador = Auth::user()->info_coordinador;
@@ -57,11 +84,18 @@ class Proyectos extends Model {
         return $this->fetchProyectos();
     }
 
+    /**
+     * Obtiene los proyectos de la base de datos
+     *
+     * @param int|null $id
+     * @param int|null $idCarrera
+     * @return Collection
+     */
     private function fetchProyectos($id = null, $idCarrera = null): Collection {
         $infoCoordinador = Auth::user()->info_coordinador;
         $id_carrera = $infoCoordinador[0]->id_carrera;
 
-        if (Auth::user()->id_tipo_usuario == 2){
+        if (Auth::user()->id_tipo_usuario == 2) {
             $query = DB::table('proyectos')
                 ->select(
                     'proyectos.id as id_proyecto',
@@ -134,7 +168,7 @@ class Proyectos extends Model {
             $query->where('proyectos.cupos_disponibles', '>', 0);
         }
 
-        if (Auth::user()->id_tipo_usuario == 2){
+        if (Auth::user()->id_tipo_usuario == 2) {
             $query->where('proyectos.id_carrera', $id_carrera);
         }
 
@@ -146,13 +180,19 @@ class Proyectos extends Model {
         });
     }
 
+    /**
+     * Obtiene los estudiantes que estan interesados en un proyecto
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     private function getEstudiantesEnProyecto($id_proyecto, $estadoAplicacion, $id_carrera = null): Collection {
-        if (Auth::user()->id_tipo_usuario == 2){
+        if (Auth::user()->id_tipo_usuario == 2) {
             $infoCoordinador = Auth::user()->info_coordinador;
             $id_carrera = $infoCoordinador[0]->id_carrera;
         }
 
-        if(!is_null($id_carrera)) {
+        if (!is_null($id_carrera)) {
             return DB::table('aplicaciones')
                 ->select(
                     'estudiantes.id as id_estudiante',
@@ -173,10 +213,6 @@ class Proyectos extends Model {
                 ->get();
         }
 
-        Log::info('id_carrera: ' . $id_carrera);
-        Log::info('id_proyecto: ' . $id_proyecto);
-        Log::info('estadoAplicacion: ' . $estadoAplicacion);
-
         return DB::table('aplicaciones')
             ->select(
                 'estudiantes.id as id_estudiante',
@@ -196,30 +232,72 @@ class Proyectos extends Model {
             ->get();
     }
 
+    /**
+     * Obtiene los estudiantes interesados en un proyecto
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function getEstudiantesInteresadosEnProyecto($id_proyecto): Collection {
         return $this->getEstudiantesEnProyecto($id_proyecto, 1);
     }
 
+    /**
+     * Obtiene los estudiantes aprobados en un proyecto
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function getEstudiantesAprobadosEnProyecto($id_proyecto, $id_carrera): Collection {
         return $this->getEstudiantesEnProyecto($id_proyecto, 2, $id_carrera);
     }
 
+    /**
+     * Relacion con la tabla empresas
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function empresa_table(): BelongsTo {
         return $this->belongsTo(Empresas::class, 'id_empresa');
     }
 
+    /**
+     * Relacion con la tabla estados_oferta
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function estado_oferta_table(): BelongsTo {
         return $this->belongsTo(EstadosOferta::class, 'id_estado_oferta');
     }
 
+    /**
+     * Relacion con la tabla modalidades_trabajo
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function modalidad_trabajo_table(): BelongsTo {
         return $this->belongsTo(ModalidadesTrabajo::class, 'id_modalidad');
     }
 
+    /**
+     * Relacion con la tabla tipos_proyecto
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function tipo_proyecto_table(): BelongsTo {
         return $this->belongsTo(TiposProyecto::class, 'id_tipo_proyecto');
     }
 
+    /**
+     * Relacion con la tabla carreras
+     *
+     * @param int $id_proyecto
+     * @return Collection
+     */
     public function carrera_table(): BelongsTo {
         return $this->belongsTo(Carreras::class, 'id_carrera');
     }

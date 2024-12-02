@@ -6,17 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property integer $id
+ * @property integer $id_proyecto
+ * @property integer $id_estudiante
+ * @property integer $aprobado
+ */
 class EstadoSolicitud extends Model {
     protected $table = 'proyectos_aprobados';
 
+    /**
+     * Atributos asignables.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id_proyecto',
         'id_estudiante',
         'id_estado_aplicacion',
     ];
 
+    /**
+     * Obtener el estado de una solicitud.
+     *
+     * @param integer $id
+     * @return Collection
+     */
     public function getEstadoSolicitud($id): Collection {
-        if (!is_null($id)){
+        if (!is_null($id)) {
             $data = DB::table('proyectos_aprobados')
                 ->select(
                     'proyectos_aprobados.id as id_solicitud',

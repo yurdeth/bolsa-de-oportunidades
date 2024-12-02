@@ -6,18 +6,45 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property integer $id
+ * @property integer $id_proyecto
+ * @property integer $id_estudiante
+ * @property Proyectos $proyecto
+ */
 class ProyectosAsignados extends Model {
     protected $table = 'proyectos_asignados';
 
+    /**
+     * Atributos que son asignables
+     *
+     * @var array
+     */
     protected $fillable = [
         'id_proyecto',
         'id_estudiante',
     ];
 
+    /**
+     * Relación con la tabla proyectos
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function proyecto() {
         return $this->belongsTo(Proyectos::class, 'id_proyecto');
     }
 
+    /**
+     * Obtiene los proyectos asignados a los estudiantes.
+     *
+     * Este método recupera los proyectos asignados a los estudiantes. Si se pasa un ID específico como parámetro,
+     * se recupera un único proyecto asignado, con información detallada sobre el estudiante, el proyecto,
+     * la modalidad de trabajo, el tipo de proyecto y la empresa. Si no se pasa un ID, se recuperan todos los proyectos
+     * asignados con la misma información.
+     *
+     * @param int|null $id El ID del proyecto asignado para obtener un proyecto específico. Si es null, se obtienen todos los proyectos asignados.
+     * @return \Illuminate\Support\Collection|object Una colección de proyectos asignados o un único proyecto asignado.
+     */
     public function getProyectosAsignados($id = null) {
         if (!is_null($id)) {
             return DB::table('proyectos_asignados')
@@ -64,6 +91,14 @@ class ProyectosAsignados extends Model {
             ->get();
     }
 
+    /**
+     * Filtra los proyectos asignados por empresa.
+     *
+     * Este método recupera los proyectos asignados a los estudiantes que pertenecen a una empresa específica.
+     *
+     * @param int $id_empresa El ID de la empresa para filtrar los proyectos asignados.
+     * @return \Illuminate\Support\Collection Una colección de proyectos asignados.
+     */
     public function filterByEmpresa($id_empresa): Collection {
         return DB::table('proyectos_asignados')
             ->join('estudiantes', 'proyectos_asignados.id_estudiante', '=', 'estudiantes.id')
