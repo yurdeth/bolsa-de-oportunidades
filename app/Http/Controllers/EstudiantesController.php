@@ -205,12 +205,43 @@ class EstudiantesController extends Controller {
             'apellidos.max' => 'El campo apellidos debe tener un máximo de 100 caracteres',
             'anio_estudio.required' => 'El campo año de estudio es obligatorio',
             'anio_estudio.integer' => 'El campo año de estudio debe ser un número entero',
+            'direccion.required' => 'El campo dirección es obligatorio',
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
             'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
             'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
             'telefono.unique' => 'El teléfono ingresado ya está registrado',
-            'direccion.required' => 'El campo dirección es obligatorio',
-            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
         ];
+
+        $telefono_actual = DB::table('estudiantes')
+            ->select('telefono')
+            ->where('id_usuario', $id)
+            ->first();
+
+        if ($request->has('telefono')) {
+            if ($request->telefono != $telefono_actual->telefono) {
+                $rules['telefono'] = 'string|max:20|unique:estudiantes';
+
+                $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
+                $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
+
+                $user = DB::table('estudiantes')
+                    ->select('telefono')
+                    ->where('telefono', $telefono)
+                    ->where('id_usuario', '!=', $id)
+                    ->first();
+
+                if ($user) {
+                    return response()->json([
+                        'message' => 'El teléfono ingresado ya está en uso',
+                        'status' => false
+                    ], 400);
+                }
+
+                $estudiante->telefono = $telefono;
+            } else{
+                $rules['telefono'] = 'string|max:20';
+            }
+        }
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -221,51 +252,31 @@ class EstudiantesController extends Controller {
             ], 400);
         }
 
-        if($request->has('id_carrera')) {
+        if ($request->has('id_carrera')) {
             $estudiante->id_carrera = $request->id_carrera;
         }
 
-        if($request->has('carnet')) {
+        if ($request->has('carnet')) {
             $estudiante->carnet = $request->carnet;
         }
 
-        if($request->has('nombres')) {
+        if ($request->has('nombres')) {
             $estudiante->nombres = $request->nombres;
         }
 
-        if($request->has('apellidos')) {
+        if ($request->has('apellidos')) {
             $estudiante->apellidos = $request->apellidos;
         }
 
-        if($request->has('anio_estudio')) {
+        if ($request->has('anio_estudio')) {
             $estudiante->anio_estudio = $request->anio_estudio;
         }
 
-        if($request->has('telefono')) {
-            $telefono = str_starts_with($request->telefono, "+503") ? $request->telefono : "+503 " . $request->telefono;
-            $telefono = preg_replace('/(\+503)\s?(\d{4})(\d{4})/', '$1 $2-$3', $telefono);
-
-            $user = DB::table('coordinadores')
-                ->select('telefono')
-                ->where('telefono', $telefono)
-                ->where('id_usuario', '!=', $id)
-                ->first();
-
-            if ($user) {
-                return response()->json([
-                    'message' => 'El teléfono ingresado ya está en uso',
-                    'status' => false
-                ], 400);
-            }
-
-            $estudiante->telefono = $request->telefono;
-        }
-
-        if($request->has('direccion')) {
+        if ($request->has('direccion')) {
             $estudiante->direccion = $request->direccion;
         }
 
-        if($request->has('email')) {
+        if ($request->has('email')) {
             $estudiante->email = $request->email;
         }
 
