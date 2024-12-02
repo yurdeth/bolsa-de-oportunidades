@@ -6,6 +6,10 @@ use Closure;
 
 /*
  * Middleware para evitar el cache en el navegador
+ *
+ * @param $request
+ * @param Closure $next
+ * @return mixed
  */
 
 class NoBrowserCache {
