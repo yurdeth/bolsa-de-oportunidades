@@ -33,7 +33,8 @@ Route::get('/empresas/proyecto/{id}', [EmpresasController::class, 'showByProyect
 //-------------------------------------------------------------------------
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-
+Route::post('/verifyEmail', [AuthController::class, 'verifyEmail']);
+Route::post('/changePassword', [AuthController::class, 'changePassword']);
 //-------------------------------------------------------------------------
 Route::get('/departamentos', [DepartamentosController::class, 'index'])->name('departamentos.index');
 Route::get('/departamentos/{id}', [DepartamentosController::class, 'show'])->name('departamentos.show');

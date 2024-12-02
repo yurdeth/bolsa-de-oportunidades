@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\bolsadeoportunidades;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Empresas;
 use App\Models\Estudiantes;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -185,5 +188,40 @@ class AuthController extends Controller
             'message' => 'Tipo de usuario no válido',
             'status' => false
         ], 400);
+    }
+    
+    public function verifyEmail(Request $r)
+    {
+        $user = $r->email;
+
+        $user_current = User::where('email', $user)->first();
+        if (!$user_current) {
+            return response()->json([
+                'errors' => [
+                    'email' => ['Correo no registrado']
+                ],
+                'status' => false
+            ], 200);
+        }else{
+            return response()->json([
+                'status' => true
+            ], 200);
+        }
+    }
+    public function changePassword(Request $request)
+    {/*
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'newPassword' => 'required|min:8|confirmed', 
+        ]);*/
+        try{
+            $user = User::where('email', $request->email)->first();
+            $user->password = Hash::make($request->newPassword);
+            $user->save();
+        }catch(Exception $e){
+            
+            return response()->json( ['success' => false, 'message' => $e->getMessage()], 400);
+        }
+        return response()->json(['success' => true], 200);
     }
 }

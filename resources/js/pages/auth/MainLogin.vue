@@ -87,40 +87,21 @@ h2 {
     text-decoration: underline;
 }
 </style>
-
 <template>
-    <div
-        class="login-container d-flex flex-column align-items-center justify-content-center"
-    >
-        <!-- Logo y Título -->
-        <img
-            src="../../img/Logo_Nuevo.png"
-            alt="Logo Facultad"
-            class="logo-facultad mb-4"
-        />
+    <div class="login-container d-flex flex-column align-items-center justify-content-center">
+        <img src="../../img/Logo_Nuevo.png" alt="Logo Facultad" class="logo-facultad mb-4" />
         <h2 class="text-center mb-4">Bienvenido a Bolsa de Oportunidades</h2>
 
         <div
             class="loader login-card"
             v-if="loading"
-            style="
-                width: 100%;
-                height: 300px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            "
+            style="width: 100%; height: 300px; display: flex; justify-content: center; align-items: center;"
         >
-            <div
-                class="spinner-border text-danger"
-                role="status"
-                style="width: 100px; height: 100px"
-            >
+            <div class="spinner-border text-danger" role="status" style="width: 100px; height: 100px">
                 <span class="sr-only">Cargando...</span>
             </div>
         </div>
 
-        <!-- Formulario -->
         <form class="login-card" @submit.prevent="login" v-if="!loading">
             <div class="form-group mb-4">
                 <label for="email" class="form-label">Correo Electrónico</label>
@@ -137,11 +118,7 @@ h2 {
                         autofocus
                     />
                 </div>
-                <span
-                    v-if="errors.email"
-                    class="invalid-feedback d-block"
-                    role="alert"
-                >
+                <span v-if="errors.email" class="invalid-feedback d-block" role="alert">
                     <strong>{{ errors.email[0] }}</strong>
                 </span>
             </div>
@@ -160,50 +137,25 @@ h2 {
                         required
                     />
                     <div class="input-group-append">
-                        <span
-                            class="input-group-text toggle-password"
-                            @click="togglePassword"
-                        >
-                            <i
-                                :class="
-                                    showPassword
-                                        ? 'fa fa-eye'
-                                        : 'fa fa-eye-slash'
-                                "
-                            ></i>
+                        <span class="input-group-text toggle-password" @click="togglePassword">
+                            <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
                         </span>
                     </div>
                 </div>
-                <span
-                    v-if="errors.password"
-                    class="invalid-feedback d-block"
-                    role="alert"
-                >
+                <span v-if="errors.password" class="invalid-feedback d-block" role="alert">
                     <strong>{{ errors.password[0] }}</strong>
                 </span>
             </div>
 
             <div class="form-group d-flex justify-content-between flex-wrap">
                 <div class="form-check mb-2">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="remember"
-                        id="remember"
-                    />
-                    <label class="form-check-label" for="remember"
-                        >Recordarme</label
-                    >
+                    <input class="form-check-input" type="checkbox" name="remember" id="remember" />
+                    <label class="form-check-label" for="remember">Recordarme</label>
                 </div>
-                <a href="/reset-password" class="text-danger"
-                    ><!-- ¿Ha olvidado tu contraseña?  --></a
-                >
+                <a href="#" class="text-danger" @click.prevent="openModal">¿Olvidaste tu contraseña?</a>
             </div>
 
-            <button
-                type="submit"
-                class="btn btn-danger btn-block rounded-pill my-3"
-            >
+            <button type="submit" class="btn btn-danger btn-block rounded-pill my-3">
                 Ingresar
             </button>
 
@@ -214,6 +166,66 @@ h2 {
                 </p>
             </div>
         </form>
+
+        <!-- Modal -->
+        <div
+        class="modal fade"
+        tabindex="-1"
+        :class="{ show: showModal }"
+        style="display: block; background: rgba(0, 0, 0, 0.5)"
+        v-if="showModal"
+    >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Recuperar Contraseña</h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        @click="closeModal"
+                    ></button>
+                </div>
+                <form @submit.prevent="sendResetCode">
+                <div class="modal-body">
+                    <p>Ingresa tu correo para recuperar tu contraseña:</p>
+                    <div class="form-group">
+                        <div>
+                            <label for="email">Correo electrónico</label>
+                            <input class="form-control"
+                            v-model="resetEmail"
+                            type="email"
+                            id="emailR"
+                            placeholder="Ingresa tu correo electrónico"
+                            required
+                            />
+                        </div>
+
+                        <p v-if="message" class="text-success">{{ message }}</p>
+                        <p v-if="error" class="text-danger">{{ modalError }}</p>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        @click="closeModal"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
+                        class="btn btn-danger"
+                    >
+                        Enviar
+                    </button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     </div>
 </template>
 
@@ -229,36 +241,15 @@ export default {
                 email: "",
                 password: "",
             },
-            errors: {}, // Inicializado como un objeto vacío
+            errors: {},
+            recoveryEmail: "",
+            showModal: false,
+            resetEmail: "",
+            modalError: null,
+            emailR: '',
+            message: '',
+            error: '',
         };
-    },
-    async mounted() {
-        // Verificar si el usuario ya está autenticado
-        this.loading = true;
-        if (localStorage.getItem("token")) {
-            try {
-                let response = await api.post("/access_token", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "token"
-                        )}`,
-                    },
-                });
-                localStorage.setItem("token", response.data.data.token);
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(response.data.data.user)
-                );
-                this.$router.push("/dashboard");
-                this.loading = false;
-            } catch (error) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                this.loading = false;
-            }
-        } else {
-            this.loading = false;
-        }
     },
     methods: {
         togglePassword() {
@@ -268,32 +259,50 @@ export default {
             this.loading = true;
             try {
                 const response = await api.post("/login", this.form);
-                console.log(response);
                 localStorage.setItem("token", response.data.data.token);
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(response.data.data.user)
-                );
-                api.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${response.data.data.token}`;
+                localStorage.setItem("user", JSON.stringify(response.data.data.user));
+                api.defaults.headers.common["Authorization"] = `Bearer ${response.data.data.token}`;
                 this.$router.push("/dashboard");
             } catch (error) {
-                // Manejo de errores desde el servidor
-                if (error.response && error.response.data.errors) {
+                if (error.response?.data?.errors) {
                     this.errors = error.response.data.errors;
                 } else {
-                    this.errors = {
-                        email: [
-                            "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
-                        ],
-                    };
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
+                    this.errors = { email: ["Error, inténtelo de nuevo."] };
                 }
+            } finally {
                 this.loading = false;
             }
         },
+        openModal() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.resetEmail = "";
+            this.modalError = null;
+        },
+        async sendResetCode() {
+            this.loading = true;
+            try {
+                const response = await api.post("/verifyEmail", { email: this.resetEmail });
+
+                if (response.data.status == true) {
+                    console.log('verificado');
+                    this.$router.push({ name: 'changePassword', query: { email: this.resetEmail } });
+                } else {
+                    console.log('e');
+                    this.modalError = "Este correo no está registrado.";
+                }
+            } catch (error) {
+                if (error.response?.data?.errors) {
+                    this.modalError = error.response.data.errors[0];
+                } else {
+                    this.modalError = "Hubo un error al intentar verificar el correo. Inténtelo de nuevo.";
+                }
+            } finally {
+                this.loading = false;
+            }
+        }
     },
 };
 </script>
