@@ -18,6 +18,13 @@
                     <i class="fas fa-eye"></i>
                 </button>
                 <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    @click="$emit('edit-project', project)"
+                >
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button
                     class="btn btn-danger btn-sm"
                     @click="$emit('delete-project', project.id)"
                 >
@@ -40,6 +47,13 @@
                 @click="$emit('view-project', project)"
             >
                 Ver
+            </button>
+            <button
+                type="button"
+                class="btn btn-primary"
+                @click="$emit('edit-project', project)"
+            >
+                Editar
             </button>
             <button
                 class="btn btn-danger"
