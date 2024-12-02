@@ -49,6 +49,7 @@
                         :idTipoUsuario="idTipoUsuario"
                         @delete-project="confirmDelete"
                         @view-project="viewProject"
+                        @edit-project="editProject"
                     />
                 </tbody>
             </table>
@@ -109,7 +110,7 @@
                                         <strong>Estado de Oferta:</strong>
                                         {{
                                             selectedProject.estado_oferta_table
-                                                ?.nombre || "No especificado"
+                                                ?.nombre_estado || "No especificado"
                                         }}
                                     </p>
 
@@ -642,6 +643,175 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Editar Proyecto -->
+        <div
+            class="modal fade"
+            id="editProjectModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="editProjectModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="editProjectModalLabel">
+                            Editar Proyecto
+                        </h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            @click="resetEditForm"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="updateProject">
+                            <div class="row">
+                                <!-- Estado -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Estado de Oferta</label>
+                                    <select class="form-select" v-model="editForm.id_estado_oferta" required>
+                                        <option value="">Seleccionar estado</option>
+                                        <option
+                                            v-for="estado in estados_oferta"
+                                            :key="estado.id"
+                                            :value="estado.id"
+                                        >
+                                            {{ estado.nombre_estado }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Modalidad -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Modalidad</label>
+                                    <select class="form-select" v-model="editForm.id_modalidad" required>
+                                        <option value="">Seleccionar modalidad</option>
+                                        <option
+                                            v-for="modalidad in modalidades"
+                                            :key="modalidad.id"
+                                            :value="modalidad.id"
+                                        >
+                                            {{ modalidad.nombre }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Tipo de Proyecto -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Tipo de Proyecto</label>
+                                    <select class="form-select" v-model="editForm.id_tipo_proyecto" required>
+                                        <option value="">Seleccionar tipo de proyecto</option>
+                                        <option
+                                            v-for="tipo in tipos_proyecto"
+                                            :key="tipo.id"
+                                            :value="tipo.id"
+                                        >
+                                            {{ tipo.nombre }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Carrera -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Carrera</label>
+                                    <select class="form-select" v-model="editForm.id_carrera" required>
+                                        <option value="">Seleccionar carrera</option>
+                                        <option
+                                            v-for="carrera in carreras"
+                                            :key="carrera.id"
+                                            :value="carrera.id"
+                                        >
+                                            {{ carrera.nombre_carrera }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Cupos Disponibles -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Cupos Disponibles</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        v-model="editForm.cupos_disponibles"
+                                        min="1"
+                                        required
+                                    />
+                                </div>
+
+                                <!-- Título -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Título</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        v-model="editForm.titulo"
+                                        required
+                                    />
+                                </div>
+
+                                <!-- Descripción -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <textarea
+                                        class="form-control"
+                                        rows="3"
+                                        v-model="editForm.descripcion"
+                                        required
+                                    ></textarea>
+                                </div>
+
+                                <!-- Requisitos -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Requisitos</label>
+                                    <div class="requisitos-list">
+                                        <div v-for="(req, index) in editForm.requisitos" :key="index" class="d-flex gap-2 mb-2">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                v-model="editForm.requisitos[index]"
+                                                placeholder="Requisito"
+                                            />
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger"
+                                                @click="removeEditRequirement(index)"
+                                            >
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-success mt-2"
+                                        @click="addEditRequirement"
+                                    >
+                                        <i class="fas fa-plus"></i> Agregar Requisito
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                    @click="resetEditForm"
+                                >
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -703,6 +873,17 @@ export default {
             },
             id_tipo_usuario: JSON.parse(localStorage.getItem("user"))
                 .id_tipo_usuario,
+            editForm: {
+                id: null,
+                titulo: "",
+                descripcion: "",
+                requisitos: [],
+                id_estado_oferta: "",
+                id_modalidad: "",
+                id_tipo_proyecto: "",
+                id_carrera: "",
+                cupos_disponibles: 1,
+            },
         };
     },
     async mounted() {
@@ -897,25 +1078,75 @@ export default {
         viewProject(project) {
             this.selectedProject = project;
         },
-        async fetchInteresteds() {
-            if (this.id_tipo_usuario === 4) {
-                try {
-                    const response = await api.get(
-                        `/proyectos/interesados/${this.selectedProject.id}`
-                    );
-                    this.interested = response.data.data;
-                } catch (error) {
-                    console.error(error);
+        editProject(project) {
+            this.editForm = {
+                id: project.id,
+                titulo: project.titulo,
+                descripcion: project.descripcion,
+                requisitos: Array.isArray(project.requisitos)
+                    ? [...project.requisitos]
+                    : project.requisitos.split(','),
+                id_estado_oferta: project.id_estado_oferta,
+                id_modalidad: project.id_modalidad,
+                id_tipo_proyecto: project.id_tipo_proyecto,
+                id_carrera: project.id_carrera,
+                cupos_disponibles: project.cupos_disponibles || 1,
+            };
+            const modal = new bootstrap.Modal(document.getElementById('editProjectModal'));
+            modal.show();
+        },
+        resetEditForm() {
+            this.editForm = {
+                id: null,
+                titulo: "",
+                descripcion: "",
+                requisitos: [],
+                id_estado_oferta: "",
+                id_modalidad: "",
+                id_tipo_proyecto: "",
+                id_carrera: "",
+                cupos_disponibles: 1,
+            };
+        },
+        addEditRequirement() {
+            this.editForm.requisitos.push("");
+        },
+        removeEditRequirement(index) {
+            this.editForm.requisitos.splice(index, 1);
+        },
+        async updateProject() {
+            try {
+                const formData = {
+                    ...this.editForm,
+                    requisitos: this.editForm.requisitos.filter(req => req.trim() !== "").join(",")
+                };
+
+                console.log(formData);
+
+                const response = await api.patch(`/proyectos/${this.editForm.id}`, formData);
+
+                if (response.data.success) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProjectModal'));
+                    modal.hide();
+                    this.resetEditForm();
+                    // await this.cargarProyectos();
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: 'Proyecto actualizado correctamente',
+                        showConfirmButton: true
+                    });
+                    //Recargar la pagina
+                    window.location.reload();
                 }
-            } else if (this.id_tipo_usuario === 2) {
-                try {
-                    const response = await api.get(
-                        `/proyectos/aprobados/${this.selectedProject.id_proyecto}`
-                    );
-                    this.interested = response.data.data;
-                } catch (error) {
-                    console.error(error);
-                }
+            } catch (error) {
+                console.error('Error al actualizar el proyecto:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al actualizar el proyecto'
+                });
+                window.location.reload();
             }
         },
         async confirmDelete(id) {
@@ -1001,14 +1232,14 @@ export default {
                     .querySelector('[data-bs-dismiss="modal"]')
                     .click();
 
-                Swal.fire(
+                await Swal.fire(
                     "Agregado",
                     "El proyecto ha sido agregado exitosamente.",
                     "success"
                 );
             } catch (error) {
                 console.error(error);
-                Swal.fire("Error", "No se pudo agregar el proyecto.", "error");
+                await Swal.fire("Error", "No se pudo agregar el proyecto.", "error");
                 window.location.reload();
             }
             this.loading = false;

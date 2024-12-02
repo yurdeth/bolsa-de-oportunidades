@@ -14,14 +14,13 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class EmpresasController extends Controller
-{
-    public function index(): JsonResponse
-    {
+class EmpresasController extends Controller {
+    public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
                 'success' => false,
@@ -38,8 +37,7 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
-    {
+    public function store(Request $request): JsonResponse {
         $rules = [
             //            'id_usuario' => 'required|integer|exists:usuarios,id',
             'id_sector' => 'required|integer|exists:sectores_industria,id',
@@ -177,8 +175,7 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function show($id): JsonResponse
-    {
+    public function show($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
@@ -203,8 +200,7 @@ class EmpresasController extends Controller
 
     }
 
-    public function showByProyecto($id)
-    {
+    public function showByProyecto($id) {
         $empresa = Empresas::where('id_usuario', $id)->get();
 
         if ($empresa->isEmpty()) {
@@ -221,8 +217,7 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id): JsonResponse
-    {
+    public function update(Request $request, $id): JsonResponse {
         if (Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
@@ -230,7 +225,7 @@ class EmpresasController extends Controller
             ]);
         }
 
-        $empresa = Empresas::find($id);
+        $empresa = Empresas::where('id_usuario', $id)->first();
 
         if (is_null($empresa)) {
             return response()->json([
@@ -239,26 +234,39 @@ class EmpresasController extends Controller
             ], 404);
         }
 
-        $validations = [];
         $rules = [
             'id_usuario' => 'integer|exists:usuarios,id',
             'id_sector' => 'integer|exists:sectores_industria,id',
             'nombre' => 'string|max:200',
-            'direccion' => 'required|string',
+            'direccion' => 'string',
             'telefono' => 'string|max:20|unique:empresas,telefono,' . $id,
             'sitio_web' => 'string|max:255',
-            'descripcion' => 'required|string',
+            'descripcion' => 'string',
             'logo_url' => 'string',
             'verificada' => 'boolean'
         ];
 
-        foreach ($rules as $key => $value) {
-            if ($request->has($key)) {
-                $validations[$key] = $value;
-            }
-        }
+        $messages = [
+            'id_usuario.integer' => 'El campo id_usuario debe ser un número entero',
+            'id_usuario.exists' => 'El usuario seleccionado no existe',
+            'id_sector.integer' => 'El campo id_sector debe ser un número entero',
+            'id_sector.exists' => 'El sector seleccionado no existe',
+            'nombre.string' => 'El campo nombre debe ser una cadena de texto',
+            'nombre.max' => 'El campo nombre debe tener un máximo de 200 caracteres',
+            'direccion.required' => 'El campo dirección es obligatorio',
+            'direccion.string' => 'El campo dirección debe ser una cadena de texto',
+            'telefono.string' => 'El campo teléfono debe ser una cadena de texto',
+            'telefono.max' => 'El campo teléfono debe tener un máximo de 20 caracteres',
+            'telefono.unique' => 'El teléfono ingresado ya está en uso',
+            'sitio_web.string' => 'El campo sitio web debe ser una cadena de texto',
+            'sitio_web.max' => 'El campo sitio web debe tener un máximo de 255 caracteres',
+            'descripcion.required' => 'El campo descripción es obligatorio',
+            'descripcion.string' => 'El campo descripción debe ser una cadena de texto',
+            'logo_url.string' => 'El campo logo debe ser una cadena de texto',
+            'verificada.boolean' => 'El campo verificada debe ser un valor booleano',
+        ];
 
-        $validator = Validator::make($request->all(), $validations);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -268,15 +276,18 @@ class EmpresasController extends Controller
             ], 400);
         }
 
+        if ($request->has('descripcion')) {
+            $empresa->descripcion = $request->descripcion;
+        }
+
         if ($request->has('logo_url')) {
-            /* si existe la imagen replazar por la que ya esta y borrar la anterior */
             if ($empresa->logo_url != null) {
                 $nameImg = str_replace("img/imagen-empresa/", "", $empresa->logo_url);
                 Storage::disk('imagen-empresa')->delete($nameImg);
             }
 
             $url = $request->logo_url;
-            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
+            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];
             $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
             $imagenName = Str::uuid() . '.' . $extension;
             $replace = substr($url, 0, strpos($url, ',') + 1);
@@ -286,9 +297,9 @@ class EmpresasController extends Controller
             $empresa->logo_url = Storage::disk('imagen-empresa')->url($imagenName);
         }
 
-        foreach ($validations as $key => $value) {
+        foreach ($request->all() as $key => $value) {
             if ($request->has($key) && $key != 'logo_url') {
-                $empresa->$key = $request->$key;
+                $empresa->$key = $value;
             }
         }
 
@@ -301,8 +312,7 @@ class EmpresasController extends Controller
         ]);
     }
 
-    public function destroy($id): JsonResponse
-    {
+    public function destroy($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([
                 'success' => false,
