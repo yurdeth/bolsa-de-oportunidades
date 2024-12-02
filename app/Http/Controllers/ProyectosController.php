@@ -6,6 +6,7 @@ use App\Models\Proyectos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use Kreait\Firebase\Factory;
@@ -198,7 +199,6 @@ class ProyectosController extends Controller {
             ], 404);
         }
 
-        $validations = [];
         $rules = [
             'id_empresa' => 'integer|exists:empresas,id',
             'id_estado_oferta' => 'integer|exists:estados_oferta,id',
@@ -246,6 +246,14 @@ class ProyectosController extends Controller {
                 'success' => false,
                 'message' => $validator->errors()
             ], 400);
+        }
+
+        if($request->has('ubicacion')){
+            $proyecto->ubicacion = $request->ubicacion;
+        }
+
+        if($request->has('cupos_disponibles')){
+            $proyecto->cupos_disponibles = $request->cupos_disponibles;
         }
 
         $proyecto->save();
