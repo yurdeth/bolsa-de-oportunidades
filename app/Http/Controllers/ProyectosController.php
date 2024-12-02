@@ -13,6 +13,14 @@ use Kreait\Firebase\Factory;
 
 
 class ProyectosController extends Controller {
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function index() {
         $proyectos = ((new Proyectos())->getProyectos(null));
 
@@ -22,6 +30,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la cantidad de proyectos disponibles.
+     *
+     * Este método recupera la cantidad de proyectos disponibles utilizando el método `count` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con la cantidad de proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y la cantidad de proyectos.
+     */
     public function countProjects(): JsonResponse {
         $count_proyectos = Proyectos::count();
 
@@ -31,6 +47,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function indexBelongs() {
         $proyectos = Proyectos::all();
 
@@ -52,6 +76,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function findByEmpresa($id) {
         $proyectos = Proyectos::where('id_empresa', $id)
             ->with('empresa_table')
@@ -79,6 +111,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     private function sendMessage($title, $body) {
         $serviceAccount = resource_path('bolsadeoportunidades-7c88c-firebase-adminsdk-3gn0r-35810b4c83.json');
         $databaseURL = env('FIREBASE_DB_URL');
@@ -100,6 +140,15 @@ class ProyectosController extends Controller {
         $response = $messaging->send($message);
         echo json_encode($response, JSON_PRETTY_PRINT);
     }
+
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function store(Request $request) {
         if (Auth::user()->id_tipo_usuario != 4) { // <- Solamente las empresas pueden crear proyectos
             return response()->json([
@@ -174,6 +223,14 @@ class ProyectosController extends Controller {
 
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function show($id): JsonResponse {
         $proyecto = ((new Proyectos())->getProyectos($id));
 
@@ -183,6 +240,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function update(Request $request, $id) {
         if (Auth::user()->id_tipo_usuario != 4) { // <- Solamente la empresa dueña del proyecto puede modificarlo
             return response()->json([
@@ -264,6 +329,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function destroy($id) {
         // Solamente los estudiantes no podrán eliminar proyectos
         if (Auth::user()->id_tipo_usuario == 3) {
@@ -290,6 +363,14 @@ class ProyectosController extends Controller {
         ]);
     }
 
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function getInteresados(Request $request): JsonResponse {
         // Los estudiantes no pueden ver los interesados en un proyecto
         if (Auth::user()->id_tipo_usuario == 3) {
@@ -306,6 +387,15 @@ class ProyectosController extends Controller {
             'data' => $interesados
         ]);
     }
+
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
     public function getAprobados(Request $request): JsonResponse {
         // Solamente el coordinador puede ver los estudiantes que han sido aprobados por la empresa
         if (Auth::user()->id_tipo_usuario != 2) {
@@ -325,5 +415,4 @@ class ProyectosController extends Controller {
             'data' => $interesados
         ]);
     }
-
 }

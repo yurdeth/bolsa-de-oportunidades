@@ -17,6 +17,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class EstudiantesController extends Controller {
+    /**
+     * Muestra una lista de todos los estudiantes registrados.
+     *
+     * Este método verifica si el usuario autenticado tiene los permisos adecuados para acceder a esta funcionalidad.
+     * Solo los usuarios con tipo de usuario 1 (administrador) o 2 (coordinador) pueden utilizar esta ruta.
+     * Si el usuario no tiene los permisos necesarios, devuelve un mensaje de error.
+     * En caso de éxito, recupera la información de los estudiantes y la devuelve en una respuesta JSON.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de los estudiantes
+     * o un mensaje de error si el usuario no tiene permisos.
+     */
     public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
@@ -33,9 +44,22 @@ class EstudiantesController extends Controller {
         ]);
     }
 
+    /**
+     * Registra un nuevo estudiante en la base de datos.
+     *
+     * Este método permite que un usuario se registre como estudiante en la plataforma.
+     * Los datos del estudiante se validan con las reglas definidas en el método.
+     * Si los datos no son válidos, se devuelve un mensaje de error con los campos que no cumplen con las reglas.
+     * Si el teléfono ingresado ya está registrado, se devuelve un mensaje de error.
+     * Si el correo electrónico ingresado ya está registrado, se devuelve un mensaje de error.
+     * Si el registro es exitoso, se crea un nuevo usuario y se genera un token de acceso.
+     *
+     * @param \Illuminate\Http\Request $request Los datos del estudiante a registrar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el mensaje de éxito y los datos del estudiante registrado
+     * o un mensaje de error si los datos no son válidos.
+     */
     public function store(Request $request): JsonResponse {
         $rules = [
-//            'id_usuario' => 'required|integer|exists:users,id',
             'id_carrera' => 'required|integer|exists:carreras,id',
             'carnet' => ['required', 'string', 'max:10', 'unique:estudiantes', new FormatCarnetRule()],
             'nombres' => 'required|string|max:100',
@@ -145,6 +169,18 @@ class EstudiantesController extends Controller {
         ], 201);
     }
 
+    /**
+     * Muestra la información de un estudiante específico.
+     *
+     * Este método verifica si el usuario autenticado tiene los permisos adecuados para acceder a esta funcionalidad.
+     * Solo los usuarios con tipo de usuario 1 (administrador), 2 (coordinador) o el propio estudiante pueden utilizar esta ruta.
+     * Si el usuario no tiene los permisos necesarios, devuelve un mensaje de error.
+     * Si el estudiante no se encuentra en la base de datos, también se devuelve un mensaje de error.
+     *
+     * @param int $id El ID del estudiante a mostrar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos del estudiante
+     * o un mensaje de error si el estudiante no se encuentra.
+     */
     public function show($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
             return response()->json([
@@ -168,6 +204,24 @@ class EstudiantesController extends Controller {
         ]);
     }
 
+    /**
+     * Actualiza la información de un estudiante específico.
+     *
+     * Este método verifica si el usuario autenticado tiene los permisos adecuados para acceder a esta funcionalidad.
+     * Solo los usuarios con tipo de usuario 1 (administrador), 2 (coordinador) o el propio estudiante pueden utilizar esta ruta.
+     * Si el usuario no tiene los permisos necesarios, devuelve un mensaje de error.
+     * Si el estudiante no se encuentra en la base de datos, también se devuelve un mensaje de error.
+     * Los datos del estudiante se validan con las reglas definidas en el método.
+     * Si los datos no son válidos, se devuelve un mensaje de error con los campos que no cumplen con las reglas.
+     * Si el teléfono ingresado ya está registrado, se devuelve un mensaje de error.
+     * Si el correo electrónico ingresado ya está registrado, se devuelve un mensaje de error.
+     * Si la actualización es exitosa, se devuelve un mensaje de éxito y los datos del estudiante actualizados.
+     *
+     * @param \Illuminate\Http\Request $request Los datos del estudiante a actualizar.
+     * @param int $id El ID del estudiante a actualizar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el mensaje de éxito y los datos del estudiante actualizados
+     * o un mensaje de error si los datos no son válidos.
+     */
     public function update(Request $request, $id): JsonResponse {
         if (Auth::user()->id != $id) {
             return response()->json([
@@ -288,6 +342,19 @@ class EstudiantesController extends Controller {
         ]);
     }
 
+    /**
+     * Elimina un estudiante específico de la base de datos.
+     *
+     * Este método verifica si el usuario autenticado tiene los permisos adecuados para acceder a esta funcionalidad.
+     * Solo los usuarios con tipo de usuario 1 (administrador) o el propio estudiante pueden utilizar esta ruta.
+     * Si el usuario no tiene los permisos necesarios, devuelve un mensaje de error.
+     * Si el estudiante no se encuentra en la base de datos, también se devuelve un mensaje de error.
+     * Si la eliminación es exitosa, se devuelve un mensaje de éxito.
+     *
+     * @param int $id El ID del estudiante a eliminar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el mensaje de éxito
+     * o un mensaje de error si el estudiante no se encuentra.
+     */
     public function destroy($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([

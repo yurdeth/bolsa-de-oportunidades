@@ -10,10 +10,22 @@ use App\Models\Aplicaciones;
 use App\Models\Estudiantes;
 use App\Models\User;
 
-class DashboardController extends Controller
-{
-    public function index()
-    {
+class DashboardController extends Controller {
+    /**
+     * Muestra estadísticas y datos personalizados basados en el rol del usuario autenticado.
+     *
+     * Este método devuelve diferentes conjuntos de datos y estadísticas según el tipo de usuario:
+     * - Administradores (id_tipo_usuario = 1): estadísticas globales de usuarios, proyectos, aplicaciones y sus estados.
+     * - Coordinadores (id_tipo_usuario = 2): estadísticas específicas para la carrera que gestionan, incluyendo proyectos y aplicaciones.
+     * - Estudiantes (id_tipo_usuario = 3): devuelve un mensaje indicando que no tienen acceso a esta ruta.
+     * - Empresas (id_tipo_usuario = 4): devuelve un mensaje indicando que esta sección está en construcción.
+     *
+     * Si el tipo de usuario no coincide con ninguno de los anteriores, se devuelve un mensaje de error indicando
+     * que no hay una ruta configurada para este usuario.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con datos estadísticos o mensajes de error según el tipo de usuario.
+     */
+    public function index() {
         $user = Auth::user();
 
         if ($user->id_tipo_usuario == 1) {

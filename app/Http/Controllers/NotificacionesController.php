@@ -12,7 +12,17 @@ use Illuminate\Support\Facades\Validator;
 
 class NotificacionesController extends Controller {
     /**
-     * Display a listing of the resource.
+     * Muestra las notificaciones según el tipo de usuario autenticado.
+     *
+     * Este método devuelve diferentes tipos de notificaciones basadas en el rol del usuario autenticado:
+     * - Empresas (id_tipo_usuario = 4): recupera las notificaciones específicas para la empresa.
+     * - Coordinadores (id_tipo_usuario = 2): recupera las notificaciones específicas para el coordinador.
+     * - Otros usuarios (por defecto): recupera notificaciones sobre solicitudes de aplicación activas de estudiantes a proyectos.
+     *
+     * Dependiendo del tipo de usuario, se llama a métodos distintos para obtener las notificaciones pertinentes y se devuelve
+     * una respuesta JSON con los datos de las notificaciones correspondientes.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con las notificaciones correspondientes al tipo de usuario.
      */
     public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario == 4){
@@ -53,6 +63,19 @@ class NotificacionesController extends Controller {
         ]);
     }
 
+    /**
+     * Devuelve la cantidad de notificaciones según el tipo de usuario autenticado.
+     *
+     * Este método devuelve la cantidad de notificaciones basadas en el rol del usuario autenticado:
+     * - Empresas (id_tipo_usuario = 4): recupera la cantidad de notificaciones específicas para la empresa.
+     * - Coordinadores (id_tipo_usuario = 2): recupera la cantidad de notificaciones específicas para el coordinador.
+     * - Otros usuarios (por defecto): recupera la cantidad de notificaciones sobre solicitudes de aplicación activas de estudiantes a proyectos.
+     *
+     * Dependiendo del tipo de usuario, se llama a métodos distintos para obtener la cantidad de notificaciones pertinentes y se devuelve
+     * una respuesta JSON con la cantidad de notificaciones correspondientes.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con la cantidad de notificaciones correspondientes al tipo de usuario.
+     */
     public function contarNotificaciones(): JsonResponse {
         if (Auth::user()->id_tipo_usuario == 2){
             $id_coordinador = $this->getIdCoordinador();
@@ -97,7 +120,15 @@ class NotificacionesController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crea una nueva notificación.
+     *
+     * Este método valida los datos proporcionados para la notificación, asegurándose de que todos los campos sean correctos
+     * según las reglas de validación definidas. Si los datos son válidos, crea una nueva notificación en la base de datos.
+     * Si hay algún error de validación, se devuelve una respuesta JSON con los detalles del error.
+     *
+     * @param array $itemNotificacion Datos de la notificación a crear, que incluyen el tipo, usuario, proyecto y mensaje.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado de la creación de la notificación, o un mensaje de error si los datos no son válidos.
      */
     public function store(array $itemNotificacion): JsonResponse {
         $rules = [
@@ -153,19 +184,47 @@ class NotificacionesController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Muestra una notificación específica.
+     *
+     * Este método recupera una notificación específica según el ID proporcionado. Si la notificación existe, se devuelve
+     * una respuesta JSON con los datos de la notificación. Si la notificación no existe, se devuelve un mensaje de error.
+     *
+     * @param string $id ID de la notificación a mostrar.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de la notificación, o un mensaje de error si la notificación no existe.
      */
     public function show(string $id) {
         //
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza una notificación específica.
+     *
+     * Este método actualiza una notificación específica según el ID proporcionado. Si la notificación existe, se actualiza
+     * el campo 'leido' a true y se devuelve una respuesta JSON con los datos de la notificación actualizada. Si la notificación
+     * no existe, se devuelve un mensaje de error.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la notificación a actualizar, que incluyen el ID de la notificación.
+     * @param string $id ID de la notificación a actualizar.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de la notificación actualizada, o un mensaje de error si la notificación no existe.
      */
     public function update(Request $request, string $id) {
         //
     }
 
+    /**
+     * Marca una notificación como leída.
+     *
+     * Este método valida los datos proporcionados para marcar una notificación como leída, asegurándose de que el ID de la notificación
+     * sea correcto según las reglas de validación definidas. Si los datos son válidos, actualiza el campo 'leido' de la notificación
+     * a true y se devuelve una respuesta JSON con los datos de la notificación actualizada. Si hay algún error de validación, se devuelve
+     * una respuesta JSON con los detalles del error.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la notificación a marcar como leída, que incluyen el ID de la notificación.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado de marcar la notificación como leída, o un mensaje de error si los datos no son válidos.
+     */
     public function marcarComoLeida(Request $request): JsonResponse {
         $rules = [
             'id_notificacion' => 'required|integer|exists:notificaciones,id',
@@ -199,12 +258,28 @@ class NotificacionesController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina una notificación específica.
+     *
+     * Este método elimina una notificación específica según el ID proporcionado. Si la notificación existe, se elimina
+     * de la base de datos y se devuelve una respuesta JSON con un mensaje de éxito. Si la notificación no existe, se devuelve
+     * un mensaje de error.
+     *
+     * @param string $id ID de la notificación a eliminar.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de éxito, o un mensaje de error si la notificación no existe.
      */
     public function destroy(string $id) {
         //
     }
 
+    /**
+     * Obtiene el ID de la empresa a la que pertenece el usuario autenticado.
+     *
+     * Este método recupera el ID de la empresa a la que pertenece el usuario autenticado, consultando la base de datos
+     * y obteniendo el ID de la empresa correspondiente al ID del usuario autenticado.
+     *
+     * @return int ID de la empresa a la que pertenece el usuario autenticado.
+     */
     private function getIdEmpresa() {
         $id_empresa = DB::table('usuarios')
             ->select('empresas.id as id_empresa')
@@ -215,6 +290,14 @@ class NotificacionesController extends Controller {
         return $id_empresa->id_empresa;
     }
 
+    /**
+     * Obtiene el ID del coordinador al que pertenece el usuario autenticado.
+     *
+     * Este método recupera el ID del coordinador al que pertenece el usuario autenticado, consultando la base de datos
+     * y obteniendo el ID del coordinador correspondiente al ID del usuario autenticado.
+     *
+     * @return int ID del coordinador al que pertenece el usuario autenticado.
+     */
     private function getIdCoordinador() {
         $id_coordinador = DB::table('usuarios')
             ->select('coordinadores.id as id_coordinador')

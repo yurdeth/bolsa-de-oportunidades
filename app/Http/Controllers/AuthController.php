@@ -19,14 +19,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 
-class AuthController extends Controller
-{
-    /*
-        Recibir: email, password
-        Retornar: token, token_type, expires_at, información del usuario
-    */
-    public function login(Request $r)
-    {
+class AuthController extends Controller {
+    /**
+     * Inicia sesión un usuario y genera un token de acceso.
+     *
+     * Este método autentica al usuario con las credenciales proporcionadas. Si las credenciales
+     * son válidas, se genera un token de acceso personal y se devuelven datos adicionales como
+     * el tipo de usuario, el proyecto asignado, y la expiración del token. También realiza
+     * validaciones adicionales como verificar si el usuario está habilitado o pertenece a un
+     * tipo específico (empresa o estudiante). En caso de fallas en la autenticación, se
+     * devuelve un mensaje de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el correo y la contraseña del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el token de acceso y datos del usuario,
+     * o mensajes de error en caso de autenticación fallida.
+     */
+
+    public function login(Request $r) {
         $user = $r->email;
         $pass = $r->password;
 
@@ -88,9 +97,20 @@ class AuthController extends Controller
         }
     }
 
-    /* Verifica que el token almacenado este vigente y sea valido y este relacionado a un usuario */
-    public function access_token(Request $r)
-    {
+    /**
+     * Genera un nuevo token de acceso personal para el usuario autenticado.
+     *
+     * Este método genera un nuevo token de acceso personal para el usuario autenticado. El token
+     * generado tiene una fecha de expiración de una semana. Si el token se genera correctamente,
+     * se devuelven los datos del usuario, el token de acceso, el tipo de token, y la fecha de
+     * expiración. En caso de fallas en la generación del token, se devuelve un mensaje de error
+     * con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el usuario autenticado.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el token de acceso y datos del usuario,
+     * o mensajes de error en caso de fallas en la generación del token.
+     */
+    public function access_token(Request $r) {
         // Obtener el usuario autenticado
         $user = $r->user();
 
@@ -113,14 +133,34 @@ class AuthController extends Controller
         return response()->json(['data' => $data, 'status' => true], 200);
     }
 
-    public function logout(Request $r)
-    {
+    /**
+     * Cierra la sesión del usuario autenticado y revoca el token de acceso.
+     *
+     * Este método cierra la sesión del usuario autenticado y revoca el token de acceso personal
+     * asociado a él. Si la sesión se cierra correctamente, se devuelve un mensaje de éxito con
+     * el estado correspondiente. En caso de fallas en el cierre de sesión, se devuelve un mensaje
+     * de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el usuario autenticado.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de éxito o error.
+     */
+    public function logout(Request $r) {
         $r->user()->token()->revoke();
         return response()->json(['message' => 'Sesión finalizada', 'status' => true], 200);
     }
 
-    public function me(Request $r)
-    {
+    /**
+     * Obtener perfil del usuario
+     *
+     * Este método obtiene el perfil del usuario autenticado. Si el usuario es un estudiante, se
+     * devuelven los datos del estudiante y el proyecto asignado. Si el usuario es una empresa,
+     * se devuelven los datos de la empresa. En caso de fallas en la obtención del perfil, se
+     * devuelve un mensaje de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el usuario autenticado.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos del usuario o mensajes de error.
+     */
+    public function me(Request $r) {
         $user = $r->user();
         $queried_user = User::select('usuarios.*', 'proyectos_asignados.id_proyecto as id_proyecto_asignado')
             ->join('estudiantes', 'usuarios.id', '=', 'estudiantes.id_usuario')
@@ -132,8 +172,21 @@ class AuthController extends Controller
         return response()->json(['user' => $queried_user, 'status' => true]);
     }
 
-    public function register(Request $r)
-    {
+    /**
+     * Registrar un nuevo usuario
+     *
+     * Este método registra un nuevo usuario en la base de datos. Los datos requeridos para el
+     * registro de un estudiante son: email, password, id_tipo_usuario, estado_usuario, fecha_registro,
+     * token_recuperacion, token_expiracion, carnet, nombres, apellidos, id_carrera, año_estudio,
+     * telefono_contacto, direccion_residencia. Los datos requeridos para el registro de una empresa
+     * son: email, password, id_tipo_usuario, estado_usuario, fecha_registro, token_recuperacion,
+     * token_expiracion, id_sector, nombre, direccion, telefono, sitio_web, descripcion, logo_url.
+     * En caso de fallas en el registro, se devuelve un mensaje de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene los datos del usuario a registrar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de éxito o error.
+     */
+    public function register(Request $r) {
         /*
             Recibir: user_type (estudiante = 3, empresa = 4)
         */
@@ -189,9 +242,18 @@ class AuthController extends Controller
             'status' => false
         ], 400);
     }
-    
-    public function verifyEmail(Request $r)
-    {
+
+    /**
+     * Enviar correo de recuperación de contraseña
+     *
+     * Este método envía un correo de recuperación de contraseña al usuario que lo solicite. Se
+     * genera un token de recuperación de contraseña y se envía al correo del usuario. En caso
+     * de fallas en el envío del correo, se devuelve un mensaje de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el correo del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de éxito o error.
+     */
+    public function verifyEmail(Request $r) {
         $user = $r->email;
 
         $user_current = User::where('email', $user)->first();
@@ -202,25 +264,31 @@ class AuthController extends Controller
                 ],
                 'status' => false
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 'status' => true
             ], 200);
         }
     }
-    public function changePassword(Request $request)
-    {/*
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'newPassword' => 'required|min:8|confirmed', 
-        ]);*/
-        try{
+
+    /**
+     * Enviar correo de recuperación de contraseña
+     *
+     * Este método envía un correo de recuperación de contraseña al usuario que lo solicite. Se
+     * genera un token de recuperación de contraseña y se envía al correo del usuario. En caso
+     * de fallas en el envío del correo, se devuelve un mensaje de error con el estado correspondiente.
+     *
+     * @param \Illuminate\Http\Request $r La solicitud HTTP que contiene el correo del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de éxito o error.
+     */
+    public function changePassword(Request $request) {
+        try {
             $user = User::where('email', $request->email)->first();
             $user->password = Hash::make($request->newPassword);
             $user->save();
-        }catch(Exception $e){
-            
-            return response()->json( ['success' => false, 'message' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
         return response()->json(['success' => true], 200);
     }

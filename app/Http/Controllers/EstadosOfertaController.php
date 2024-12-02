@@ -6,10 +6,18 @@ use App\Models\EstadosOferta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class EstadosOfertaController extends Controller
-{
-    public function index()
-    {
+class EstadosOfertaController extends Controller {
+    /**
+     * Muestra una lista de todos los estados de oferta registrados.
+     *
+     * Este método recupera todos los estados de oferta almacenados en la base de datos.
+     * Si no existen registros, devuelve un mensaje de error con un código de estado 404.
+     * En caso de éxito, devuelve una lista con los estados de oferta junto con un mensaje de confirmación.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de los estados de oferta
+     * o un mensaje de error si no hay registros.
+     */
+    public function index() {
         $estados = EstadosOferta::all();
 
         if ($estados->isEmpty()) {
@@ -25,8 +33,18 @@ class EstadosOfertaController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
+    /**
+     * Almacena un nuevo estado de oferta en la base de datos.
+     *
+     * Este método valida los datos recibidos y, si son correctos, crea un nuevo estado de oferta.
+     * Si los datos no son válidos, devuelve un mensaje de error con un código de estado 400.
+     * En caso de éxito, devuelve el estado de oferta creado junto con un mensaje de confirmación.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la petición
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos del estado de oferta creado
+     * o un mensaje de error si los datos no son válidos.
+     */
+    public function store(Request $request) {
         $rules = [
             'nombre_estado' => 'required|string|max:50|unique:estados_oferta'
         ];
@@ -48,8 +66,18 @@ class EstadosOfertaController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
+    /**
+     * Muestra un estado de oferta específico.
+     *
+     * Este método recupera un estado de oferta específico de la base de datos.
+     * Si el estado de oferta no existe, devuelve un mensaje de error con un código de estado 404.
+     * En caso de éxito, devuelve el estado de oferta solicitado junto con un mensaje de confirmación.
+     *
+     * @param int $id Identificador del estado de oferta
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos del estado de oferta
+     * o un mensaje de error si no se encuentra el registro.
+     */
+    public function show($id) {
         $estado = EstadosOferta::find($id);
 
         if (is_null($estado)) {
@@ -65,8 +93,19 @@ class EstadosOfertaController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
+    /**
+     * Actualiza un estado de oferta específico en la base de datos.
+     *
+     * Este método valida los datos recibidos y, si son correctos, actualiza un estado de oferta.
+     * Si los datos no son válidos, devuelve un mensaje de error con un código de estado 400.
+     * En caso de éxito, devuelve el estado de oferta actualizado junto con un mensaje de confirmación.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la petición
+     * @param int $id Identificador del estado de oferta
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos del estado de oferta actualizado
+     * o un mensaje de error si los datos no son válidos.
+     */
+    public function update(Request $request, $id) {
         $estado = EstadosOferta::find($id);
 
         if (is_null($estado)) {
@@ -107,8 +146,18 @@ class EstadosOfertaController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
+    /**
+     * Elimina un estado de oferta específico de la base de datos.
+     *
+     * Este método elimina un estado de oferta de la base de datos.
+     * Si el estado de oferta no existe, devuelve un mensaje de error con un código de estado 404.
+     * En caso de éxito, devuelve un mensaje de confirmación.
+     *
+     * @param int $id Identificador del estado de oferta
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con un mensaje de confirmación
+     * o un mensaje de error si no se encuentra el registro.
+     */
+    public function destroy($id) {
         $estado = EstadosOferta::find($id);
 
         if (is_null($estado)) {

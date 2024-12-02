@@ -12,7 +12,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ProyectosAsignadosController extends Controller {
     /**
-     * Display a listing of the resource.
+     * Muestra los proyectos asignados según el tipo de usuario autenticado.
+     *
+     * Este método verifica el tipo de usuario autenticado y, en función de este, devuelve los proyectos asignados correspondientes:
+     * - Si el usuario es de tipo 3 (estudiante), se devuelve un mensaje de error indicando que la ruta no está permitida.
+     * - Si el usuario es de tipo 4 (empresa), se filtran los proyectos asignados a esa empresa.
+     * - Para otros tipos de usuario, se recuperan todos los proyectos asignados sin filtrado específico.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los proyectos asignados correspondientes según el tipo de usuario.
      */
     public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario == 3) {
@@ -39,7 +46,15 @@ class ProyectosAsignadosController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Asigna un proyecto a un estudiante.
+     *
+     * Este método permite a un coordinador asignar un proyecto a un estudiante.
+     * Primero valida que el usuario autenticado sea un coordinador, luego valida los datos de entrada.
+     * Después, verifica que el estudiante no tenga un proyecto asignado previamente, asigna el proyecto al estudiante,
+     * y finalmente elimina cualquier aplicación previa que el estudiante haya hecho a otros proyectos.
+     *
+     * @param \Illuminate\Http\Request $request Datos del proyecto y estudiante a asignar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación.
      */
     public function store(Request $request): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 2) { // <- Solamente el coordinador puede asignar proyectos
@@ -101,7 +116,13 @@ class ProyectosAsignadosController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Muestra un proyecto asignado específico.
+     *
+     * Este método permite a un coordinador o empresa ver un proyecto asignado específico.
+     * Primero valida que el usuario autenticado sea un coordinador o empresa, luego recupera el proyecto asignado.
+     *
+     * @param string $id Identificador del proyecto asignado.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el proyecto asignado correspondiente.
      */
     public function show(string $id): JsonResponse {
         // Solamente coordinadores y empresas pueden ver los proyectos asignados
@@ -127,20 +148,24 @@ class ProyectosAsignadosController extends Controller {
         ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id) {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id, string $id_estudiante) {
         //
     }
 
+    /**
+     * Retira un estudiante de un proyecto asignado.
+     *
+     * Este método permite a un estudiante retirarse de un proyecto asignado.
+     * Primero valida que el usuario autenticado sea un estudiante, luego recupera el proyecto asignado.
+     * Después, actualiza el estado de la aplicación del estudiante a "Retirado".
+     *
+     * @param \Illuminate\Http\Request $request Datos del proyecto y estudiante a retirar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación.
+     */
     public function retirar(Request $request) {
         $id_estudiante = $request->id_estudiante;
         $id = $request->id_proyecto;
@@ -174,6 +199,17 @@ class ProyectosAsignadosController extends Controller {
         ]);
     }
 
+    /**
+     * Confirma la expulsión de un estudiante de un proyecto asignado.
+     *
+     * Este método permite a un coordinador expulsar a un estudiante de un proyecto asignado. Primero, valida que el usuario
+     * autenticado sea un coordinador. Luego, busca si el proyecto está asignado al estudiante. Si se encuentra, elimina la
+     * asignación del proyecto al estudiante, actualiza el estado de la aplicación del estudiante a "denegada" (id_estado_aplicacion = 5),
+     * y finalmente incrementa los cupos disponibles para el proyecto.
+     *
+     * @param \Illuminate\Http\Request $request Datos del estudiante y el proyecto.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación.
+     */
     public function confirmarExpulsion(Request $request) {
         $id_estudiante = $request->id_estudiante;
         $id = $request->id_proyecto;

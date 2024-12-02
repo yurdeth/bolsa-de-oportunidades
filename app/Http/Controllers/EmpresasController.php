@@ -20,6 +20,17 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class EmpresasController extends Controller {
+    /**
+     * Muestra una lista de todas las empresas registradas.
+     *
+     * Este método verifica si el usuario autenticado tiene los permisos adecuados para acceder a esta funcionalidad.
+     * Solo los usuarios con tipo de usuario 1 (administrador) o 2 (coordinador) pueden utilizar esta ruta.
+     * Si el usuario no tiene los permisos necesarios, devuelve un mensaje de error.
+     * En caso de éxito, recupera la información de las empresas y la devuelve en una respuesta JSON.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de las empresas
+     * o un mensaje de error si el usuario no tiene permisos.
+     */
     public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2) {
             return response()->json([
@@ -37,6 +48,16 @@ class EmpresasController extends Controller {
         ]);
     }
 
+    /**
+     * Almacena una nueva empresa en la base de datos.
+     *
+     * Este método valida los datos proporcionados por el usuario y, si son correctos, crea un nuevo usuario y una nueva empresa.
+     * Si los datos no son válidos, devuelve un mensaje de error con los campos que no cumplen con las reglas de validación.
+     * En caso de éxito, devuelve un mensaje de éxito y los datos de la empresa creada.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la empresa a almacenar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado de la operación
+     */
     public function store(Request $request): JsonResponse {
         $rules = [
             //            'id_usuario' => 'required|integer|exists:usuarios,id',
@@ -129,18 +150,18 @@ class EmpresasController extends Controller {
         $id_usuario = $user->id;
 
         $url = "";
-//        if ($request->has('logo_url')) {
-//            $url = $request->logo_url;
-//            // --------------- put img on storage ---------------------
-//            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
-//            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
-//            $replace = substr($url, 0, strpos($url, ',') + 1);
-//            $image = str_replace($replace, '', $url);
-//            $image = str_replace(' ', '+', $image);
-//            $imageName = Str::uuid() . '.' . $extension;
-//            Storage::disk('imagen-empresa')->put($imageName, base64_decode($image));
-//            $url = Storage::disk('imagen-empresa')->url($imageName);
-//        }
+        if ($request->has('logo_url')) {
+            $url = $request->logo_url;
+            // --------------- put img on storage ---------------------
+            $extension = explode('/', explode(':', substr($url, 0, strpos($url, ';')))[1])[1];   // .jpg .png .pdf
+            $extension = explode('+', $extension) ? explode('+', $extension)[0] : $extension;
+            $replace = substr($url, 0, strpos($url, ',') + 1);
+            $image = str_replace($replace, '', $url);
+            $image = str_replace(' ', '+', $image);
+            $imageName = Str::uuid() . '.' . $extension;
+            Storage::disk('imagen-empresa')->put($imageName, base64_decode($image));
+            $url = Storage::disk('imagen-empresa')->url($imageName);
+        }
 
         $empresa = Empresas::create([
             'id_usuario' => $id_usuario,
@@ -175,6 +196,16 @@ class EmpresasController extends Controller {
         ]);
     }
 
+    /**
+     * Muestra la información de una empresa específica.
+     *
+     * Este método recupera la información de una empresa específica en la base de datos.
+     * Si la empresa no existe, devuelve un mensaje de error.
+     * En caso de éxito, devuelve la información de la empresa en una respuesta JSON.
+     *
+     * @param int $id ID de la empresa a mostrar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de la empresa
+     */
     public function show($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id_tipo_usuario != 2 && Auth::user()->id != $id) {
             return response()->json([
@@ -200,6 +231,16 @@ class EmpresasController extends Controller {
 
     }
 
+    /**
+     * Muestra la información de una empresa específica por proyecto.
+     *
+     * Este método recupera la información de una empresa específica en la base de datos.
+     * Si la empresa no existe, devuelve un mensaje de error.
+     * En caso de éxito, devuelve la información de la empresa en una respuesta JSON.
+     *
+     * @param int $id ID de la empresa a mostrar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con los datos de la empresa
+     */
     public function showByProyecto($id) {
         $empresa = Empresas::where('id_usuario', $id)->get();
 
@@ -217,6 +258,17 @@ class EmpresasController extends Controller {
         ]);
     }
 
+    /**
+     * Actualiza la información de una empresa específica.
+     *
+     * Este método valida los datos proporcionados por el usuario y, si son correctos, actualiza la información de la empresa.
+     * Si los datos no son válidos, devuelve un mensaje de error con los campos que no cumplen con las reglas de validación.
+     * En caso de éxito, devuelve un mensaje de éxito y los datos de la empresa actualizada.
+     *
+     * @param \Illuminate\Http\Request $request Datos de la empresa a actualizar
+     * @param int $id ID de la empresa a actualizar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado de la operación
+     */
     public function update(Request $request, $id): JsonResponse {
         if (Auth::user()->id != $id) {
             return response()->json([
@@ -312,6 +364,16 @@ class EmpresasController extends Controller {
         ]);
     }
 
+    /**
+     * Elimina una empresa específica de la base de datos.
+     *
+     * Este método elimina una empresa específica de la base de datos.
+     * Si la empresa no existe, devuelve un mensaje de error.
+     * En caso de éxito, devuelve un mensaje de éxito.
+     *
+     * @param int $id ID de la empresa a eliminar
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado de la operación
+     */
     public function destroy($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([

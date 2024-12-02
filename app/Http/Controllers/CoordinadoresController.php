@@ -15,6 +15,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class CoordinadoresController extends Controller {
+    /**
+     * Muestra una lista de todos los coordinadores registrados.
+     *
+     * Este método verifica si el usuario autenticado tiene el tipo de usuario adecuado
+     * (administrador) para acceder a esta funcionalidad. Si no tiene los permisos requeridos,
+     * devuelve un mensaje de error. En caso contrario, recupera la información de los
+     * coordinadores mediante el método `getInfoCoordinador` del modelo `User` y devuelve
+     * los datos en una respuesta JSON.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON que contiene los datos de los coordinadores
+     * o un mensaje de error si el usuario no tiene permisos.
+     */
     public function index(): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
@@ -33,6 +45,19 @@ class CoordinadoresController extends Controller {
         ]);
     }
 
+    /**
+     * Almacena un nuevo coordinador en la base de datos.
+     *
+     * Este método almacena un nuevo coordinador en la base de datos. Antes de guardar el coordinador,
+     * se validan los datos proporcionados por el usuario. Si los datos no son válidos, se devuelve un
+     * mensaje de error con los detalles de la validación y un código de estado 400. Si el coordinador
+     * se guarda correctamente, se devuelve un mensaje de éxito junto con los datos del coordinador y
+     * un código de estado 201.
+     *
+     * @param \Illuminate\Http\Request $request Datos del coordinador a almacenar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON que indica si el coordinador se guardó correctamente
+     * o si hubo un error de validación.
+     */
     public function store(Request $request): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
@@ -124,6 +149,17 @@ class CoordinadoresController extends Controller {
         ], 201);
     }
 
+    /**
+     * Muestra los datos de un coordinador específico.
+     *
+     * Este método recupera los datos de un coordinador específico en la base de datos. Si el coordinador
+     * no se encuentra, se devuelve un mensaje de error con un código de estado 404. En caso de éxito, se
+     * devuelve un mensaje positivo junto con los datos del coordinador.
+     *
+     * @param int $id Identificador del coordinador a buscar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON que contiene los datos del coordinador
+     * o un mensaje de error si no se encontró el coordinador.
+     */
     public function show($id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
@@ -149,6 +185,20 @@ class CoordinadoresController extends Controller {
         ]);
     }
 
+    /**
+     * Actualiza los datos de un coordinador específico.
+     *
+     * Este método actualiza los datos de un coordinador específico en la base de datos. Antes de
+     * actualizar el coordinador, se validan los datos proporcionados por el usuario. Si los datos
+     * no son válidos, se devuelve un mensaje de error con los detalles de la validación y un código
+     * de estado 400. Si el coordinador se actualiza correctamente, se devuelve un mensaje de éxito
+     * junto con los datos del coordinador.
+     *
+     * @param \Illuminate\Http\Request $request Datos del coordinador a actualizar.
+     * @param int $id Identificador del coordinador a actualizar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON que indica si el coordinador se actualizó correctamente
+     * o si hubo un error de validación.
+     */
     public function update(Request $request, $id): JsonResponse {
         if (Auth::user()->id_tipo_usuario != 1 && Auth::user()->id != $id) {
             return response()->json([
@@ -243,6 +293,17 @@ class CoordinadoresController extends Controller {
         ]);
     }
 
+    /**
+     * Elimina un coordinador específico de la base de datos.
+     *
+     * Este método elimina un coordinador específico de la base de datos. Si el coordinador no se encuentra,
+     * se devuelve un mensaje de error con un código de estado 404. Si el coordinador se elimina correctamente,
+     * se devuelve un mensaje de éxito.
+     *
+     * @param int $id Identificador del coordinador a eliminar.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON que indica si el coordinador se eliminó correctamente
+     * o si no se encontró el coordinador.
+     */
     public function destroy($id): JsonResponse {
         if (Auth::user()->id != $id && Auth::user()->id_tipo_usuario != 1) {
             return response()->json([
