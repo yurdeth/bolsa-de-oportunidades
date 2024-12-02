@@ -448,7 +448,7 @@ nav {
                         "
                         @click="showMenu = false"
                     >
-                        Proyectos
+                        Proyectos <span v-if="notifications > 0" class="badge" style="background: #0a4e25">{{ notifications }}</span>
                     </router-link>
                     <router-link
                         to="/proyectos-activos"
