@@ -9,7 +9,7 @@ use Illuminate\Translation\PotentiallyTranslatedString;
 
 class PhoneNumberRule implements ValidationRule {
     /**
-     * Run the validation rule.
+     * Regla para validar el formato de un número de teléfono.
      *
      * @param \Closure(string, ?string=): PotentiallyTranslatedString $fail
      */

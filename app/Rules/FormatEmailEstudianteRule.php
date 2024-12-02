@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class FormatEmailEstudianteRule implements ValidationRule {
     /**
-     * Run the validation rule.
+     * Regla para validar el formato de un correo de estudiante.
      *
      * @param \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */

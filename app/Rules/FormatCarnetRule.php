@@ -8,7 +8,7 @@ use Illuminate\Translation\PotentiallyTranslatedString;
 
 class FormatCarnetRule implements ValidationRule {
     /**
-     * Run the validation rule.
+     * Regla para validar el formato de un carnet.
      *
      * @param \Closure(string, ?string=): PotentiallyTranslatedString $fail
      */

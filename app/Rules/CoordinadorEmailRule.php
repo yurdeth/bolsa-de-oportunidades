@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class CoordinadorEmailRule implements ValidationRule {
     /**
-     * Run the validation rule.
+     * Regla de validación para el correo de un coordinador.
      *
      * @param \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
