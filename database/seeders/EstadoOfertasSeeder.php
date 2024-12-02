@@ -6,9 +6,22 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class EstadoOfertasSeeder
+ */
 class EstadoOfertasSeeder extends Seeder {
     /**
-     * Run the database seeds.
+     * Ejecuta el seeder para insertar estados de oferta en la base de datos.
+     *
+     * Este método inserta varios registros en la tabla 'estados_oferta' de la base de datos.
+     * Los estados de oferta que se insertan incluyen diferentes etapas de una oferta como:
+     * - Activo
+     * - Inactivo
+     * - Finalizado
+     * - Tomado
+     * - Cancelado
+     *
+     * La fecha de creación y actualización para todos los registros se establece con el valor actual.
      */
     public function run(): void {
         $estados_oferta = [

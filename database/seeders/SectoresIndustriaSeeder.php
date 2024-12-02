@@ -7,10 +7,25 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class SectoresIndustriaSeeder extends Seeder
-{
+/**
+ * Class SectoresIndustriaSeeder
+ */
+class SectoresIndustriaSeeder extends Seeder {
     /**
-     * Run the database seeds.
+     * Ejecuta el seeder para insertar los sectores de la industria en la base de datos.
+     *
+     * Este método inserta registros en la tabla 'sectores_industria', que describe los diferentes
+     * sectores industriales a los que pueden pertenecer las empresas. Los sectores incluyen:
+     * - Municipalidad
+     * - Autonoma
+     * - Sector_Gobierno
+     * - Industria
+     * - Comercio
+     * - Servicios
+     * - Agricultura
+     *
+     * Cada sector tiene una descripción pendiente que puede ser completada más tarde.
+     * La fecha de creación y actualización se establece con el valor actual usando Carbon.
      */
     public function run(): void {
         $sectors = [

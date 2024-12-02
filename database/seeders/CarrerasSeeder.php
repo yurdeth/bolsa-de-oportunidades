@@ -6,7 +6,31 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class CarrerasSeeder
+ * @package Database\Seeders
+ */
 class CarrerasSeeder extends Seeder {
+
+    /**
+     * Inserta registros de ejemplo en la tabla 'carreras'.
+     *
+     * Esta función se utiliza para poblar la tabla 'carreras' con datos iniciales de las diferentes carreras ofrecidas en distintos departamentos de una universidad.
+     * Cada carrera está asociada a un departamento, un código único de carrera y su nombre.
+     *
+     * Los datos insertados incluyen las siguientes carreras:
+     * - Ingenierías, Arquitectura, Medicina, Ciencias Sociales, Humanidades, Economía, Derecho, Ciencias Naturales y Química y Farmacia.
+     *
+     * La función utiliza el método 'insert' de Laravel para agregar múltiples registros a la base de datos.
+     * Los campos 'created_at' y 'updated_at' son asignados con la fecha y hora actual en el momento de la inserción.
+     *
+     * Las carreras insertadas tienen asignados los siguientes campos:
+     * - id: Identificador único para cada carrera.
+     * - id_departamento: Referencia al departamento al que pertenece la carrera.
+     * - codigo_carrera: Código único que identifica la carrera.
+     * - nombre_carrera: Nombre de la carrera.
+     * - created_at y updated_at: Marcas de tiempo que indican cuando fue creada y actualizada la carrera, respectivamente.
+     */
     public function run(): void {
         DB::table('carreras')->insert([
             ['id' =>1, 'id_departamento' => 1, 'codigo_carrera' => 'I50515', 'nombre_carrera' => 'Ingeniería de Sistemas Informáticos', 'created_at' => now(), 'updated_at' => now()],

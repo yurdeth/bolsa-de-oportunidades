@@ -6,9 +6,26 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Clase EstadosAplicacionSeeder
+ *
+ * Seeder para insertar los diferentes estados de aplicación en la base de datos.
+ */
 class EstadosAplicacionSeeder extends Seeder {
     /**
-     * Run the database seeds.
+     * Ejecuta el seeder para insertar los diferentes estados de aplicación en la base de datos.
+     *
+     * Este método inserta registros en la tabla 'estados_aplicacion', representando diferentes
+     * estados posibles en el proceso de solicitud a un proyecto. Los estados incluyen:
+     * - Pendiente: Solicitud en proceso de revisión.
+     * - Aceptado: Solicitud aceptada por la empresa.
+     * - Aprobada: Solicitud aprobada por el coordinador.
+     * - Rechazada: Solicitud rechazada por el coordinador.
+     * - Denegada: Solicitud denegada por la empresa.
+     * - Falta grave: La empresa solicita la expulsión del estudiante.
+     * - Expulsado: Estudiante expulsado del proyecto.
+     *
+     * La fecha de creación y actualización se establece con el valor actual.
      */
     public function run(): void {
         $estados_aplicacion = [
