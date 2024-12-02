@@ -147,8 +147,10 @@ class Proyectos extends Model {
     }
 
     private function getEstudiantesEnProyecto($id_proyecto, $estadoAplicacion, $id_carrera = null): Collection {
-        $infoCoordinador = Auth::user()->info_coordinador;
-        $id_carrera = $infoCoordinador[0]->id_carrera;
+        if (Auth::user()->id_tipo_usuario == 2){
+            $infoCoordinador = Auth::user()->info_coordinador;
+            $id_carrera = $infoCoordinador[0]->id_carrera;
+        }
 
         if(!is_null($id_carrera)) {
             return DB::table('aplicaciones')
@@ -170,6 +172,10 @@ class Proyectos extends Model {
                 ->where('estudiantes.id_carrera', $id_carrera)
                 ->get();
         }
+
+        Log::info('id_carrera: ' . $id_carrera);
+        Log::info('id_proyecto: ' . $id_proyecto);
+        Log::info('estadoAplicacion: ' . $estadoAplicacion);
 
         return DB::table('aplicaciones')
             ->select(
