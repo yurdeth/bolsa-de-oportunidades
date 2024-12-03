@@ -202,28 +202,33 @@
                 </div>
             </div>
         </section>
-        
+
         <!-- Sección de Reportes -->
         <section class="reportes mt-5">
             <h2 class="text-center text-danger mb-4">Reportes</h2>
-            <div class="d-flex justify-content-center">
+            <div
+                class="d-flex justify-content-center align-items-center flex-wrap"
+            >
                 <button
                     class="btn btn-danger btn-lg m-1"
                     @click="generarReportePDF"
                 >
-                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Proyectos
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de
+                    Proyectos
                 </button>
                 <button
                     class="btn btn-danger btn-lg m-1"
                     @click="generarReporteAplicaciones"
                 >
-                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Aplicaciones
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de
+                    Aplicaciones
                 </button>
                 <button
                     class="btn btn-danger btn-lg m-1"
                     @click="generarReporteEmpresas"
                 >
-                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Empresas
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de
+                    Empresas
                 </button>
             </div>
         </section>
@@ -385,7 +390,9 @@ export default {
                 const response = await api.get("/reporte-proyectos", {
                     responseType: "blob",
                 });
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
                 const link = document.createElement("a");
                 link.href = url;
                 link.setAttribute("download", "Reporte_Proyectos.pdf");
@@ -406,7 +413,9 @@ export default {
                 const response = await api.get("/reporte-empresas", {
                     responseType: "blob",
                 });
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
                 const link = document.createElement("a");
                 link.href = url;
                 link.setAttribute("download", "Reporte_Empresas.pdf");
@@ -415,8 +424,15 @@ export default {
                 link.remove();
                 console.log("Reporte de empresas descargado");
             } catch (error) {
-                console.error("Error al generar el reporte de empresas:", error);
-                Alert("Error", "No se pudo generar el reporte de empresas.", "error");
+                console.error(
+                    "Error al generar el reporte de empresas:",
+                    error
+                );
+                Alert(
+                    "Error",
+                    "No se pudo generar el reporte de empresas.",
+                    "error"
+                );
             } finally {
                 this.loading = false;
             }
@@ -427,7 +443,9 @@ export default {
                 const response = await api.get("/reporte-aplicaciones", {
                     responseType: "blob",
                 });
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
                 const link = document.createElement("a");
                 link.href = url;
                 link.setAttribute("download", "Reporte_Aplicaciones.pdf");
@@ -436,12 +454,19 @@ export default {
                 link.remove();
                 console.log("Reporte de aplicaciones descargado");
             } catch (error) {
-                console.error("Error al generar el reporte de aplicaciones:", error);
-                Alert("Error", "No se pudo generar el reporte de aplicaciones.", "error");
+                console.error(
+                    "Error al generar el reporte de aplicaciones:",
+                    error
+                );
+                Alert(
+                    "Error",
+                    "No se pudo generar el reporte de aplicaciones.",
+                    "error"
+                );
             } finally {
                 this.loading = false;
             }
-        }
+        },
     },
     async mounted() {
         this.loading = true;
