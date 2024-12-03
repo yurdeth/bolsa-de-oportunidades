@@ -92,8 +92,10 @@ class Proyectos extends Model {
      * @return Collection
      */
     private function fetchProyectos($id = null, $idCarrera = null): Collection {
-        $infoCoordinador = Auth::user()->info_coordinador;
-        $id_carrera = $infoCoordinador[0]->id_carrera;
+        if(Auth::user()->id_tipo_usuario == 2){
+            $infoCoordinador = Auth::user()->info_coordinador;
+            $id_carrera = $infoCoordinador[0]->id_carrera;
+        }
 
         if (Auth::user()->id_tipo_usuario == 2) {
             $query = DB::table('proyectos')
