@@ -123,7 +123,6 @@ class DashboardController extends Controller {
      * @return StreamedResponse | JsonResponse Archivo PDF con el reporte de proyectos | Respuesta JSON con mensaje de error.
      */
     public function reporteProyectos() {
-        Log::info(Auth::user());
         if (Auth::user()->id_tipo_usuario != 1) {
             return response()->json(['message' => 'No tienes permisos para acceder a esta sección.'], 403);
         }
