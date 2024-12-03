@@ -5,9 +5,18 @@
         </div>
     </div>
     <div>
-        <div class="row">
-            <div class="col-10">
-                <h3>Coordinadores</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Coordinadores</h3>
+            <div class="input-group mb-3 w-25">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar coordinador"
+                    aria-label="Buscar coordinador"
+                    aria-describedby="button-addon2"
+                    ref="searchInput"
+                    @input="filterCoordinators"
+                />
             </div>
             <div class="col-2">
                 <button
@@ -24,7 +33,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" ref="coortinatorsTable">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -532,6 +541,33 @@ export default {
         toggleRetypedPassword() {
             this.showRetypedPassword = !this.showRetypedPassword;
         },
+        filterCoordinators() {
+            const searchTerm = this.$refs.searchInput.value.trim().toLowerCase();
+            const table = this.$refs.coortinatorsTable;
+
+            if (!table) {
+                console.error('Table reference is not defined');
+                return;
+            }
+
+            const rows = table.getElementsByTagName('tr');
+
+            Array.from(rows).forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+
+                const cells = row.getElementsByTagName('td');
+                let rowMatchesSearch = false;
+
+                Array.from(cells).forEach(cell => {
+                    const cellText = cell.textContent.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        rowMatchesSearch = true;
+                    }
+                });
+
+                row.style.display = rowMatchesSearch ? '' : 'none';
+            });
+        }
     },
 };
 </script>

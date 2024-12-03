@@ -1,19 +1,16 @@
 <script setup>
-import { api } from "@/api.js";
+import {api} from "@/api.js";
 import Swal from "sweetalert2";
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 
 const loading = ref(false);
-const id_tipo_usuario = JSON.parse(
-    localStorage.getItem("user")
-).id_tipo_usuario;
+const id_tipo_usuario = JSON.parse(localStorage.getItem("user")).id_tipo_usuario;
 
 const data = ref({
     projects: [],
 });
 
-const selectedProject = ref(null);
-const selectedStudent = ref(null);
+const searchInput = ref(null);
 
 const getActiveProjects = async () => {
     loading.value = true;
@@ -47,68 +44,20 @@ const getActiveProjects = async () => {
     }
 };
 
-const retirarEstudiante = async () => {
-    try {
-        let url = "";
+const filterProjects = () => {
+    const searchTerm = searchInput.value.value.trim().toLowerCase();
+    const accordionItems = document.querySelectorAll('.accordion-item');
 
-        if (id_tipo_usuario === 2) {
-            url = "/expulsar-estudiante";
+    accordionItems.forEach(item => {
+        const projectTitle = item.querySelector('.accordion-button').textContent.toLowerCase();
+        const projectDescription = item.querySelector('.accordion-body').textContent.toLowerCase();
+
+        if (projectTitle.includes(searchTerm) || projectDescription.includes(searchTerm)) {
+            item.style.display = '';
         } else {
-            url = "/retirar-estudiante";
+            item.style.display = 'none';
         }
-
-        Swal.fire({
-            title: "¿Estás seguro?",
-            text: "El estudiante será retirado del proyecto",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sí, retirar",
-            cancelButtonText: "Cancelar",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                const response = await api.post(url, {
-                    id_estudiante: selectedStudent.value,
-                    id_proyecto: selectedProject.value.id_proyecto,
-                });
-
-                if (response.data.success) {
-                    Swal.fire({
-                        title: "Éxito",
-                        text: response.data.message,
-                        icon: "success",
-                        confirmButtonText: "Aceptar",
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: response.data.message,
-                        icon: "error",
-                        confirmButtonText: "Aceptar",
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                }
-            } else {
-                Swal.fire({
-                    title: "Operación cancelada",
-                    text: "El estudiante no fue retirado del proyecto",
-                    icon: "success",
-                    confirmButtonText: "Aceptar",
-                }).then(() => {
-                    window.location.reload();
-                });
-            }
-        });
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-const openModal = (project) => {
-    selectedProject.value = project;
-    selectedStudent.value = null;
+    });
 };
 
 onMounted(() => {
@@ -132,6 +81,8 @@ onMounted(() => {
                 placeholder="Buscar proyecto"
                 aria-label="Buscar proyecto"
                 aria-describedby="button-addon2"
+                ref="searchInput"
+                @input="filterProjects"
             />
         </div>
     </div>
@@ -193,75 +144,8 @@ onMounted(() => {
                                 <h5>Tipo de proyecto</h5>
                                 <p>{{ project.tipo_proyecto }}</p>
                             </div>
-                            <!--                            A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
-                            <!--                            <div class="col-12" v-if="id_tipo_usuario === 2">
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#retirarEstudiante" @click="openModal(project)">
-                                    Retirar un estudiante del proyecto
-                                </button>
-                            </div>-->
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Modal para seleccionar el estudiante a retirar-->
-        <div
-            class="modal fade"
-            id="retirarEstudiante"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">
-                            Seleccionar el estudiante que deseas retirar del
-                            proyecto
-                        </h1>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div class="modal-body" v-if="selectedProject">
-                        <div class="form-group">
-                            <label for="estudiantes">Estudiantes</label>
-                            <select
-                                class="form-select"
-                                id="estudiantes"
-                                v-model="selectedStudent"
-                            >
-                                <option selected disabled>
-                                    Selecciona un estudiante
-                                </option>
-                                <option
-                                    v-for="estudiante in selectedProject.estudiantes"
-                                    :key="estudiante.id_estudiante"
-                                    :value="estudiante.id_estudiante"
-                                >
-                                    {{
-                                        estudiante.nombres +
-                                        " " +
-                                        estudiante.apellidos
-                                    }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <!--                    A discusion, esta opcion no se implementará, pues eso sería tema de seguimiento-->
-                    <!--                    <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                            <button type="button" class="btn btn-danger" @click="retirarEstudiante">
-                                                Retirar del proyecto
-                                            </button>
-                                        </div>-->
                 </div>
             </div>
         </div>

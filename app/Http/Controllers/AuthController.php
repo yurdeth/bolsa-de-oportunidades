@@ -284,6 +284,10 @@ class AuthController extends Controller {
     public function changePassword(Request $request) {
         try {
             $user = User::where('email', $request->email)->first();
+            if (!$user || $user->id == 1) {
+                return response()->json(['success' => false, 'message' => 'Correo no registrado'], 400);
+            }
+
             $user->password = Hash::make($request->newPassword);
             $user->save();
         } catch (Exception $e) {
