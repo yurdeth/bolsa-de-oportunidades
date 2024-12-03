@@ -7,7 +7,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Proyectos</h3>
+            <h3>Proyectos con estudiantes aprobados</h3>
             <div class="input-group mb-3 w-25">
                 <input
                     type="text"
@@ -27,6 +27,12 @@
             >
                 Agregar Proyecto
             </button>
+            <router-link
+                class="btn btn-primary"
+                v-if="idTipoUsuario === 2"
+                to="/proyectos/publicados">
+                Ver publicados
+            </router-link>
         </div>
 
         <div class="table-responsive">

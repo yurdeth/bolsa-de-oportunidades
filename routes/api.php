@@ -126,6 +126,7 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
 
     //-------------------------------------------------------------------------
     Route::get('/proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
+    Route::get('/proyectos/publicados', [ProyectosController::class, 'indexCoordinador'])->name('proyectos.index.coordinador');
     Route::get('/proyectos/{id}', [ProyectosController::class, 'show'])->name('proyectos.show');
     Route::post('/proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyectos/{id}', [ProyectosController::class, 'update'])->name('proyectos.update');

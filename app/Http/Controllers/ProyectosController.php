@@ -6,6 +6,7 @@ use App\Models\Proyectos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,6 +24,51 @@ class ProyectosController extends Controller {
      */
     public function index() {
         $proyectos = ((new Proyectos())->getProyectos(null));
+
+        return response()->json([
+            'success' => true,
+            'data' => $proyectos
+        ]);
+    }
+
+    /**
+     * Obtiene la lista de proyectos disponibles.
+     *
+     * Este método recupera todos los proyectos disponibles utilizando el método `getProyectos` del modelo `Proyectos`.
+     * Devuelve una respuesta JSON con los proyectos recuperados.
+     *
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el estado de la operación y los proyectos.
+     */
+    public function indexCoordinador() {
+        $infoCoordinador = Auth::user()->info_coordinador;
+        $id_carrera = $infoCoordinador[0]->id_carrera;
+
+        $query = DB::table('proyectos')
+            ->select(
+                'proyectos.id as id_proyecto',
+                'empresas.nombre as nombre_empresa',
+                'proyectos.titulo as titulo_proyecto',
+                'proyectos.descripcion as descripcion_proyeto',
+                'proyectos.requisitos as requisitos_proyecto',
+                'estados_oferta.nombre_estado as estado_oferta',
+                'modalidades_trabajo.nombre as modalidad',
+                'proyectos.fecha_inicio as fecha_inicio_proyecto',
+                'proyectos.fecha_fin as fecha_fin_proyecto',
+                'proyectos.fecha_limite_aplicacion as fecha_limite_aplicacion',
+                'proyectos.estado_proyecto as estado_proyecto',
+                'proyectos.cupos_disponibles as cupos_disponibles',
+                'tipos_proyecto.nombre as tipo_proyecto',
+                'proyectos.ubicacion as ubicacion_proyecto',
+                'carreras.nombre_carrera as nombre_carrera'
+            )
+            ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
+            ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
+            ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
+            ->join('tipos_proyecto', 'proyectos.id_tipo_proyecto', '=', 'tipos_proyecto.id')
+            ->join('carreras', 'proyectos.id_carrera', '=', 'carreras.id')
+            ->where('proyectos.id_carrera', $id_carrera);
+
+        $proyectos = $query->get();
 
         return response()->json([
             'success' => true,

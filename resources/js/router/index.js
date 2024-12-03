@@ -46,6 +46,10 @@ const routes = [
                 component: () => import("../pages/projects/MainProjects/MainProjects.vue"),
             },
             {
+                path: "/proyectos/publicados",
+                component: () => import("../pages/projects/MainProjects/Published.vue"),
+            },
+            {
                 path: "/proyectos-activos",
                 component: () => import("../pages/projects/ActiveProjects/ActiveProjects.vue"),
             },
