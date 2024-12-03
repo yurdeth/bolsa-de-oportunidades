@@ -84,12 +84,12 @@
                                 <div class="col-12">
                                     <p>
                                         <strong>Título:</strong>
-                                        {{ selectedProject.titulo }}
+                                        {{ selectedProject.titulo? selectedProject.titulo : selectedProject.titulo_proyecto }}
                                     </p>
 
                                     <p>
                                         <strong>Descripción:</strong>
-                                        {{ selectedProject.descripcion }}
+                                        {{ selectedProject.descripcion? selectedProject.descripcion : selectedProject.descripcion_proyeto }}
                                     </p>
 
                                     <div class="card-requisitos mb-3">
@@ -98,7 +98,7 @@
                                             <requisitos-item
                                                 v-for="(
                                                     requisito, index
-                                                ) in selectedProject.requisitos"
+                                                ) in selectedProject.requisitos ? selectedProject.requisitos : selectedProject.requisitos_proyecto"
                                                 :key="index"
                                                 :valor="requisito"
                                             >
@@ -109,17 +109,14 @@
                                     <p>
                                         <strong>Estado de Oferta:</strong>
                                         {{
-                                            selectedProject.estado_oferta_table
-                                                ?.nombre_estado || "No especificado"
+                                            selectedProject.estado_oferta_table?.nombre_estado || selectedProject.estado_oferta
                                         }}
                                     </p>
 
                                     <p>
                                         <strong>Modalidad:</strong>
                                         {{
-                                            selectedProject
-                                                .modalidad_trabajo_table
-                                                ?.nombre || "No especificado"
+                                            selectedProject.modalidad_trabajo_table?.nombre || selectedProject.modalidad
                                         }}
                                     </p>
 
@@ -130,7 +127,9 @@
                                                 ? new Date(
                                                       selectedProject.fecha_inicio
                                                   ).toLocaleDateString()
-                                                : "No especificado"
+                                                : new Date(
+                                                    selectedProject.fecha_inicio_proyecto
+                                                ).toLocaleDateString()
                                         }}
                                     </p>
 
@@ -141,7 +140,9 @@
                                                 ? new Date(
                                                       selectedProject.fecha_fin
                                                   ).toLocaleDateString()
-                                                : "No especificado"
+                                                : new Date(
+                                                    selectedProject.fecha_fin_proyecto
+                                                ).toLocaleDateString()
                                         }}
                                     </p>
 
@@ -177,15 +178,14 @@
                                         <strong>Tipo de Proyecto:</strong>
                                         {{
                                             selectedProject.tipo_proyecto_table
-                                                ?.nombre || "No especificado"
+                                                ?.nombre || selectedProject.tipo_proyecto
                                         }}
                                     </p>
 
                                     <p>
                                         <strong>Ubicación:</strong>
                                         {{
-                                            selectedProject.ubicacion ||
-                                            "No especificado"
+                                            selectedProject.ubicacion || selectedProject.ubicacion_proyecto
                                         }}
                                     </p>
 
@@ -193,8 +193,7 @@
                                         <strong>Carrera:</strong>
                                         {{
                                             selectedProject.carrera_table
-                                                ?.nombre_carrera ||
-                                            "No especificado"
+                                                ?.nombre_carrera || selectedProject.nombre_carrera
                                         }}
                                     </p>
                                 </div>
