@@ -202,6 +202,31 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Sección de Reportes -->
+        <section class="reportes mt-5">
+            <h2 class="text-center text-danger mb-4">Reportes</h2>
+            <div class="d-flex justify-content-center">
+                <button
+                    class="btn btn-danger btn-lg m-1"
+                    @click="generarReportePDF"
+                >
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Proyectos
+                </button>
+                <button
+                    class="btn btn-danger btn-lg m-1"
+                    @click="generarReporteAplicaciones"
+                >
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Aplicaciones
+                </button>
+                <button
+                    class="btn btn-danger btn-lg m-1"
+                    @click="generarReporteEmpresas"
+                >
+                    <i class="fas fa-file-pdf me-2"></i> Generar Reporte de Empresas
+                </button>
+            </div>
+        </section>
     </div>
     <div v-if="user_data && user_data.id_tipo_usuario == 2">
         <h1>Panel de coordinador</h1>
@@ -337,7 +362,6 @@
         </p>
     </div>
 </template>
-
 <script>
 import { api } from "../../api";
 import Alert from "../../helpers/Alert";
@@ -353,6 +377,71 @@ export default {
             activedProjects: 0,
             numStudents: 0,
         };
+    },
+    methods: {
+        async generarReportePDF() {
+            try {
+                this.loading = true;
+                const response = await api.get("/reporte-proyectos", {
+                    responseType: "blob",
+                });
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte_Proyectos.pdf");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                console.log("Reporte:");
+            } catch (error) {
+                console.error("Error al generar el reporte:", error);
+                Alert("Error", "No se pudo generar el reporte.", "error");
+            } finally {
+                this.loading = false;
+            }
+        },
+        async generarReporteEmpresas() {
+            try {
+                this.loading = true;
+                const response = await api.get("/reporte-empresas", {
+                    responseType: "blob",
+                });
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte_Empresas.pdf");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                console.log("Reporte de empresas descargado");
+            } catch (error) {
+                console.error("Error al generar el reporte de empresas:", error);
+                Alert("Error", "No se pudo generar el reporte de empresas.", "error");
+            } finally {
+                this.loading = false;
+            }
+        },
+        async generarReporteAplicaciones() {
+            try {
+                this.loading = true;
+                const response = await api.get("/reporte-aplicaciones", {
+                    responseType: "blob",
+                });
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Reporte_Aplicaciones.pdf");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                console.log("Reporte de aplicaciones descargado");
+            } catch (error) {
+                console.error("Error al generar el reporte de aplicaciones:", error);
+                Alert("Error", "No se pudo generar el reporte de aplicaciones.", "error");
+            } finally {
+                this.loading = false;
+            }
+        }
     },
     async mounted() {
         this.loading = true;
@@ -370,23 +459,6 @@ export default {
                     label = dataUserbyRole.map((item) => item.rol),
                     data = dataUserbyRole.map((item) => item.total);
                 chart("#userChart", label, data);
-
-                let dataAplicacionesByStatus =
-                    response.data.dataAplicacionesByStatus;
-                label = dataAplicacionesByStatus.map((item) => item.status);
-                data = dataAplicacionesByStatus.map((item) => item.total);
-                chart("#requestChart", label, data);
-            }
-
-            if (this.user_data && this.user_data.id_tipo_usuario == 2) {
-                this.activeRequests = response.data.activeRequests;
-                this.activedProjects = response.data.activeProjects;
-                this.numStudents = response.data.totalStudent;
-
-                let estudiantes = response.data.dataProyectosbyStatus,
-                    label = estudiantes.map((item) => item.rol),
-                    data = estudiantes.map((item) => item.total);
-                chart("#estudiantesChart", label, data);
 
                 let dataAplicacionesByStatus =
                     response.data.dataAplicacionesByStatus;
