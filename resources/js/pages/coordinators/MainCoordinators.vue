@@ -11,8 +11,8 @@
                 <input
                     type="text"
                     class="form-control"
-                    placeholder="Buscar estudiante"
-                    aria-label="Buscar estudiante"
+                    placeholder="Buscar coordinador"
+                    aria-label="Buscar coordinador"
                     aria-describedby="button-addon2"
                     ref="searchInput"
                     @input="filterCoordinators"

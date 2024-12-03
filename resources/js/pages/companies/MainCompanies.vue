@@ -5,10 +5,23 @@
                 <span class="sr-only">Cargando...</span>
             </div>
         </div>
-        <h3>Empresas</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Empresas</h3>
+            <div class="input-group mb-3 w-25">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar empresa"
+                    aria-label="Buscar empresa"
+                    aria-describedby="button-addon2"
+                    ref="searchInput"
+                    @input="filterCompanies"
+                />
+            </div>
+        </div>
 
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" ref="companiesTable">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -178,6 +191,33 @@ export default {
         viewCompany(company) {
             this.selectedCompany = company;
         },
+        filterCompanies() {
+            const searchTerm = this.$refs.searchInput.value.trim().toLowerCase();
+            const table = this.$refs.companiesTable;
+
+            if (!table) {
+                console.error('Table reference is not defined');
+                return;
+            }
+
+            const rows = table.getElementsByTagName('tr');
+
+            Array.from(rows).forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+
+                const cells = row.getElementsByTagName('td');
+                let rowMatchesSearch = false;
+
+                Array.from(cells).forEach(cell => {
+                    const cellText = cell.textContent.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        rowMatchesSearch = true;
+                    }
+                });
+
+                row.style.display = rowMatchesSearch ? '' : 'none';
+            });
+        }
     },
 };
 </script>
