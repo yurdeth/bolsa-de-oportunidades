@@ -4,16 +4,24 @@
             <span class="sr-only">Cargando...</span>
         </div>
     </div>
-    <div>
-        <div class="row">
-            <div class="col-12">
-                <h3>Estudiantes</h3>
-            </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Estudiantes</h3>
+        <div class="input-group mb-3 w-25">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar estudiante"
+                aria-label="Buscar estudiante"
+                aria-describedby="button-addon2"
+                ref="searchInput"
+                @input="filterStudents"
+            />
         </div>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" ref="studentsTable">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -195,6 +203,33 @@ export default {
         viewStudent(student) {
             this.selectedStudent = { ...student };
         },
+        filterStudents() {
+            const searchTerm = this.$refs.searchInput.value.trim().toLowerCase();
+            const table = this.$refs.studentsTable;
+
+            if (!table) {
+                console.error('Table reference is not defined');
+                return;
+            }
+
+            const rows = table.getElementsByTagName('tr');
+
+            Array.from(rows).forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+
+                const cells = row.getElementsByTagName('td');
+                let rowMatchesSearch = false;
+
+                Array.from(cells).forEach(cell => {
+                    const cellText = cell.textContent.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        rowMatchesSearch = true;
+                    }
+                });
+
+                row.style.display = rowMatchesSearch ? '' : 'none';
+            });
+        }
     },
 };
 </script>
