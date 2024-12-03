@@ -15,6 +15,8 @@
                     placeholder="Buscar proyecto"
                     aria-label="Buscar proyecto"
                     aria-describedby="button-addon2"
+                    ref="searchInput"
+                    @input="filterProjects"
                 />
             </div>
             <button
@@ -28,29 +30,29 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" ref="projectsTable">
                 <thead>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Descripcion</th>
-                        <th>Estado</th>
-                        <th>Modalidad</th>
-                        <th class="text-center" style="width: 220px">
-                            Acciones
-                        </th>
-                    </tr>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th>Modalidad</th>
+                    <th class="text-center" style="width: 220px">
+                        Acciones
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    <project-item
-                        v-for="item in projects"
-                        :key="item.id"
-                        :project="item"
-                        :is-tipo-usuario-2="isTipoUsuario2"
-                        :idTipoUsuario="idTipoUsuario"
-                        @delete-project="confirmDelete"
-                        @view-project="viewProject"
-                        @edit-project="editProject"
-                    />
+                <project-item
+                    v-for="item in projects"
+                    :key="item.id"
+                    :project="item"
+                    :is-tipo-usuario-2="isTipoUsuario2"
+                    :idTipoUsuario="idTipoUsuario"
+                    @delete-project="confirmDelete"
+                    @view-project="viewProject"
+                    @edit-project="editProject"
+                />
                 </tbody>
             </table>
         </div>
@@ -84,12 +86,16 @@
                                 <div class="col-12">
                                     <p>
                                         <strong>Título:</strong>
-                                        {{ selectedProject.titulo? selectedProject.titulo : selectedProject.titulo_proyecto }}
+                                        {{
+                                            selectedProject.titulo ? selectedProject.titulo : selectedProject.titulo_proyecto
+                                        }}
                                     </p>
 
                                     <p>
                                         <strong>Descripción:</strong>
-                                        {{ selectedProject.descripcion? selectedProject.descripcion : selectedProject.descripcion_proyeto }}
+                                        {{
+                                            selectedProject.descripcion ? selectedProject.descripcion : selectedProject.descripcion_proyeto
+                                        }}
                                     </p>
 
                                     <div class="card-requisitos mb-3">
@@ -125,8 +131,8 @@
                                         {{
                                             selectedProject.fecha_inicio
                                                 ? new Date(
-                                                      selectedProject.fecha_inicio
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_inicio
+                                                ).toLocaleDateString()
                                                 : new Date(
                                                     selectedProject.fecha_inicio_proyecto
                                                 ).toLocaleDateString()
@@ -138,8 +144,8 @@
                                         {{
                                             selectedProject.fecha_fin
                                                 ? new Date(
-                                                      selectedProject.fecha_fin
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_fin
+                                                ).toLocaleDateString()
                                                 : new Date(
                                                     selectedProject.fecha_fin_proyecto
                                                 ).toLocaleDateString()
@@ -151,8 +157,8 @@
                                         {{
                                             selectedProject.fecha_limite_aplicacion
                                                 ? new Date(
-                                                      selectedProject.fecha_limite_aplicacion
-                                                  ).toLocaleDateString()
+                                                    selectedProject.fecha_limite_aplicacion
+                                                ).toLocaleDateString()
                                                 : "No especificado"
                                         }}
                                     </p>
@@ -252,7 +258,7 @@
                                 <!-- Estado -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Estado de Oferta</label
+                                    >Estado de Oferta</label
                                     >
                                     <select
                                         class="form-select"
@@ -275,7 +281,7 @@
                                 <!-- Modalidad -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Modalidad de Trabajo</label
+                                    >Modalidad de Trabajo</label
                                     >
                                     <select
                                         class="form-select"
@@ -298,7 +304,7 @@
                                 <!-- Título -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                        >Título del Proyecto</label
+                                    >Título del Proyecto</label
                                     >
                                     <input
                                         type="text"
@@ -311,7 +317,7 @@
                                 <!-- Descripción -->
                                 <div class="col-12 mb-3">
                                     <label class="form-label"
-                                        >Descripción del Proyecto</label
+                                    >Descripción del Proyecto</label
                                     >
                                     <textarea
                                         class="form-control"
@@ -368,7 +374,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Tipo de Proyecto</label
+                                    >Tipo de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -412,7 +418,7 @@
                                 <!-- Fechas -->
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha de Inicio</label
+                                    >Fecha de Inicio</label
                                     >
                                     <input
                                         type="date"
@@ -423,7 +429,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha de Fin</label
+                                    >Fecha de Fin</label
                                     >
                                     <input
                                         type="date"
@@ -434,7 +440,7 @@
                                 </div>
                                 <div class="col-4 mb-3">
                                     <label class="form-label"
-                                        >Fecha Límite de Aplicación
+                                    >Fecha Límite de Aplicación
                                         (Opcional)</label
                                     >
                                     <input
@@ -448,7 +454,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Estado de Proyecto</label
+                                    >Estado de Proyecto</label
                                     >
                                     <select
                                         class="form-select"
@@ -465,7 +471,7 @@
 
                                 <div class="col-6 mb-3">
                                     <label class="form-label"
-                                        >Cupos Disponibles</label
+                                    >Cupos Disponibles</label
                                     >
                                     <input
                                         type="number"
@@ -571,7 +577,7 @@
                                     <div class="accordion-body">
                                         <p>
                                             <strong
-                                                >Correo institucional:</strong
+                                            >Correo institucional:</strong
                                             >
                                             {{ student.email }}
                                         </p>
@@ -768,7 +774,8 @@
                                 <div class="col-12 mb-3">
                                     <label class="form-label">Requisitos</label>
                                     <div class="requisitos-list">
-                                        <div v-for="(req, index) in editForm.requisitos" :key="index" class="d-flex gap-2 mb-2">
+                                        <div v-for="(req, index) in editForm.requisitos" :key="index"
+                                             class="d-flex gap-2 mb-2">
                                             <input
                                                 type="text"
                                                 class="form-control"
@@ -815,7 +822,7 @@
 </template>
 
 <script>
-import { api } from "@/api.js";
+import {api} from "@/api.js";
 import ProjectItem from "@/pages/projects/MainProjects/ProjectItem.vue";
 import Swal from "sweetalert2";
 import RequisitosItem from "@/pages/projects/MainProjects/RequisitosItem.vue";
@@ -933,7 +940,7 @@ export default {
     },
     methods: {
         redirectToRoute() {
-            this.$router.push({ name: "/proyectos" });
+            this.$router.push({name: "/proyectos"});
         },
 
         async cargarEstadosOferta() {
@@ -996,7 +1003,7 @@ export default {
                 console.log("Fecha de fin: " + this.newProject.fecha_fin);
                 console.log(
                     "Fecha limite de aplicacion: " +
-                        this.newProject.fecha_limite_aplicacion
+                    this.newProject.fecha_limite_aplicacion
                 );
                 console.log(
                     "Estado de proyecto: " + this.newProject.estado_proyecto
@@ -1302,7 +1309,7 @@ export default {
                     Swal.fire(
                         "Error",
                         response.data.message ||
-                            "No se pudo aprobar la solicitud del estudiante.",
+                        "No se pudo aprobar la solicitud del estudiante.",
                         "error"
                     ).then(() => {
                         window.location.reload();
@@ -1313,7 +1320,7 @@ export default {
                 Swal.fire(
                     "Solicitud aprobada",
                     response.data.message ||
-                        "La solicitud del estudiante ha sido aprobada.",
+                    "La solicitud del estudiante ha sido aprobada.",
                     "success"
                 ).then(() => {
                     window.location.reload();
@@ -1323,7 +1330,7 @@ export default {
                 Swal.fire(
                     "Error",
                     error.response?.data?.message ||
-                        "Ocurrió un error al aprobar la solicitud del estudiante.",
+                    "Ocurrió un error al aprobar la solicitud del estudiante.",
                     "error"
                 );
             }
@@ -1364,6 +1371,33 @@ export default {
                 console.error(error);
             }
         },
+        filterProjects() {
+            const searchTerm = this.$refs.searchInput.value.trim().toLowerCase();
+            const table = this.$refs.projectsTable;
+
+            if (!table) {
+                console.error('Table reference is not defined');
+                return;
+            }
+
+            const rows = table.getElementsByTagName('tr');
+
+            Array.from(rows).forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+
+                const cells = row.getElementsByTagName('td');
+                let rowMatchesSearch = false;
+
+                Array.from(cells).forEach(cell => {
+                    const cellText = cell.textContent.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        rowMatchesSearch = true;
+                    }
+                });
+
+                row.style.display = rowMatchesSearch ? '' : 'none';
+            });
+        }
     },
 };
 </script>
