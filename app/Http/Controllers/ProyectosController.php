@@ -321,6 +321,31 @@ class ProyectosController extends Controller {
             $proyecto->cupos_disponibles = $request->cupos_disponibles;
         }
 
+        if ($request->has('id_empresa')) {
+            $proyecto->id_empresa = $request->input('id_empresa');
+        }
+        if ($request->has('id_estado_oferta')) {
+            $proyecto->id_estado_oferta = $request->input('id_estado_oferta');
+        }
+        if ($request->has('id_modalidad')) {
+            $proyecto->id_modalidad = $request->input('id_modalidad');
+        }
+        if ($request->has('id_tipo_proyecto')) {
+            $proyecto->id_tipo_proyecto = $request->input('id_tipo_proyecto');
+        }
+        if ($request->has('id_carrera')) {
+            $proyecto->id_carrera = $request->input('id_carrera');
+        }
+        if ($request->has('titulo')) {
+            $proyecto->titulo = $request->input('titulo');
+        }
+        if ($request->has('descripcion')) {
+            $proyecto->descripcion = $request->input('descripcion');
+        }
+        if ($request->has('requisitos')) {
+            $proyecto->requisitos = $request->input('requisitos');
+        }
+
         $proyecto->save();
 
         return response()->json([
