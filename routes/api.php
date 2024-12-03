@@ -59,9 +59,6 @@ Route::get('/tipos-proyecto/{id}', [TiposProyectoController::class, 'show'])->na
 //-------------------------------------------------------------------------
 Route::get('/estado-oferta', [EstadosOfertaController::class, 'index'])->name('estado.oferta.index');
 Route::get('/estado-oferta/{id}', [EstadosOfertaController::class, 'show'])->name('estado.oferta.show');
-Route::get('/reporte-proyectos', [DashboardController::class, 'reporteProyectos'])->name('dashboard.reporteProyectos');
-Route::get('/reporte-empresas', [DashboardController::class, 'reporteEmpresas'])->name('dashboard.reporteEmpresas');
-Route::get('/reporte-aplicaciones', [DashboardController::class, 'reporteAplicaciones'])->name('dashboard.reporteAplicaciones');
 
 
 /*Route::resource('proyectos', 'App\Http\Controllers\ProyectosController', ['except' => ['edit', 'create']]);
@@ -74,6 +71,9 @@ Route::group(['middleware' => 'auth:api', NoBrowserCache::class], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/reporte-proyectos', [DashboardController::class, 'reporteProyectos'])->name('dashboard.reporteProyectos');
+    Route::get('/reporte-empresas', [DashboardController::class, 'reporteEmpresas'])->name('dashboard.reporteEmpresas');
+    Route::get('/reporte-aplicaciones', [DashboardController::class, 'reporteAplicaciones'])->name('dashboard.reporteAplicaciones');
 
     //-------------------------------------------------------------------------
     Route::post('/departamentos', [DepartamentosController::class, 'store'])->name('departamentos.store');

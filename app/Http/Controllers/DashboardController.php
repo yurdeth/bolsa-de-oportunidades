@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,8 @@ use App\Models\Aplicaciones;
 use App\Models\Estudiantes;
 use App\Models\User;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller {
     /**
@@ -109,8 +112,22 @@ class DashboardController extends Controller {
 
         return response()->json(['status' => 'success', 'message' => 'no se ha encontrado una ruta para el usuario'], 404);
     }
-    public function reporteProyectos(){     
-            $proyectos = DB::table('proyectos')
+
+    /**
+     * Genera un reporte en PDF con los proyectos registrados en el sistema.
+     *
+     * Este método genera un reporte en PDF con los proyectos registrados en el sistema, incluyendo información detallada
+     * de cada proyecto, como el título, empresa, descripción, requisitos, estado, modalidad, tipo, carrera, fechas y
+     * cupos disponibles.
+     *
+     * @return StreamedResponse | JsonResponse Archivo PDF con el reporte de proyectos | Respuesta JSON con mensaje de error.
+     */
+    public function reporteProyectos() {
+        Log::info(Auth::user());
+        if (Auth::user()->id_tipo_usuario != 1) {
+            return response()->json(['message' => 'No tienes permisos para acceder a esta sección.'], 403);
+        }
+        $proyectos = DB::table('proyectos')
             ->join('empresas', 'proyectos.id_empresa', '=', 'empresas.id')
             ->join('estados_oferta', 'proyectos.id_estado_oferta', '=', 'estados_oferta.id')
             ->join('modalidades_trabajo', 'proyectos.id_modalidad', '=', 'modalidades_trabajo.id')
@@ -194,26 +211,38 @@ class DashboardController extends Controller {
             "reporte_proyectos.pdf"
         );
     }
-    public function reporteEmpresas()
-{
-    $empresas = DB::table('empresas')
-    ->join('sectores_industria', 'empresas.id_sector', '=', 'sectores_industria.id')
-    ->join('usuarios', 'empresas.id_usuario', '=', 'usuarios.id')
-    ->where('usuarios.id_tipo_usuario', 4)  // Agregar el filtro aquí
-    ->select(
-        'empresas.nombre',
-        'usuarios.email as contacto',
-        'empresas.direccion',
-        'empresas.telefono',
-        'empresas.sitio_web',
-        'empresas.descripcion',
-        'sectores_industria.nombre as sector',
-        'empresas.verificada'
-    )
-    ->get();
+
+    /**
+     * Genera un reporte en PDF con las empresas registradas en el sistema.
+     *
+     * Este método genera un reporte en PDF con las empresas registradas en el sistema, incluyendo información detallada
+     * de cada empresa, como el nombre, contacto, dirección, teléfono, sitio web, descripción, sector de la industria y
+     * si está verificada o no.
+     *
+     * @return StreamedResponse | JsonResponse Archivo PDF con el reporte de proyectos | Respuesta JSON con mensaje de error.
+     */
+    public function reporteEmpresas() {
+        if (Auth::user()->id_tipo_usuario != 1){
+            return response()->json(['message' => 'No tienes permisos para acceder a esta sección.'], 403);
+        }
+        $empresas = DB::table('empresas')
+            ->join('sectores_industria', 'empresas.id_sector', '=', 'sectores_industria.id')
+            ->join('usuarios', 'empresas.id_usuario', '=', 'usuarios.id')
+            ->where('usuarios.id_tipo_usuario', 4)  // Agregar el filtro aquí
+            ->select(
+                'empresas.nombre',
+                'usuarios.email as contacto',
+                'empresas.direccion',
+                'empresas.telefono',
+                'empresas.sitio_web',
+                'empresas.descripcion',
+                'sectores_industria.nombre as sector',
+                'empresas.verificada'
+            )
+            ->get();
 
 
-    $html = "
+        $html = "
     <html>
         <head>
             <style>
@@ -240,9 +269,9 @@ class DashboardController extends Controller {
                 </thead>
                 <tbody>";
 
-    foreach ($empresas as $empresa) {
-        $verificada = $empresa->verificada ? 'Sí' : 'No';
-        $html .= "
+        foreach ($empresas as $empresa) {
+            $verificada = $empresa->verificada ? 'Sí' : 'No';
+            $html .= "
                     <tr>
                         <td>{$empresa->nombre}</td>
                         <td>{$empresa->contacto}</td>
@@ -253,43 +282,52 @@ class DashboardController extends Controller {
                         <td>{$empresa->sector}</td>
                         <td>{$verificada}</td>
                     </tr>";
-    }
+        }
 
-    $html .= "
+        $html .= "
                 </tbody>
             </table>
         </body>
     </html>";
 
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'landscape');
-    $dompdf->render();
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
 
-    return response()->streamDownload(
-        fn() => print($dompdf->output()),
-        "reporte_empresas.pdf"
-    );
-}
+        return response()->streamDownload(
+            fn() => print($dompdf->output()),
+            "reporte_empresas.pdf"
+        );
+    }
+
+    /**
+     * Genera un reporte en PDF con las aplicaciones registradas en el sistema.
+     *
+     * Este método genera un reporte en PDF con las aplicaciones registradas en el sistema, incluyendo información
+     * detallada de cada aplicación, como el estudiante, proyecto, estado y comentarios de la empresa.
+     *
+     * @return StreamedResponse | JsonResponse Archivo PDF con el reporte de proyectos | Respuesta JSON con mensaje de error.
+     */
+    public function reporteAplicaciones() {
+        if (Auth::user()->id_tipo_usuario != 1){
+            return response()->json(['message' => 'No tienes permisos para acceder a esta sección.'], 403);
+        }
+        $aplicaciones = DB::table('aplicaciones')
+            ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
+            ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
+            ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
+            ->select(
+                'estudiantes.nombres as estudiante',
+                'estudiantes.apellidos as apellidos',
+                'proyectos.titulo as proyecto',
+                'estados_aplicacion.nombre as estado',
+                'aplicaciones.comentarios_empresa'
+            )
+            ->get();
 
 
-    public function reporteAplicaciones()
-{
-    $aplicaciones = DB::table('aplicaciones')
-    ->join('estudiantes', 'aplicaciones.id_estudiante', '=', 'estudiantes.id')
-    ->join('proyectos', 'aplicaciones.id_proyecto', '=', 'proyectos.id')
-    ->join('estados_aplicacion', 'aplicaciones.id_estado_aplicacion', '=', 'estados_aplicacion.id')
-    ->select(
-        'estudiantes.nombres as estudiante',
-        'estudiantes.apellidos as apellidos',
-        'proyectos.titulo as proyecto',
-        'estados_aplicacion.nombre as estado',
-        'aplicaciones.comentarios_empresa'
-    )
-    ->get();
-
-
-    $html = "
+        $html = "
     <html>
         <head>
             <style>
@@ -312,33 +350,31 @@ class DashboardController extends Controller {
                 </thead>
                 <tbody>";
 
-    foreach ($aplicaciones as $aplicacion) {
-        $html .= "
+        foreach ($aplicaciones as $aplicacion) {
+            $html .= "
                     <tr>
                         <td>{$aplicacion->estudiante}</td>
                         <td>{$aplicacion->proyecto}</td>
                         <td>{$aplicacion->estado}</td>
                         <td>{$aplicacion->comentarios_empresa}</td>
                     </tr>";
-    }
+        }
 
-    $html .= "
+        $html .= "
                 </tbody>
             </table>
         </body>
     </html>";
 
 
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'landscape');
-    $dompdf->render();
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
 
-    return response()->streamDownload(
-        fn() => print($dompdf->output()),
-        "reporte_aplicaciones.pdf"
-    );
+        return response()->streamDownload(
+            fn() => print($dompdf->output()),
+            "reporte_aplicaciones.pdf"
+        );
     }
-
-
 }
