@@ -491,6 +491,23 @@ export default {
                 data = dataAplicacionesByStatus.map((item) => item.total);
                 chart("#requestChart", label, data);
             }
+
+            if (this.user_data && this.user_data.id_tipo_usuario == 2) {
+                this.activeRequests = response.data.activeRequests;
+                this.activedProjects = response.data.activeProjects;
+                this.numStudents = response.data.totalStudent;
+
+                let estudiantes = response.data.dataProyectosbyStatus,
+                    label = estudiantes.map((item) => item.rol),
+                    data = estudiantes.map((item) => item.total);
+                chart("#estudiantesChart", label, data);
+
+                let dataAplicacionesByStatus =
+                    response.data.dataAplicacionesByStatus;
+                label = dataAplicacionesByStatus.map((item) => item.status);
+                data = dataAplicacionesByStatus.map((item) => item.total);
+                chart("#requestChart", label, data);
+            }
         } catch (error) {
             Alert("Error", error.response.data.message, "error");
             console.error(error);
